@@ -4,5 +4,5 @@ interface AvatarProps  {
 }
 
 export const Avatar = ({src,alt}:AvatarProps) => {
-  return <img alt={alt} src={src} className="w-10 h-10 rounded-full object-cover" ></img>;
+  return <img alt={alt} src={src} className="w-10 h-10 rounded-full object-cover"></img>;
 };

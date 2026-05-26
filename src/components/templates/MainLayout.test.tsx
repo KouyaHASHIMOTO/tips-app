@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { MainLayout } from "./MainLayout";
 
-describe("メインレイアウトテスト", () => {
-  test("organismsが表示されている", () => {
+describe("MainLayout", () => {
+  test("Header Sidebar childrenが表示されている", () => {
     render(<MainLayout>メインコンテンツ</MainLayout>);
     expect(screen.getByText("Tips")).toBeInTheDocument();
     expect(screen.getByText("ホーム")).toBeInTheDocument();

@@ -6,7 +6,7 @@ const tips = [
   { id: "2", userName: "佐藤花子", content: "Tips2", likeCount: 3 },
 ];
 
-describe("Tipリストテスト", () => {
+describe("TipList", () => {
   test("カードが複数表示されている", () => {
     render(<TipList tips={tips} />);
     expect(screen.getByText("山田太郎")).toBeInTheDocument();

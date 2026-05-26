@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { TipCard } from "./TipCard";
 
-describe("投稿カードテスト", () => {
+describe("TipCard", () => {
   test("ユーザー名が表示されている", () => {
     render(<TipCard userName="ユーザー名" content="投稿内容" likeCount={5} />);
     expect(screen.getByText("ユーザー名")).toBeInTheDocument();

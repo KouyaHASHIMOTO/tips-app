@@ -2,10 +2,10 @@ import { TipCard } from "../../molecule/tipcard/TipCard";
 
 interface TipListProps {
   tips: {
-    id: string;
-    userName: string;
+    id: number;
+    user_id: string;
     content: string;
-    likeCount: number;
+    created_at: string;
   }[];
 }
 
@@ -15,9 +15,9 @@ export const TipList = ({ tips }: TipListProps) => {
       {tips.map((tip) => (
         <TipCard
           key={tip.id}
-          userName={tip.userName}
+          user_id={tip.user_id}
           content={tip.content}
-          likeCount={tip.likeCount}
+          created_at={tip.created_at}
         />
       ))}
     </div>

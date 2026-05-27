@@ -4,16 +4,16 @@ import { MainLayout } from "../../components/templates/MainLayout";
 
 const tips = [
   {
-    id: "1",
-    userName: "山田太郎",
+    id: 1,
+    user_id: "gajklga",
     content: "Tips1",
-    likeCount: 5,
+    created_at: "1111/11/11",
   },
   {
-    id: "2",
-    userName: "佐藤花子",
+    id: 2,
+    user_id: "32ljgla",
     content: "Tips2",
-    likeCount: 5,
+    created_at: "1111/11/11",
   },
 ];
 describe("HomePage", () => {
@@ -23,9 +23,9 @@ describe("HomePage", () => {
         <TipList tips={tips} />
       </MainLayout>
     );
-    expect(screen.getByText("山田太郎")).toBeInTheDocument();
+    expect(screen.getByText("gajklga")).toBeInTheDocument();
     expect(screen.getByText("Tips1")).toBeInTheDocument();
-    expect(screen.getByText("佐藤花子")).toBeInTheDocument();
+    expect(screen.getByText("32ljgla")).toBeInTheDocument();
     expect(screen.getByText("Tips2")).toBeInTheDocument();
   });
 });

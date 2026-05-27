@@ -15,4 +15,13 @@ describe("Button", () => {
 
     expect(handleClick).toHaveBeenCalled();
   });
+
+  test("Buttonが有効になっている", () => {
+    render(<Button disabled={false}>ボタン</Button>);
+    expect(screen.getByRole("button")).not.toBeDisabled();
+  });
+  test("Buttonが無効になっている", () => {
+    render(<Button disabled={true}>ボタン</Button>);
+    expect(screen.getByRole("button")).toBeDisabled();
+  });
 });

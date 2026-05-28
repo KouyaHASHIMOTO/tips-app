@@ -20,7 +20,9 @@ export const TipCard = ({
       <div className="flex-1">
         <div className="flex items-center gap-2">
           <p className="font-bold">{user_id}</p>
-          <p className="text-gray-400 text-sm">{created_at}</p>
+          <p className="text-gray-400 text-sm">
+            {new Date(created_at).toLocaleDateString("ja-JP")}
+          </p>
         </div>
         <p className="font-semibold mt-1">{title}</p>
         <p className="mt-1 text-gray-800">{content}</p>

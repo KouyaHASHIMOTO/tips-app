@@ -14,15 +14,17 @@ export const HomePage = () => {
       created_at: string;
     }[]
   >([]);
-  useEffect(() => {
-    const fetchTips = async () => {
-      const { data, error } = await supabase.from("tips").select();
-      setTips(data ?? []);
 
-      if (error) {
-        console.error(error);
-      }
-    };
+  const fetchTips = async () => {
+    const { data, error } = await supabase.from("tips").select();
+    setTips(data ?? []);
+
+    if (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
     fetchTips();
   }, []);
 
@@ -35,7 +37,10 @@ export const HomePage = () => {
 
     if (error) {
       console.error(error);
+      return;
     }
+
+    await fetchTips();
   };
 
   return (

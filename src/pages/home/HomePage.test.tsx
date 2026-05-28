@@ -5,12 +5,14 @@ import { MainLayout } from "../../components/templates/MainLayout";
 const tips = [
   {
     id: 1,
+    title: "Tipタイトル",
     user_id: "gajklga",
     content: "Tips1",
     created_at: "1111/11/11",
   },
   {
     id: 2,
+    title: "Tipタイトル",
     user_id: "32ljgla",
     content: "Tips2",
     created_at: "1111/11/11",

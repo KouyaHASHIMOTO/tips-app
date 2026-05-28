@@ -7,6 +7,7 @@ export const HomePage = () => {
   const [tips, setTips] = useState<
     {
       id: number;
+      title: string;
       user_id: string;
       content: string;
       created_at: string;

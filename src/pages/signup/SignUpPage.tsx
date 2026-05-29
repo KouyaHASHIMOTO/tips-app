@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "../../components/atoms/button/Button";
+import { supabase } from "../../lib/supabase";
 
 interface SignUpPageProps {
   onSubmit?: () => void;
@@ -8,6 +9,20 @@ interface SignUpPageProps {
 export const SignUpPage = ({ onSubmit }: SignUpPageProps) => {
   const [mailAddress, setMailAddress] = useState("");
   const [password, setPassword] = useState("");
+
+  const createUser = async () => {
+    const { data, error } = await supabase.auth.signUp({
+      email: mailAddress,
+      password: password,
+    });
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    onSubmit?.();
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -28,7 +43,7 @@ export const SignUpPage = ({ onSubmit }: SignUpPageProps) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Button onClick={() => onSubmit?.()}>サインアップ</Button>
+          <Button onClick={createUser}>サインアップ</Button>
         </div>
       </div>
     </div>

@@ -2,6 +2,15 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { SignUpPage } from "./SignUpPage";
 
+// vi.mockでsupabaseをモックする
+vi.mock("../../lib/supabase", () => ({
+  supabase: {
+    auth: {
+      signUp: vi.fn().mockResolvedValue({ data: {}, error: null }),
+    },
+  },
+}));
+
 describe("SignUpPage", () => {
   test("メールアドレス入力欄が表示されている", () => {
     render(<SignUpPage />);

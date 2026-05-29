@@ -25,7 +25,10 @@ export const HomePage = () => {
   };
 
   useEffect(() => {
-    fetchTips();
+    const load = async () => {
+      await fetchTips();
+    };
+    load();
   }, []);
 
   const createTip = async (title: string, content: string) => {

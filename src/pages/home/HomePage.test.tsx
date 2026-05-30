@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { TipList } from "../../components/organisms/tiplist/TipList";
 import { MainLayout } from "../../components/templates/MainLayout";
+import { MemoryRouter } from "react-router-dom";
 
 const tips = [
   {
@@ -21,9 +22,11 @@ const tips = [
 describe("HomePage", () => {
   test("TipListが表示されている", () => {
     render(
-      <MainLayout>
-        <TipList tips={tips} />
-      </MainLayout>
+      <MemoryRouter>
+        <MainLayout>
+          <TipList tips={tips} />
+        </MainLayout>
+      </MemoryRouter>
     );
     expect(screen.getByText("gajklga")).toBeInTheDocument();
     expect(screen.getByText("Tips1")).toBeInTheDocument();

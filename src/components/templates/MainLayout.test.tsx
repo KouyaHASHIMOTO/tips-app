@@ -1,9 +1,14 @@
 import { render, screen } from "@testing-library/react";
 import { MainLayout } from "./MainLayout";
+import { MemoryRouter } from "react-router-dom";
 
 describe("MainLayout", () => {
   test("Header Sidebar childrenが表示されている", () => {
-    render(<MainLayout>メインコンテンツ</MainLayout>);
+    render(
+      <MemoryRouter>
+        <MainLayout>メインコンテンツ</MainLayout>
+      </MemoryRouter>
+    );
     expect(screen.getByText("Tips")).toBeInTheDocument();
     expect(screen.getByText("ホーム")).toBeInTheDocument();
     expect(screen.getByText("投稿")).toBeInTheDocument();

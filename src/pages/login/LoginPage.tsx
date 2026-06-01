@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "../../components/atoms/button/Button";
 import { supabase } from "../../lib/supabase";
+import { useNavigate } from "react-router-dom";
 
 interface LoginPageProps {
   onSubmit?: () => void;
@@ -10,6 +11,7 @@ export const LoginPage = ({ onSubmit }: LoginPageProps) => {
   const [mailAddress, setMailAddress] = useState("");
   const [password, setPassword] = useState("");
 
+  const navigate = useNavigate();
   const loginUser = async () => {
     const { data, error } = await supabase.auth.signInWithPassword({
       email: mailAddress,
@@ -22,6 +24,7 @@ export const LoginPage = ({ onSubmit }: LoginPageProps) => {
     }
 
     onSubmit?.();
+    navigate("/");
   };
 
   return (

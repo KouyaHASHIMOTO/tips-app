@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "../../components/atoms/button/Button";
 import { supabase } from "../../lib/supabase";
+import { useNavigate } from "react-router-dom";
 
 interface SignUpPageProps {
   onSubmit?: () => void;
@@ -9,6 +10,7 @@ interface SignUpPageProps {
 export const SignUpPage = ({ onSubmit }: SignUpPageProps) => {
   const [mailAddress, setMailAddress] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const createUser = async () => {
     const { data, error } = await supabase.auth.signUp({
@@ -22,6 +24,7 @@ export const SignUpPage = ({ onSubmit }: SignUpPageProps) => {
     }
 
     onSubmit?.();
+    navigate("/"); // ホームへ遷移
   };
 
   return (

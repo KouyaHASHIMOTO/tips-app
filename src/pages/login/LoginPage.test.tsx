@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { LoginPage } from "./LoginPage";
+import { MemoryRouter } from "react-router-dom";
 
 // vi.mockでsupabaseをモックする
 vi.mock("../../lib/supabase", () => ({
@@ -13,16 +14,28 @@ vi.mock("../../lib/supabase", () => ({
 
 describe("LoginPage", () => {
   test("メールアドレス入力欄が表示されている", () => {
-    render(<LoginPage />);
+    render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>
+    );
     expect(screen.getByPlaceholderText("メールアドレス")).toBeInTheDocument();
   });
   test("パスワード入力欄が表示されている", () => {
-    render(<LoginPage />);
+    render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>
+    );
 
     expect(screen.getByPlaceholderText("パスワード")).toBeInTheDocument();
   });
   test("ログインボタンが表示されている", () => {
-    render(<LoginPage />);
+    render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>
+    );
 
     expect(
       screen.getByRole("button", { name: "ログイン" })
@@ -32,7 +45,11 @@ describe("LoginPage", () => {
     const handleSubmit = vi.fn();
     const user = userEvent.setup();
 
-    render(<LoginPage onSubmit={handleSubmit} />);
+    render(
+      <MemoryRouter>
+        <LoginPage onSubmit={handleSubmit} />
+      </MemoryRouter>
+    );
     await user.click(screen.getByRole("button"));
 
     expect(handleSubmit).toHaveBeenCalled();

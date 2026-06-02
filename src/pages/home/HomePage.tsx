@@ -3,8 +3,13 @@ import { TipList } from "../../components/organisms/tiplist/TipList";
 import { MainLayout } from "../../components/templates/MainLayout";
 import { supabase } from "../../lib/supabase";
 import { TipForm } from "../../components/molecule/tipform/TipForm";
+import type { User } from "@supabase/supabase-js";
 
-export const HomePage = () => {
+interface HomePageProps {
+  user: User;
+}
+
+export const HomePage = ({ user }: HomePageProps) => {
   const [tips, setTips] = useState<
     {
       id: number;
@@ -34,7 +39,7 @@ export const HomePage = () => {
   const createTip = async (title: string, content: string) => {
     const { error } = await supabase.from("tips").insert({
       title: title,
-      user_id: "testユーザー",
+      user_id: user.id,
       content: content,
     });
 

@@ -31,7 +31,13 @@ export const SignUpPage = ({ onSubmit }: SignUpPageProps) => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
         <h1 className="text-2xl font-bold text-center mb-6">サインアップ</h1>
-        <div className="flex flex-col gap-4">
+        <form
+          className="flex flex-col gap-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            createUser();
+          }}
+        >
           <input
             placeholder="メールアドレス"
             className="border border-gray-300 rounded p-2 outline-none"
@@ -46,8 +52,8 @@ export const SignUpPage = ({ onSubmit }: SignUpPageProps) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Button onClick={createUser}>サインアップ</Button>
-        </div>
+          <Button type="submit">サインアップ</Button>
+        </form>
       </div>
     </div>
   );

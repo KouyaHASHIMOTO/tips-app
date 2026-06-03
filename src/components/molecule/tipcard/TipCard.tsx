@@ -6,6 +6,8 @@ interface TipCardProps {
   user_id: string;
   content: string;
   created_at: string;
+  onLike?: () => void;
+  likeCount?: number;
 }
 
 export const TipCard = ({
@@ -13,6 +15,8 @@ export const TipCard = ({
   user_id,
   content,
   created_at,
+  onLike,
+  likeCount,
 }: TipCardProps) => {
   return (
     <div className="border-b border-gray-200 p-4 flex gap-3">
@@ -27,7 +31,7 @@ export const TipCard = ({
         <p className="font-semibold mt-1">{title}</p>
         <p className="mt-1 text-gray-800">{content}</p>
         <div className="mt-2">
-          <Button>❤️ 5</Button>
+          <Button onClick={onLike}>❤️ {likeCount}</Button>
         </div>
       </div>
     </div>

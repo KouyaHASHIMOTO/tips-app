@@ -8,9 +8,11 @@ interface TipListProps {
     content: string;
     created_at: string;
   }[];
+
+  onLike?: (tipId: number) => void;
 }
 
-export const TipList = ({ tips }: TipListProps) => {
+export const TipList = ({ tips, onLike }: TipListProps) => {
   return (
     <div className="divide-y divide-gray-200">
       {tips.map((tip) => (
@@ -20,6 +22,7 @@ export const TipList = ({ tips }: TipListProps) => {
           user_id={tip.user_id}
           content={tip.content}
           created_at={tip.created_at}
+          onLike={() => onLike?.(tip.id)}
         />
       ))}
     </div>

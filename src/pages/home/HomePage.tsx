@@ -51,10 +51,23 @@ export const HomePage = ({ user }: HomePageProps) => {
     await fetchTips();
   };
 
+  const addLike = async (tipId: number) => {
+    const { error } = await supabase.from("likes").insert({
+      tip_id: tipId,
+      user_id: user.id,
+    });
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    await fetchTips();
+  };
+
   return (
     <MainLayout>
       <TipForm onSubmit={createTip} />
-      <TipList tips={tips} />
+      <TipList tips={tips} onLike={addLike} />
     </MainLayout>
   );
 };

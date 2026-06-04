@@ -62,6 +62,7 @@ export const HomePage = ({ user }: HomePageProps) => {
       user_id: user.id,
     });
     if (error) {
+      if (error.code === "23505") return;
       console.error(error);
       return;
     }

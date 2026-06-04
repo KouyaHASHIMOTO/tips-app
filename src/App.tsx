@@ -8,16 +8,24 @@ import type { User } from "@supabase/supabase-js";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const load = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-    };
-    load();
+    // ログイン状態の変化を監視
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log(event, session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    // クリーンアップ（リスナーを解除）
+    return () => subscription.unsubscribe();
   }, []);
+
+  if (loading) return <div>読み込み中</div>;
+
   return (
     <BrowserRouter>
       <Routes>

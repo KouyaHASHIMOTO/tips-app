@@ -26,7 +26,8 @@ export const HomePage = ({ user }: HomePageProps) => {
   const fetchTips = async () => {
     const { data, error } = await supabase
       .from("tips")
-      .select(`*, likes(count)`);
+      .select(`*, likes(count)`)
+      .order("created_at", { ascending: false });
     setTips(data ?? []);
 
     if (error) {

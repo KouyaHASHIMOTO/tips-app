@@ -17,11 +17,16 @@ export const HomePage = ({ user }: HomePageProps) => {
       user_id: string;
       content: string;
       created_at: string;
+      likes: {
+        count: number;
+      }[];
     }[]
   >([]);
 
   const fetchTips = async () => {
-    const { data, error } = await supabase.from("tips").select();
+    const { data, error } = await supabase
+      .from("tips")
+      .select(`*, likes(count)`);
     setTips(data ?? []);
 
     if (error) {

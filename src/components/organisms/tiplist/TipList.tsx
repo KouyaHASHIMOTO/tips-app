@@ -7,6 +7,9 @@ interface TipListProps {
     user_id: string;
     content: string;
     created_at: string;
+    likes: {
+      count: number;
+    }[];
   }[];
 
   onLike?: (tipId: number) => void;
@@ -23,6 +26,7 @@ export const TipList = ({ tips, onLike }: TipListProps) => {
           content={tip.content}
           created_at={tip.created_at}
           onLike={() => onLike?.(tip.id)}
+          likeCount={tip.likes[0]?.count ?? 0}
         />
       ))}
     </div>

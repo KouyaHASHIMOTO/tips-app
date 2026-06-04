@@ -41,6 +41,8 @@ export const LoginPage = ({ onSubmit }: LoginPageProps) => {
           <input
             placeholder="メールアドレス"
             className="border border-gray-300 rounded p-2 outline-none"
+            id="email"
+            name="email"
             type="email"
             value={mailAddress}
             onChange={(e) => setMailAddress(e.target.value)}
@@ -49,6 +51,8 @@ export const LoginPage = ({ onSubmit }: LoginPageProps) => {
             placeholder="パスワード"
             type="password"
             className="border border-gray-300 rounded p-2 outline-none"
+            id="password"
+            name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />

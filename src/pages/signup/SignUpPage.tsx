@@ -41,12 +41,16 @@ export const SignUpPage = ({ onSubmit }: SignUpPageProps) => {
           <input
             placeholder="メールアドレス"
             className="border border-gray-300 rounded p-2 outline-none"
+            id="email"
+            name="email"
             type="email"
             value={mailAddress}
             onChange={(e) => setMailAddress(e.target.value)}
           />
           <input
             placeholder="パスワード"
+            id="password"
+            name="password"
             type="password"
             className="border border-gray-300 rounded p-2 outline-none"
             value={password}

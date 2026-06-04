@@ -29,7 +29,11 @@ export const TipForm = ({ onSubmit }: TipFormProps) => {
           {280 - content.length}
         </span>
         <Button
-          onClick={() => onSubmit?.(title, content)}
+          onClick={() => {
+            onSubmit?.(title, content);
+            setTitle("");
+            setContent("");
+          }}
           disabled={content.length > 280}
         >
           投稿

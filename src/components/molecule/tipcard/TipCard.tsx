@@ -10,6 +10,7 @@ interface TipCardProps {
   created_at: string;
   onLike?: () => void;
   likeCount?: number;
+  onMoreTip?: (content: string) => void;
 }
 
 export const TipCard = ({
@@ -19,6 +20,7 @@ export const TipCard = ({
   created_at,
   onLike,
   likeCount,
+  onMoreTip,
 }: TipCardProps) => {
   const [showMoreTipForm, setShowMoreTipForm] = useState(false);
   return (
@@ -38,7 +40,7 @@ export const TipCard = ({
         </div>
         <div className="mt-2">
           <Button onClick={() => setShowMoreTipForm(true)}>MoreTip</Button>
-          {showMoreTipForm && <MoreTipForm />}
+          {showMoreTipForm && <MoreTipForm onSubmit={onMoreTip} />}
         </div>
       </div>
     </div>

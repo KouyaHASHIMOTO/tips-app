@@ -9,7 +9,15 @@ export const TipForm = ({ onSubmit }: TipFormProps) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   return (
-    <div className="p-4 border-b border-gray-200">
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit?.(title, content);
+        setTitle("");
+        setContent("");
+      }}
+      className="p-4 border-b border-gray-200"
+    >
       <input
         value={title}
         onChange={(e) => setTitle(e.target.value)}
@@ -28,17 +36,10 @@ export const TipForm = ({ onSubmit }: TipFormProps) => {
         >
           {280 - content.length}
         </span>
-        <Button
-          onClick={() => {
-            onSubmit?.(title, content);
-            setTitle("");
-            setContent("");
-          }}
-          disabled={content.length > 280}
-        >
+        <Button type="submit" disabled={content.length > 280}>
           投稿
         </Button>
       </div>
-    </div>
+    </form>
   );
 };

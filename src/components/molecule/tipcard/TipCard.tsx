@@ -11,6 +11,13 @@ interface TipCardProps {
   onLike?: () => void;
   likeCount?: number;
   onMoreTip?: (content: string) => void;
+  moreTips?: {
+    id: number;
+    tip_id: number;
+    user_id: string;
+    content: string;
+    created_at: string;
+  }[];
 }
 
 export const TipCard = ({
@@ -21,6 +28,7 @@ export const TipCard = ({
   onLike,
   likeCount,
   onMoreTip,
+  moreTips,
 }: TipCardProps) => {
   const [showMoreTipForm, setShowMoreTipForm] = useState(false);
   return (
@@ -38,6 +46,12 @@ export const TipCard = ({
         <div className="mt-2">
           <Button onClick={onLike}>❤️ {likeCount}</Button>
         </div>
+        {/**MoreTipsの一覧を表示する */}
+        {moreTips?.map((moreTip) => (
+          <div key={moreTip.id} className="mt-2 pl-4 border-l border-gray-200">
+            <p className="text-sm text-gray-600">{moreTip.content}</p>
+          </div>
+        ))}
         <div className="mt-2">
           <Button onClick={() => setShowMoreTipForm(true)}>MoreTip</Button>
           {showMoreTipForm && <MoreTipForm onSubmit={onMoreTip} />}

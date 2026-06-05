@@ -10,6 +10,13 @@ interface TipListProps {
     likes: {
       count: number;
     }[];
+    more_tips: {
+      id: number;
+      tip_id: number;
+      user_id: string;
+      content: string;
+      created_at: string;
+    }[];
   }[];
 
   onLike?: (tipId: number) => void;
@@ -30,6 +37,7 @@ export const TipList = ({ tips, onLike, onMoreTip }: TipListProps) => {
           onLike={() => onLike?.(tip.id)}
           likeCount={tip.likes[0]?.count ?? 0}
           onMoreTip={(content) => onMoreTip?.(tip.id, content)}
+          moreTips={tip.more_tips}
         />
       ))}
     </div>

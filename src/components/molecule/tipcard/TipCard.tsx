@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Avatar } from "../../atoms/avatar/Avatar";
 import { Button } from "../../atoms/button/Button";
+import { MoreTipForm } from "../moretipform/MoreTipForm";
 
 interface TipCardProps {
   title: string;
@@ -18,6 +20,7 @@ export const TipCard = ({
   onLike,
   likeCount,
 }: TipCardProps) => {
+  const [showMoreTipForm, setShowMoreTipForm] = useState(false);
   return (
     <div className="border-b border-gray-200 p-4 flex gap-3">
       <Avatar src="https://example.com/avatar.jpg" alt={user_id} />
@@ -32,6 +35,10 @@ export const TipCard = ({
         <p className="mt-1 text-gray-800">{content}</p>
         <div className="mt-2">
           <Button onClick={onLike}>❤️ {likeCount}</Button>
+        </div>
+        <div className="mt-2">
+          <Button onClick={() => setShowMoreTipForm(true)}>MoreTip</Button>
+          {showMoreTipForm && <MoreTipForm />}
         </div>
       </div>
     </div>

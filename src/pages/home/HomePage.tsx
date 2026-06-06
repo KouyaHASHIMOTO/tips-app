@@ -18,7 +18,9 @@ export const HomePage = ({ user }: HomePageProps) => {
       content: string;
       created_at: string;
       likes: {
-        count: number;
+        id: number;
+        tip_id: number;
+        user_id: string;
       }[];
       more_tips: {
         id: number;
@@ -33,7 +35,7 @@ export const HomePage = ({ user }: HomePageProps) => {
   const fetchTips = async () => {
     const { data, error } = await supabase
       .from("tips")
-      .select(`*, likes(count),more_tips(*)`)
+      .select(`*, likes(*),more_tips(*)`)
       .order("created_at", { ascending: false });
     setTips(data ?? []);
 
@@ -91,7 +93,12 @@ export const HomePage = ({ user }: HomePageProps) => {
   return (
     <MainLayout>
       <TipForm onSubmit={createTip} />
-      <TipList tips={tips} onLike={addLike} onMoreTip={addMoreTip} />
+      <TipList
+        tips={tips}
+        onLike={addLike}
+        onMoreTip={addMoreTip}
+        userId={user.id}
+      />
     </MainLayout>
   );
 };

@@ -18,6 +18,7 @@ interface TipCardProps {
     content: string;
     created_at: string;
   }[];
+  isLiked?: boolean;
 }
 
 export const TipCard = ({
@@ -29,6 +30,7 @@ export const TipCard = ({
   likeCount,
   onMoreTip,
   moreTips,
+  isLiked,
 }: TipCardProps) => {
   const [showMoreTipForm, setShowMoreTipForm] = useState(false);
   return (
@@ -44,7 +46,9 @@ export const TipCard = ({
         <p className="font-semibold mt-1">{title}</p>
         <p className="mt-1 text-gray-800">{content}</p>
         <div className="mt-2">
-          <Button onClick={onLike}>❤️ {likeCount}</Button>
+          <Button onClick={onLike}>
+            {isLiked ? "❤️" : "🤍"} {likeCount}
+          </Button>
         </div>
         {/**MoreTipsの一覧を表示する */}
         {moreTips?.map((moreTip) => (

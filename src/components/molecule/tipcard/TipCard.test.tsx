@@ -44,6 +44,7 @@ describe("TipCard", () => {
         content="投稿内容"
         created_at="2026-05-28T07:32:56.062504+00:00"
         likeCount={5}
+        isLiked={true}
       />
     );
     expect(screen.getByText(/❤️ 5/)).toBeInTheDocument();
@@ -58,6 +59,7 @@ describe("TipCard", () => {
         content="投稿内容"
         created_at="2026-05-28T07:32:56.062504+00:00"
         onLike={onLike}
+        isLiked={true}
       />
     );
     await user.click(screen.getByRole("button", { name: /❤️/ }));

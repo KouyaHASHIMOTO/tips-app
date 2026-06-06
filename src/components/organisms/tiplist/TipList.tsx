@@ -8,7 +8,9 @@ interface TipListProps {
     content: string;
     created_at: string;
     likes: {
-      count: number;
+      id: number;
+      tip_id: number;
+      user_id: string;
     }[];
     more_tips: {
       id: number;
@@ -19,12 +21,14 @@ interface TipListProps {
     }[];
   }[];
 
+  userId: string;
+
   onLike?: (tipId: number) => void;
 
   onMoreTip?: (tipId: number, content: string) => void;
 }
 
-export const TipList = ({ tips, onLike, onMoreTip }: TipListProps) => {
+export const TipList = ({ tips, onLike, onMoreTip, userId }: TipListProps) => {
   return (
     <div className="divide-y divide-gray-200">
       {tips.map((tip) => (
@@ -35,9 +39,10 @@ export const TipList = ({ tips, onLike, onMoreTip }: TipListProps) => {
           content={tip.content}
           created_at={tip.created_at}
           onLike={() => onLike?.(tip.id)}
-          likeCount={tip.likes[0]?.count ?? 0}
+          likeCount={tip.likes.length ?? 0}
           onMoreTip={(content) => onMoreTip?.(tip.id, content)}
           moreTips={tip.more_tips}
+          isLiked={tip.likes.some((like) => like.user_id === userId)}
         />
       ))}
     </div>

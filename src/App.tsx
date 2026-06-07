@@ -5,6 +5,7 @@ import { SignUpPage } from "./pages/signup/SignUpPage";
 import { useEffect, useState } from "react";
 import { supabase } from "./lib/supabase";
 import type { User } from "@supabase/supabase-js";
+import { ProfilePage } from "./pages/profile/ProfilePage";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -34,6 +35,12 @@ function App() {
         />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route
+          path="/profile"
+          element={
+            user ? <ProfilePage user={user} /> : <Navigate to="/login" />
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

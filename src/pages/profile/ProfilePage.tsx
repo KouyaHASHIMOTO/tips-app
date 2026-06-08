@@ -11,11 +11,11 @@ export const ProfilePage = ({ user }: ProfilePageProps) => {
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <div className="flex items-center gap-4 mb-4">
             <div className="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center text-white text-2xl font-bold">
-              {user.email?.[0].toUpperCase()}
+              {user.email?.[0].toUpperCase() ?? "?"}
             </div>
             <div>
               <p className="text-gray-500 text-sm">メールアドレス</p>
-              <p className="font-semibold">{user.email}</p>
+              <p className="font-semibold">{user.email ?? "メールアドレスが未設定"}</p>
             </div>
           </div>
         </div>

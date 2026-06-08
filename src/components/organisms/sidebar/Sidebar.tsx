@@ -26,7 +26,7 @@ export const Sidebar = () => {
         投稿
       </NavLink>
       <NavLink
-        to="/settings"
+        to="/profile"
         className={({ isActive }) =>
           isActive
             ? `${baseClass} font-bold text-blue-500`

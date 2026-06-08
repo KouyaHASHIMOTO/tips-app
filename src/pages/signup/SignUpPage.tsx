@@ -8,6 +8,8 @@ interface SignUpPageProps {
 }
 
 export const SignUpPage = ({ onSubmit }: SignUpPageProps) => {
+  const [userName, setUserName] = useState("");
+
   const [mailAddress, setMailAddress] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -20,6 +22,15 @@ export const SignUpPage = ({ onSubmit }: SignUpPageProps) => {
 
     if (error) {
       console.error(error);
+      return;
+    }
+
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .insert({ user_id: data.user?.id, user_name: userName });
+
+    if (profileError) {
+      console.error(profileError);
       return;
     }
 
@@ -38,6 +49,15 @@ export const SignUpPage = ({ onSubmit }: SignUpPageProps) => {
             createUser();
           }}
         >
+          <input
+            placeholder="ユーザー名"
+            className="border border-gray-300 rounded p-2 outline-none"
+            id="userName"
+            name="userName"
+            type="text"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+          />
           <input
             placeholder="メールアドレス"
             className="border border-gray-300 rounded p-2 outline-none"

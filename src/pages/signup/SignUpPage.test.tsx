@@ -9,15 +9,28 @@ vi.mock("../../lib/supabase", () => ({
     auth: {
       signUp: vi.fn().mockResolvedValue({ data: {}, error: null }),
     },
+
+    from: vi.fn().mockReturnValue({
+      insert: vi.fn().mockResolvedValue({ error: null }),
+    }),
   },
 }));
 
 describe("SignUpPage", () => {
+  test("ユーザー名入力欄が表示されている", () => {
+    render(
+      <MemoryRouter>
+        <SignUpPage />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByPlaceholderText("ユーザー名")).toBeInTheDocument();
+  });
   test("メールアドレス入力欄が表示されている", () => {
     render(
       <MemoryRouter>
         <SignUpPage />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByPlaceholderText("メールアドレス")).toBeInTheDocument();
@@ -26,7 +39,7 @@ describe("SignUpPage", () => {
     render(
       <MemoryRouter>
         <SignUpPage />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByPlaceholderText("パスワード")).toBeInTheDocument();
@@ -35,10 +48,10 @@ describe("SignUpPage", () => {
     render(
       <MemoryRouter>
         <SignUpPage />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(
-      screen.getByRole("button", { name: "サインアップ" })
+      screen.getByRole("button", { name: "サインアップ" }),
     ).toBeInTheDocument();
   });
   test("サインアップボタンをクリックできる", async () => {
@@ -48,7 +61,7 @@ describe("SignUpPage", () => {
     render(
       <MemoryRouter>
         <SignUpPage onSubmit={handleSubmit} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     await user.click(screen.getByRole("button"));
 

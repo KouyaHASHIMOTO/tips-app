@@ -10,6 +10,8 @@ interface HomePageProps {
 }
 
 export const HomePage = ({ user }: HomePageProps) => {
+  console.log(user)
+
   const [tips, setTips] = useState<
     {
       id: number;

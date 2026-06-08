@@ -7,10 +7,10 @@ describe("Sidebar", () => {
     render(
       <MemoryRouter>
         <Sidebar />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(screen.getByText("ホーム")).toBeInTheDocument();
-    expect(screen.getByText("投稿")).toBeInTheDocument();
+    expect(screen.getByText("マイページ")).toBeInTheDocument();
     expect(screen.getByText("設定")).toBeInTheDocument();
   });
 });

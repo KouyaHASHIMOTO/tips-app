@@ -15,18 +15,19 @@ export const Sidebar = () => {
       >
         ホーム
       </NavLink>
+
       <NavLink
-        to="/tips"
+        to="/profile"
         className={({ isActive }) =>
           isActive
             ? `${baseClass} font-bold text-blue-500`
             : `${baseClass} text-gray-500 hover:text-blue-500`
         }
       >
-        投稿
+        マイページ
       </NavLink>
       <NavLink
-        to="/profile"
+        to="/setting"
         className={({ isActive }) =>
           isActive
             ? `${baseClass} font-bold text-blue-500`

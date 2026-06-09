@@ -10,8 +10,6 @@ interface HomePageProps {
 }
 
 export const HomePage = ({ user }: HomePageProps) => {
-  console.log(user)
-
   const [tips, setTips] = useState<
     {
       id: number;
@@ -31,13 +29,20 @@ export const HomePage = ({ user }: HomePageProps) => {
         content: string;
         created_at: string;
       }[];
+      profiles: {
+        id: number;
+        tip_id: number;
+        user_name: string;
+        avatar_url: string;
+        created_at: string;
+      } | null;
     }[]
   >([]);
 
   const fetchTips = async () => {
     const { data, error } = await supabase
       .from("tips")
-      .select(`*, likes(*),more_tips(*)`)
+      .select(`*, likes(*),more_tips(*),profiles(*)`)
       .order("created_at", { ascending: false });
     setTips(data ?? []);
 

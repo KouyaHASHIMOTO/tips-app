@@ -19,6 +19,7 @@ interface TipCardProps {
     created_at: string;
   }[];
   isLiked?: boolean;
+  userName?: string;
 }
 
 export const TipCard = ({
@@ -31,6 +32,7 @@ export const TipCard = ({
   onMoreTip,
   moreTips,
   isLiked,
+  userName,
 }: TipCardProps) => {
   const [showMoreTipForm, setShowMoreTipForm] = useState(false);
   return (
@@ -38,7 +40,7 @@ export const TipCard = ({
       <Avatar src="https://example.com/avatar.jpg" alt={user_id} />
       <div className="flex-1">
         <div className="flex items-center gap-2">
-          <p className="font-bold">{user_id}</p>
+          <p className="font-bold">{userName}</p>
           <p className="text-gray-400 text-sm">
             {new Date(created_at).toLocaleDateString("ja-JP")}
           </p>

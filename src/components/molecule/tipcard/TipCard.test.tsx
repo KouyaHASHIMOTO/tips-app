@@ -7,10 +7,11 @@ describe("TipCard", () => {
     render(
       <TipCard
         title="Tipタイトル"
-        user_id="ユーザー名"
+        user_id="1"
+        userName="ユーザー名"
         content="投稿内容"
         created_at="2026-05-28T07:32:56.062504+00:00"
-      />
+      />,
     );
     expect(screen.getByText("Tipタイトル")).toBeInTheDocument();
   });
@@ -18,10 +19,11 @@ describe("TipCard", () => {
     render(
       <TipCard
         title="Tipタイトル"
-        user_id="ユーザー名"
+        user_id="1"
+        userName="ユーザー名"
         content="投稿内容"
         created_at="2026-05-28T07:32:56.062504+00:00"
-      />
+      />,
     );
     expect(screen.getByText("ユーザー名")).toBeInTheDocument();
   });
@@ -29,10 +31,11 @@ describe("TipCard", () => {
     render(
       <TipCard
         title="Tipタイトル"
-        user_id="ユーザー名"
+        user_id="1"
+        userName="ユーザー名"
         content="投稿内容"
         created_at="2026-05-28T07:32:56.062504+00:00"
-      />
+      />,
     );
     expect(screen.getByText("投稿内容")).toBeInTheDocument();
   });
@@ -40,12 +43,13 @@ describe("TipCard", () => {
     render(
       <TipCard
         title="Tipタイトル"
-        user_id="ユーザー名"
+        user_id="1"
+        userName="ユーザー名"
         content="投稿内容"
         created_at="2026-05-28T07:32:56.062504+00:00"
         likeCount={5}
         isLiked={true}
-      />
+      />,
     );
     expect(screen.getByText(/❤️ 5/)).toBeInTheDocument();
   });
@@ -55,12 +59,13 @@ describe("TipCard", () => {
     render(
       <TipCard
         title="Tipタイトル"
-        user_id="ユーザー名"
+        user_id="1"
+        userName="ユーザー名"
         content="投稿内容"
         created_at="2026-05-28T07:32:56.062504+00:00"
         onLike={onLike}
         isLiked={true}
-      />
+      />,
     );
     await user.click(screen.getByRole("button", { name: /❤️/ }));
 
@@ -70,10 +75,11 @@ describe("TipCard", () => {
     render(
       <TipCard
         title="Tipタイトル"
-        user_id="ユーザー名"
+        user_id="1"
+        userName="ユーザー名"
         content="投稿内容"
         created_at="2026-05-28T07:32:56.062504+00:00"
-      />
+      />,
     );
     expect(screen.getByText("2026/5/28")).toBeInTheDocument();
   });
@@ -82,10 +88,11 @@ describe("TipCard", () => {
     render(
       <TipCard
         title="Tipタイトル"
-        user_id="ユーザー名"
+        user_id="1"
+        userName="ユーザー名"
         content="投稿内容"
         created_at="2026-05-28T07:32:56.062504+00:00"
-      />
+      />,
     );
     expect(screen.getByRole("button", { name: "MoreTip" })).toBeInTheDocument();
   });
@@ -95,15 +102,16 @@ describe("TipCard", () => {
     render(
       <TipCard
         title="Tipタイトル"
-        user_id="ユーザー名"
+        user_id="1"
+        userName="ユーザー名"
         content="投稿内容"
         created_at="2026-05-28T07:32:56.062504+00:00"
-      />
+      />,
     );
 
     // 最初はフォームが表示されていない
     expect(
-      screen.queryByPlaceholderText("MoreTipを入力してください")
+      screen.queryByPlaceholderText("MoreTipを入力してください"),
     ).not.toBeInTheDocument();
 
     // MoreTipボタンをクリック
@@ -111,7 +119,7 @@ describe("TipCard", () => {
 
     // フォームが表示される
     expect(
-      screen.getByPlaceholderText("MoreTipを入力してください")
+      screen.getByPlaceholderText("MoreTipを入力してください"),
     ).toBeInTheDocument();
   });
 });

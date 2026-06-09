@@ -19,6 +19,13 @@ interface TipListProps {
       content: string;
       created_at: string;
     }[];
+    profiles: {
+      id: number;
+      tip_id: number;
+      user_name: string;
+      avatar_url: string;
+      created_at: string;
+    } | null;
   }[];
 
   userId: string;
@@ -43,6 +50,7 @@ export const TipList = ({ tips, onLike, onMoreTip, userId }: TipListProps) => {
           onMoreTip={(content) => onMoreTip?.(tip.id, content)}
           moreTips={tip.more_tips}
           isLiked={tip.likes.some((like) => like.user_id === userId)}
+          userName={tip.profiles?.user_name}
         />
       ))}
     </div>

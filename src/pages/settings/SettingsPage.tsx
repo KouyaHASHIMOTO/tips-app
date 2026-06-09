@@ -1,4 +1,39 @@
-export const SettingsPage = () => {
+import type { User } from "@supabase/supabase-js";
+import { supabase } from "../../lib/supabase";
+
+interface SettingsPageProps {
+  user: User;
+}
+
+export const SettingsPage = ({ user }: SettingsPageProps) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const { data, error } = await supabase.storage
+      .from("avatars")
+      .upload(`private/${user.id}`, file, {
+        upsert: true,
+      });
+    if (error) {
+      console.error(error);
+    } else {
+      // 画像URLを取得
+      const { data: urlData } = supabase.storage
+        .from("avatars")
+        .getPublicUrl(`private/${user.id}`);
+
+      //profilesテーブルのavatar_urlを更新
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ avatar_url: urlData.publicUrl })
+        .eq("user_id", user.id);
+
+      if (updateError) {
+        console.error(updateError);
+      }
+    }
+  };
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-2xl mx-auto">
@@ -16,6 +51,7 @@ export const SettingsPage = () => {
                 type="file"
                 accept="image/*"
                 className="text-sm text-gray-500"
+                onChange={handleImageUpload}
               />
             </div>
           </div>

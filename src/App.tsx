@@ -44,7 +44,9 @@ function App() {
         />
         <Route
           path="/settings"
-          element={user ? <SettingsPage /> : <Navigate to="/login" />}
+          element={
+            user ? <SettingsPage user={user} /> : <Navigate to="/login" />
+          }
         />
       </Routes>
     </BrowserRouter>

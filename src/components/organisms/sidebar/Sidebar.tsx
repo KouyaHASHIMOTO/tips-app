@@ -27,7 +27,7 @@ export const Sidebar = () => {
         マイページ
       </NavLink>
       <NavLink
-        to="/setting"
+        to="/settings"
         className={({ isActive }) =>
           isActive
             ? `${baseClass} font-bold text-blue-500`

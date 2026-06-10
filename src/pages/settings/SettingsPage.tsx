@@ -21,9 +21,6 @@ export const SettingsPage = ({ user }: SettingsPageProps) => {
         .eq("user_id", user.id)
         .single();
 
-      console.log("data:", data); // ← 追加
-      console.log("error:", error); // ← 追加
-
       if (data?.avatar_url) {
         setPreviewUrl(data.avatar_url);
       }
@@ -37,26 +34,23 @@ export const SettingsPage = ({ user }: SettingsPageProps) => {
 
     const { data, error } = await supabase.storage
       .from("avatars")
-      .upload(`private/${user.id}`, file, { upsert: true });
-
-    console.log("upload data:", data); // ← 追加
-    console.log("upload error:", error); // ← 追加
+      .upload(user.id, file, { upsert: true });
 
     if (error) {
       console.error(error);
     } else {
       const { data: urlData } = supabase.storage
         .from("avatars")
-        .getPublicUrl(`private/${user.id}`);
-
-      console.log("publicUrl:", urlData.publicUrl); // ← 追加
+        .getPublicUrl(user.id);
 
       const { error: updateError } = await supabase
         .from("profiles")
         .update({ avatar_url: urlData.publicUrl })
         .eq("user_id", user.id);
 
-      console.log("updateError:", updateError); // ← 追加
+      if (!updateError) {
+        setSuccessMessage("プロフィール画像を変更しました！");
+      }
     }
   };
 
@@ -91,10 +85,17 @@ export const SettingsPage = ({ user }: SettingsPageProps) => {
                 ) : (
                   <span className="text-2xl font-bold">?</span>
                 )}
+                <label
+                  htmlFor="avatar-upload"
+                  className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition-colors"
+                >
+                  画像を選択
+                </label>
                 <input
+                  id="avatar-upload"
                   type="file"
                   accept="image/*"
-                  className="text-sm text-gray-500"
+                  className="hidden" // 非表示
                   onChange={(e) => {
                     handleFileSelect(e);
                     handleImageUpload(e);

@@ -1,6 +1,6 @@
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MainLayout } from "../../components/templates/MainLayout";
 
 interface SettingsPageProps {
@@ -13,35 +13,50 @@ export const SettingsPage = ({ user }: SettingsPageProps) => {
   // 完了メッセージのstate
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("avatar_url")
+        .eq("user_id", user.id)
+        .single();
+
+      console.log("data:", data); // ← 追加
+      console.log("error:", error); // ← 追加
+
+      if (data?.avatar_url) {
+        setPreviewUrl(data.avatar_url);
+      }
+    };
+    fetchProfile();
+  }, [user.id]);
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     const { data, error } = await supabase.storage
       .from("avatars")
-      .upload(`private/${user.id}`, file, {
-        upsert: true,
-      });
+      .upload(`private/${user.id}`, file, { upsert: true });
+
+    console.log("upload data:", data); // ← 追加
+    console.log("upload error:", error); // ← 追加
+
     if (error) {
       console.error(error);
     } else {
-      // 画像URLを取得
       const { data: urlData } = supabase.storage
         .from("avatars")
         .getPublicUrl(`private/${user.id}`);
 
-      //profilesテーブルのavatar_urlを更新
+      console.log("publicUrl:", urlData.publicUrl); // ← 追加
+
       const { error: updateError } = await supabase
         .from("profiles")
         .update({ avatar_url: urlData.publicUrl })
         .eq("user_id", user.id);
 
-      if (updateError) {
-        console.error(updateError);
-      }
-
-      // アップロード成功後
-      setSuccessMessage("プロフィール画像を変更しました！");
+      console.log("updateError:", updateError); // ← 追加
     }
   };
 

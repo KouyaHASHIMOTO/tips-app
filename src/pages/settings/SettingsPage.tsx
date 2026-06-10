@@ -43,9 +43,12 @@ export const SettingsPage = ({ user }: SettingsPageProps) => {
         .from("avatars")
         .getPublicUrl(user.id);
 
+      //タイムスタンプを追加してキャッシュを回避
+      const urlWithTimestamp = `${urlData.publicUrl}?t=${Date.now()}`;
+
       const { error: updateError } = await supabase
         .from("profiles")
-        .update({ avatar_url: urlData.publicUrl })
+        .update({ avatar_url: urlWithTimestamp })
         .eq("user_id", user.id);
 
       if (!updateError) {

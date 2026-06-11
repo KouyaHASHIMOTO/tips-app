@@ -51,6 +51,7 @@ export const TipList = ({ tips, onLike, onMoreTip, userId }: TipListProps) => {
           moreTips={tip.more_tips}
           isLiked={tip.likes.some((like) => like.user_id === userId)}
           userName={tip.profiles?.user_name}
+          avatarUrl={tip.profiles?.avatar_url}
         />
       ))}
     </div>

@@ -99,6 +99,7 @@ export const SettingsPage = ({ user }: SettingsPageProps) => {
                   type="file"
                   accept="image/*"
                   className="hidden" // 非表示
+                  data-testid="avatar-input"
                   onChange={(e) => {
                     handleFileSelect(e);
                     handleImageUpload(e);

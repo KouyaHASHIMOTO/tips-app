@@ -1,9 +1,12 @@
 import { render, screen } from "@testing-library/react";
-import { TipList } from "../../components/organisms/tiplist/TipList";
-import { MainLayout } from "../../components/templates/MainLayout";
 import { MemoryRouter } from "react-router-dom";
+import type { User } from "@supabase/supabase-js";
+import { HomePage } from "./HomePage";
 
-const tips = [
+const mockUser = { id: 1 } as unknown as User;
+
+//vi.mockと同じタイミングで発火
+const tips = vi.hoisted(() => [
   {
     id: 1,
     title: "Tipタイトル",
@@ -36,19 +39,34 @@ const tips = [
       created_at: "",
     },
   },
-];
+]);
+
+vi.mock("../../lib/supabase", () => ({
+  supabase: {
+    from: vi.fn().mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        order: vi.fn().mockResolvedValue({
+          data: tips,
+          error: null,
+        }),
+      }),
+      update: vi.fn().mockReturnValue({
+        eq: vi.fn().mockResolvedValue({ error: null }),
+      }),
+      insert: vi.fn().mockResolvedValue({ error: null }),
+    }),
+  },
+}));
 describe("HomePage", () => {
-  test("TipListが表示されている", () => {
+  test("TipListが表示されている", async () => {
     render(
       <MemoryRouter>
-        <MainLayout>
-          <TipList tips={tips} userId="1" />
-        </MainLayout>
+        <HomePage user={mockUser} />
       </MemoryRouter>,
     );
-    expect(screen.getByText("ユーザー名1")).toBeInTheDocument();
-    expect(screen.getByText("Tips1")).toBeInTheDocument();
-    expect(screen.getByText("ユーザー名2")).toBeInTheDocument();
-    expect(screen.getByText("Tips2")).toBeInTheDocument();
+    expect(await screen.findByText("ユーザー名1")).toBeInTheDocument();
+    expect(await screen.findByText("Tips1")).toBeInTheDocument();
+    expect(await screen.findByText("ユーザー名2")).toBeInTheDocument();
+    expect(await screen.findByText("Tips2")).toBeInTheDocument();
   });
 });

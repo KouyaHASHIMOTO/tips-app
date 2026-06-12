@@ -17,7 +17,7 @@ describe("LoginPage", () => {
     render(
       <MemoryRouter>
         <LoginPage />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(screen.getByPlaceholderText("メールアドレス")).toBeInTheDocument();
   });
@@ -25,7 +25,7 @@ describe("LoginPage", () => {
     render(
       <MemoryRouter>
         <LoginPage />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByPlaceholderText("パスワード")).toBeInTheDocument();
@@ -34,11 +34,11 @@ describe("LoginPage", () => {
     render(
       <MemoryRouter>
         <LoginPage />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(
-      screen.getByRole("button", { name: "ログイン" })
+      screen.getByRole("button", { name: "ログイン" }),
     ).toBeInTheDocument();
   });
   test("ログインボタンをクリックできる", async () => {
@@ -48,10 +48,20 @@ describe("LoginPage", () => {
     render(
       <MemoryRouter>
         <LoginPage onSubmit={handleSubmit} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     await user.click(screen.getByRole("button"));
 
     expect(handleSubmit).toHaveBeenCalled();
+  });
+
+  test("サインアップページへのリンクが表示されている", () => {
+    render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByRole("link", { name: "こちら" })).toBeInTheDocument();
   });
 });

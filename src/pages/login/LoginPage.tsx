@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "../../components/atoms/button/Button";
 import { supabase } from "../../lib/supabase";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface LoginPageProps {
   onSubmit?: () => void;
@@ -58,6 +58,13 @@ export const LoginPage = ({ onSubmit }: LoginPageProps) => {
           />
           <Button type="submit">ログイン</Button>
         </form>
+
+        <p className="text-center text-sm text-gray-500 mt-4">
+          アカウントをお持ちでない方は
+          <Link to="/signup" className="text-blue-500 hover:underline ml-1">
+            こちら
+          </Link>
+        </p>
       </div>
     </div>
   );

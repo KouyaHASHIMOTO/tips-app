@@ -39,7 +39,7 @@ export const TipCard = ({
   const [showMoreTipForm, setShowMoreTipForm] = useState(false);
   return (
     <div className="border-b border-gray-200 p-4 flex gap-3">
-      <Avatar src={avatarUrl ?? ""} alt={user_id} />
+      <Avatar src={avatarUrl ?? ""} alt={userName ?? user_id} />
       <div className="flex-1">
         <div className="flex items-center gap-2">
           <p className="font-bold">{userName}</p>

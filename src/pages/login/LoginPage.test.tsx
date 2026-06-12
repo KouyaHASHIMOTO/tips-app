@@ -2,12 +2,17 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { LoginPage } from "./LoginPage";
 import { MemoryRouter } from "react-router-dom";
+import { supabase } from "../../lib/supabase";
+import type { AuthError } from "@supabase/supabase-js";
 
 // vi.mockでsupabaseをモックする
 vi.mock("../../lib/supabase", () => ({
   supabase: {
     auth: {
-      signInWithPassword: vi.fn().mockResolvedValue({ data: {}, error: null }),
+      signInWithPassword: vi.fn().mockResolvedValue({
+        data: {},
+        error: {},
+      }),
     },
   },
 }));
@@ -63,5 +68,26 @@ describe("LoginPage", () => {
     );
 
     expect(screen.getByRole("link", { name: "こちら" })).toBeInTheDocument();
+  });
+
+  test("エラーが時にメールアドレスまたはパスワードが正しくありませんを表示", async () => {
+    const user = userEvent.setup();
+
+    vi.mocked(supabase.auth.signInWithPassword).mockResolvedValueOnce({
+      data: { user: null, session: null },
+      error: { message: "エラー" } as AuthError,
+    });
+
+    render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "ログイン" }));
+
+    expect(
+      screen.getByText("メールアドレスまたはパスワードが正しくありません"),
+    ).toBeInTheDocument();
   });
 });

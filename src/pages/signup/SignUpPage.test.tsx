@@ -67,4 +67,13 @@ describe("SignUpPage", () => {
 
     expect(handleSubmit).toHaveBeenCalled();
   });
+
+  test("ログインページへのリンクが表示されている", () => {
+    render(
+      <MemoryRouter>
+        <SignUpPage />
+      </MemoryRouter>,
+    );
+    expect(screen.getByRole("link", { name: "こちら" })).toBeInTheDocument();
+  });
 });

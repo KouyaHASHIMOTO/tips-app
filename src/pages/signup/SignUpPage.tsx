@@ -12,6 +12,8 @@ export const SignUpPage = ({ onSubmit }: SignUpPageProps) => {
 
   const [mailAddress, setMailAddress] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
   const navigate = useNavigate();
 
   const createUser = async () => {
@@ -22,6 +24,13 @@ export const SignUpPage = ({ onSubmit }: SignUpPageProps) => {
 
     if (error) {
       console.error(error);
+      if (error.code === "user_already_exists") {
+        setErrorMessage("このメールアドレスは既に使用されています");
+      } else if (error.code === "weak_password") {
+        setErrorMessage("パスワードは6文字以上で入力してください");
+      } else {
+        setErrorMessage("アカウントの作成に失敗しました");
+      }
       return;
     }
 
@@ -77,6 +86,9 @@ export const SignUpPage = ({ onSubmit }: SignUpPageProps) => {
             onChange={(e) => setPassword(e.target.value)}
           />
           <Button type="submit">サインアップ</Button>
+          {errorMessage && (
+            <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
+          )}
         </form>
         <p className="text-center text-sm text-gray-500 mt-4">
           アカウントをお持ちの方は

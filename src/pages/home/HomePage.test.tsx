@@ -54,6 +54,13 @@ vi.mock("../../lib/supabase", () => ({
         eq: vi.fn().mockResolvedValue({ error: null }),
       }),
       insert: vi.fn().mockResolvedValue({ error: null }),
+      delete: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          eq: vi.fn().mockResolvedValue({
+            error: null,
+          }),
+        }),
+      }),
     }),
   },
 }));
@@ -62,7 +69,7 @@ describe("HomePage", () => {
     render(
       <MemoryRouter>
         <HomePage user={mockUser} />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
     expect(await screen.findByText("ユーザー名1")).toBeInTheDocument();
     expect(await screen.findByText("Tips1")).toBeInTheDocument();

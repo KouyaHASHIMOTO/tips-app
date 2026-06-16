@@ -10,6 +10,7 @@ interface LoginPageProps {
 export const LoginPage = ({ onSubmit }: LoginPageProps) => {
   const [mailAddress, setMailAddress] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate();
   const loginUser = async () => {
@@ -20,6 +21,7 @@ export const LoginPage = ({ onSubmit }: LoginPageProps) => {
 
     if (error) {
       console.error(error);
+      setErrorMessage("メールアドレスまたはパスワードが正しくありません");
       return;
     }
 
@@ -57,6 +59,9 @@ export const LoginPage = ({ onSubmit }: LoginPageProps) => {
             onChange={(e) => setPassword(e.target.value)}
           />
           <Button type="submit">ログイン</Button>
+          {errorMessage && (
+            <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
+          )}
         </form>
 
         <p className="text-center text-sm text-gray-500 mt-4">

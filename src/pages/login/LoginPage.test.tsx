@@ -11,7 +11,7 @@ vi.mock("../../lib/supabase", () => ({
     auth: {
       signInWithPassword: vi.fn().mockResolvedValue({
         data: {},
-        error: {},
+        error: null,
       }),
     },
   },
@@ -55,7 +55,7 @@ describe("LoginPage", () => {
         <LoginPage onSubmit={handleSubmit} />
       </MemoryRouter>,
     );
-    await user.click(screen.getByRole("button"));
+    await user.click(screen.getByRole("button", { name: "ログイン" }));
 
     expect(handleSubmit).toHaveBeenCalled();
   });

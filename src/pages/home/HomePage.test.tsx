@@ -2,8 +2,10 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import type { User } from "@supabase/supabase-js";
 import { HomePage } from "./HomePage";
+import userEvent from "@testing-library/user-event";
+import { supabase } from "../../lib/supabase";
 
-const mockUser = { id: 1 } as unknown as User;
+const mockUser = { id: "1" } as unknown as User;
 
 //vi.mockと同じタイミングで発火
 const tips = vi.hoisted(() => [
@@ -69,11 +71,24 @@ describe("HomePage", () => {
     render(
       <MemoryRouter>
         <HomePage user={mockUser} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(await screen.findByText("ユーザー名1")).toBeInTheDocument();
     expect(await screen.findByText("Tips1")).toBeInTheDocument();
     expect(await screen.findByText("ユーザー名2")).toBeInTheDocument();
     expect(await screen.findByText("Tips2")).toBeInTheDocument();
+  });
+
+  test("isLiked=trueのときいいねボタンをクリックするとdeleteが呼ばれる", async () => {
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter>
+        <HomePage user={mockUser} />
+      </MemoryRouter>,
+    );
+    const likeButtons = await screen.findAllByRole("button", { name: /❤️/ });
+    await user.click(likeButtons[0]);
+
+    expect(vi.mocked(supabase.from)("likes").delete).toHaveBeenCalled();
   });
 });

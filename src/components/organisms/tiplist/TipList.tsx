@@ -30,7 +30,7 @@ interface TipListProps {
 
   userId: string;
 
-  onLike?: (tipId: number) => void;
+  onLike?: (tipId: number, isLiked: boolean) => void;
 
   onMoreTip?: (tipId: number, content: string) => void;
 }
@@ -38,22 +38,25 @@ interface TipListProps {
 export const TipList = ({ tips, onLike, onMoreTip, userId }: TipListProps) => {
   return (
     <div className="divide-y divide-gray-200">
-      {tips.map((tip) => (
-        <TipCard
-          key={tip.id}
-          title={tip.title}
-          user_id={tip.user_id}
-          content={tip.content}
-          created_at={tip.created_at}
-          onLike={() => onLike?.(tip.id)}
-          likeCount={tip.likes.length ?? 0}
-          onMoreTip={(content) => onMoreTip?.(tip.id, content)}
-          moreTips={tip.more_tips}
-          isLiked={tip.likes.some((like) => like.user_id === userId)}
-          userName={tip.profiles?.user_name}
-          avatarUrl={tip.profiles?.avatar_url}
-        />
-      ))}
+      {tips.map((tip) => {
+        const isLiked = tip.likes.some((like) => like.user_id === userId);
+        return (
+          <TipCard
+            key={tip.id}
+            title={tip.title}
+            user_id={tip.user_id}
+            content={tip.content}
+            created_at={tip.created_at}
+            onLike={() => onLike?.(tip.id, isLiked)}
+            likeCount={tip.likes.length ?? 0}
+            onMoreTip={(content) => onMoreTip?.(tip.id, content)}
+            moreTips={tip.more_tips}
+            isLiked={isLiked}
+            userName={tip.profiles?.user_name}
+            avatarUrl={tip.profiles?.avatar_url}
+          />
+        );
+      })}
     </div>
   );
 };

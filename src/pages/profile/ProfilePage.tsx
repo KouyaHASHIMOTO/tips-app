@@ -2,6 +2,7 @@ import type { User } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
 import { useEffect, useState } from "react";
 import { MainLayout } from "../../components/templates/MainLayout";
+import { Avatar } from "../../components/atoms/avatar/Avatar";
 
 interface ProfilePageProps {
   user: User;
@@ -18,6 +19,8 @@ export const ProfilePage = ({ user }: ProfilePageProps) => {
     }[]
   >([]);
 
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
   useEffect(() => {
     const fetchMyTips = async () => {
       const { data, error } = await supabase
@@ -33,7 +36,20 @@ export const ProfilePage = ({ user }: ProfilePageProps) => {
       }
     };
 
+    const fetchProfile = async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("avatar_url")
+        .eq("user_id", user.id)
+        .single();
+
+      if (data?.avatar_url) {
+        setAvatarUrl(data.avatar_url);
+      }
+    };
+
     fetchMyTips();
+    fetchProfile();
   }, [user.id]);
   return (
     <MainLayout>
@@ -41,9 +57,7 @@ export const ProfilePage = ({ user }: ProfilePageProps) => {
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center text-white text-2xl font-bold">
-                {user.email?.[0].toUpperCase() ?? "?"}
-              </div>
+              <Avatar src={avatarUrl ?? ""} alt={user.email ?? ""}></Avatar>
               <div>
                 <p className="text-gray-500 text-sm">メールアドレス</p>
                 <p className="font-semibold">

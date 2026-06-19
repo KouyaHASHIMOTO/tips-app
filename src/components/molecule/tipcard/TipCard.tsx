@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Avatar } from "../../atoms/avatar/Avatar";
 import { Button } from "../../atoms/button/Button";
 import { MoreTipForm } from "../moretipform/MoreTipForm";
+import type { Category } from "../../../constants/categories";
+import { CategoryTag } from "../../atoms/categorytag/CategoryTag";
 
 interface TipCardProps {
   title: string;
@@ -21,6 +23,7 @@ interface TipCardProps {
   isLiked?: boolean;
   userName?: string;
   avatarUrl?: string;
+  category?: Category;
 }
 
 export const TipCard = ({
@@ -35,6 +38,7 @@ export const TipCard = ({
   isLiked,
   userName,
   avatarUrl,
+  category,
 }: TipCardProps) => {
   const [showMoreTipForm, setShowMoreTipForm] = useState(false);
   return (
@@ -47,6 +51,11 @@ export const TipCard = ({
             {new Date(created_at).toLocaleDateString("ja-JP")}
           </p>
         </div>
+        {category && (
+          <div className="mt-1">
+            <CategoryTag category={category} />
+          </div>
+        )}
         <p className="font-semibold mt-1 text-brown">{title}</p>
         <p className="mt-1 text-brown-soft">{content}</p>
         <div className="mt-2">

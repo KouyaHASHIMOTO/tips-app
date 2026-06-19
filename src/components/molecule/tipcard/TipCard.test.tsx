@@ -151,4 +151,18 @@ describe("TipCard", () => {
       screen.getByPlaceholderText("MoreTipを入力してください"),
     ).toBeInTheDocument();
   });
+
+  test("カテゴリタグが表示されている", () => {
+    render(
+      <TipCard
+        title="Tipタイトル"
+        user_id="1"
+        userName="ユーザー名"
+        content="投稿内容"
+        created_at="2026-05-28T07:32:56.062504+00:00"
+        category="料理"
+      />,
+    );
+    expect(screen.getByText("料理")).toBeInTheDocument();
+  });
 });

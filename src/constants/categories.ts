@@ -8,6 +8,14 @@ export const CATEGORIES = [
   "健康",
   "その他",
 ] as const;
+// as const を付けることで、TypeScriptが配列の中身を
+// ただの string[] ではなく "料理" "暮らし" ... という
+// 具体的な文字列の型として正確に記録する（＋書き換え禁止になる）
 
 // "料理" | "暮らし" | "植物" | ... という型
 export type Category = (typeof CATEGORIES)[number];
+// typeof CATEGORIES → 配列まるごとの型を取り出す
+//   → readonly ["料理", "暮らし", ...]
+// [number]          → 配列の中身を「どれか1つ」というユニオン型に変える
+//   → "料理" | "暮らし" | ...
+// この Category 型を使った場所では、7つ以外の文字列はTypeScriptがエラーで弾く

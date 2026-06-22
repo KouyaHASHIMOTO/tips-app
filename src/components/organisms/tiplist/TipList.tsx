@@ -1,3 +1,4 @@
+import type { Category } from "../../../constants/categories";
 import { TipCard } from "../../molecule/tipcard/TipCard";
 
 interface TipListProps {
@@ -7,6 +8,7 @@ interface TipListProps {
     user_id: string;
     content: string;
     created_at: string;
+    category: Category;
     likes: {
       id: number;
       tip_id: number;
@@ -37,13 +39,14 @@ interface TipListProps {
 
 export const TipList = ({ tips, onLike, onMoreTip, userId }: TipListProps) => {
   return (
-    <div className="divide-y divide-gray-200">
+    <div>
       {tips.map((tip) => {
         const isLiked = tip.likes.some((like) => like.user_id === userId);
         return (
           <TipCard
             key={tip.id}
             title={tip.title}
+            category={tip.category}
             user_id={tip.user_id}
             content={tip.content}
             created_at={tip.created_at}

@@ -4,6 +4,7 @@ import { MainLayout } from "../../components/templates/MainLayout";
 import { supabase } from "../../lib/supabase";
 import { TipForm } from "../../components/molecule/tipform/TipForm";
 import type { User } from "@supabase/supabase-js";
+import type { Category } from "../../constants/categories";
 
 interface HomePageProps {
   user: User;
@@ -17,6 +18,7 @@ export const HomePage = ({ user }: HomePageProps) => {
       user_id: string;
       content: string;
       created_at: string;
+      category: Category;
       likes: {
         id: number;
         tip_id: number;

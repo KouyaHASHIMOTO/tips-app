@@ -41,13 +41,14 @@ export const TipCard = ({
   category,
 }: TipCardProps) => {
   const [showMoreTipForm, setShowMoreTipForm] = useState(false);
+
   return (
-    <div className="bg-paper border-[2.5px] border-dashed border-brown rounded-2xl p-4 mb-3 flex gap-3">
+    <div className="bg-card border border-border rounded-xl p-4 mb-3 flex gap-3">
       <Avatar src={avatarUrl ?? ""} alt={userName ?? user_id} />
       <div className="flex-1">
         <div className="flex items-center gap-2">
-          <p className="font-bold text-brown">{userName}</p>
-          <p className="text-brown-soft text-sm">
+          <p className="font-medium text-text-main">{userName}</p>
+          <p className="text-text-muted text-sm">
             {new Date(created_at).toLocaleDateString("ja-JP")}
           </p>
         </div>
@@ -56,20 +57,16 @@ export const TipCard = ({
             <CategoryTag category={category} />
           </div>
         )}
-        <p className="font-semibold mt-1 text-brown">{title}</p>
-        <p className="mt-1 text-brown-soft">{content}</p>
+        <p className="font-semibold mt-1 text-text-main">{title}</p>
+        <p className="mt-1 text-text-sub">{content}</p>
         <div className="mt-2">
           <Button onClick={onLike}>
             {isLiked ? "❤️" : "🤍"} {likeCount}
           </Button>
         </div>
-        {/**MoreTipsの一覧を表示する */}
         {moreTips?.map((moreTip) => (
-          <div
-            key={moreTip.id}
-            className="mt-2 pl-4 border-l-2 border-dashed border-brown"
-          >
-            <p className="text-sm text-brown-soft">{moreTip.content}</p>
+          <div key={moreTip.id} className="mt-2 pl-4 border-l-2 border-border">
+            <p className="text-sm text-text-sub">{moreTip.content}</p>
           </div>
         ))}
         <div className="mt-2">

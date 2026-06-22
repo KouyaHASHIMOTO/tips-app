@@ -1,22 +1,25 @@
 @import "tailwindcss";
 
 @theme {
-  /* 90sメモ帳テーマ */
-  --color-cream: #fdf6e3; /* 背景（クリーム） */
-  --color-paper: #ffffff; /* カード（白い紙） */
-  --color-brown: #5b4636; /* フチ・文字（ブラウン） */
-  --color-brown-soft: #8a7355; /* 補足テキスト */
-  --color-orange: #e8743b; /* アクセント（オレンジ） */
-  --color-pink-tip: #ffc2b8; /* いいねピル */
-  --color-yellow-tip: #ffd86b; /* カテゴリタグ */
+  /* ソフトニュートラルテーマ */
+  --color-base: #fbfbfa; /* ページ背景（オフホワイト） */
+  --color-surface: #f7f7f5; /* サイドバー・サブエリア背景 */
+  --color-card: #ffffff; /* カード背景（白） */
+  --color-border: #ebebe8; /* 罫線・カードフチ */
+  --color-text-main: #1a1a1a; /* メインテキスト */
+  --color-text-sub: #888888; /* サブテキスト・補足 */
+  --color-text-muted: #aaaaaa; /* 薄いテキスト（日時など） */
+  --color-accent: #5b5bd6; /* アクセント（インディゴ） */
+  --color-accent-light: #e9e9ff; /* アクセントの薄い版（アバター背景など） */
+  --color-like: #fce4ec; /* いいねの背景（薄いピンク） */
+  --color-like-text: #c62828; /* いいねのテキスト */
 }
 
 @layer components {
-  /* 右下にずれた茶色のベタ影（ハンコみたいな立体感） */
-  .shadow-retro {
-    box-shadow: 3px 3px 0 var(--color-brown);
-  }
-  .shadow-retro-sm {
-    box-shadow: 2px 2px 0 var(--color-brown);
+  /* カード共通スタイル */
+  .card {
+    background-color: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
   }
 }

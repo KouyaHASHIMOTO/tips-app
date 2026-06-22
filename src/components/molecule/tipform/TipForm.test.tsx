@@ -6,10 +6,10 @@ describe("TipForm", () => {
   test("テキストエリアが表示されている", () => {
     render(<TipForm />);
     expect(
-      screen.getByPlaceholderText("タイトルを入力...")
+      screen.getByPlaceholderText("タイトルを入力..."),
     ).toBeInTheDocument();
     expect(
-      screen.getByPlaceholderText("豆知識を共有しよう...")
+      screen.getByPlaceholderText("豆知識を共有しよう..."),
     ).toBeInTheDocument();
   });
   test("テキストエリアに入力できる", async () => {

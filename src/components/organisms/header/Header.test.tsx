@@ -3,23 +3,23 @@ import { Header } from "./Header";
 import { MemoryRouter } from "react-router-dom";
 
 describe("Header", () => {
-  test("HeaderにTipsと表示されている", () => {
+  test("HeaderにTippsと表示されている", () => {
     render(
       <MemoryRouter>
         <Header />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
-    expect(screen.getByText("Tips")).toBeInTheDocument();
+    expect(screen.getByText("Tipps")).toBeInTheDocument();
   });
   test("Headerにログアウトボタンが有る", () => {
     render(
       <MemoryRouter>
         <Header />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(
-      screen.getByRole("button", { name: "ログアウト" })
+      screen.getByRole("button", { name: "ログアウト" }),
     ).toBeInTheDocument();
   });
 });

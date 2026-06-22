@@ -9,7 +9,7 @@ describe("MainLayout", () => {
         <MainLayout>メインコンテンツ</MainLayout>
       </MemoryRouter>,
     );
-    expect(screen.getByText("Tips")).toBeInTheDocument();
+    expect(screen.getByText("Tipps")).toBeInTheDocument();
     expect(screen.getByText("ホーム")).toBeInTheDocument();
     expect(screen.getByText("マイページ")).toBeInTheDocument();
     expect(screen.getByText("設定")).toBeInTheDocument();

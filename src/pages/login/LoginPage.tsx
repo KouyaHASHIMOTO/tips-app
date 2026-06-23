@@ -60,7 +60,9 @@ export const LoginPage = ({ onSubmit }: LoginPageProps) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Button type="submit">ログイン</Button>
+          <Button type="submit" variant="primary">
+            ログイン
+          </Button>
           {errorMessage && (
             <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
           )}

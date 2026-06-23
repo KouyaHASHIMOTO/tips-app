@@ -5,12 +5,27 @@ interface ButtonProps {
   onClick?: () => void;
   disabled?: boolean;
   type?: "button" | "submit" | "reset";
+  variant?: "primary" | "ghost";
 }
 
-export const Button = ({ children, onClick, disabled, type }: ButtonProps) => {
+export const Button = ({
+  children,
+  onClick,
+  disabled,
+  type,
+  variant = "ghost",
+}: ButtonProps) => {
+  const baseClass =
+    "cursor-pointer px-4 py-2 rounded-lg font-medium transition-all disabled:cursor-not-allowed disabled:opacity-40";
+
+  const variantClass =
+    variant === "primary"
+      ? "bg-accent text-white hover:opacity-90"
+      : "border border-border text-text-sub hover:text-text-main hover:border-accent";
+
   return (
     <button
-      className="cursor-pointer bg-accent text-white border border-accent px-4 py-2 rounded-lg font-medium hover:opacity-90 active:opacity-80 disabled:bg-border disabled:text-text-muted disabled:cursor-not-allowed transition-all"
+      className={`${baseClass} ${variantClass}`}
       onClick={onClick}
       disabled={disabled}
       type={type}

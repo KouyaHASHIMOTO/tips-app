@@ -29,7 +29,7 @@ export const MoreTipForm = ({ onSubmit }: MoreTipFormProps) => {
         >
           {280 - content.length}
         </span>
-        <Button type="submit" disabled={content.length > 280}>
+        <Button type="submit" disabled={content.length > 280} variant="primary">
           投稿
         </Button>
       </div>

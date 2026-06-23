@@ -53,32 +53,34 @@ export const ProfilePage = ({ user }: ProfilePageProps) => {
   }, [user.id]);
   return (
     <MainLayout>
-      <div className="min-h-screen bg-gray-50 p-8">
+      <div className="min-h-screen bg-base p-8">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <div className="bg-card rounded-xl border border-border p-6 mb-6">
             <div className="flex items-center gap-4 mb-4">
-              <Avatar src={avatarUrl ?? ""} alt={user.email ?? ""}></Avatar>
+              <Avatar src={avatarUrl ?? ""} alt={user.email ?? ""} />
               <div>
-                <p className="text-gray-500 text-sm">メールアドレス</p>
-                <p className="font-semibold">
+                <p className="text-text-sub text-sm">メールアドレス</p>
+                <p className="font-semibold text-text-main">
                   {user.email ?? "メールアドレスが未設定"}
                 </p>
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-lg font-bold mb-4">自分の投稿</h2>
+          <div className="bg-card rounded-xl border border-border p-6">
+            <h2 className="text-lg font-bold mb-4 text-text-main">
+              自分の投稿
+            </h2>
             {myTips.length === 0 ? (
-              <p className="text-gray-500 text-center py-4">投稿がありません</p>
+              <p className="text-text-sub text-center py-4">投稿がありません</p>
             ) : (
               myTips.map((tip) => (
                 <div
                   key={tip.id}
-                  className="border-b border-gray-200 py-4 last:border-none"
+                  className="border-b border-border py-4 last:border-none"
                 >
-                  <p className="font-semibold">{tip.title}</p>
-                  <p className="text-gray-600 text-sm mt-1">{tip.content}</p>
-                  <p className="text-gray-400 text-xs mt-2">
+                  <p className="font-semibold text-text-main">{tip.title}</p>
+                  <p className="text-text-sub text-sm mt-1">{tip.content}</p>
+                  <p className="text-text-muted text-xs mt-2">
                     {new Date(tip.created_at).toLocaleDateString("ja-JP")}
                   </p>
                 </div>

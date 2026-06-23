@@ -70,12 +70,12 @@ export const SettingsPage = ({ user }: SettingsPageProps) => {
 
   return (
     <MainLayout>
-      <div className="min-h-screen bg-gray-50 p-8">
+      <div className="min-h-screen bg-base p-8">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h1 className="text-xl font-bold mb-6">設定</h1>
-            <div className="border-b border-gray-200 pb-6">
-              <h2 className="text-lg font-semibold mb-4">
+          <div className="bg-card rounded-xl border border-border p-6">
+            <h1 className="text-xl font-bold mb-6 text-text-main">設定</h1>
+            <div className="border-b border-border pb-6">
+              <h2 className="text-lg font-semibold mb-4 text-text-main">
                 プロフィールアイコンの変更
               </h2>
               <div className="flex items-center gap-4">
@@ -86,11 +86,11 @@ export const SettingsPage = ({ user }: SettingsPageProps) => {
                     alt="プレビュー"
                   />
                 ) : (
-                  <span className="text-2xl font-bold">?</span>
+                  <span className="text-2xl font-bold text-text-muted">?</span>
                 )}
                 <label
                   htmlFor="avatar-upload"
-                  className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition-colors"
+                  className="cursor-pointer bg-accent text-white px-4 py-2 rounded-lg hover:opacity-90 transition-colors"
                 >
                   画像を選択
                 </label>
@@ -98,7 +98,7 @@ export const SettingsPage = ({ user }: SettingsPageProps) => {
                   id="avatar-upload"
                   type="file"
                   accept="image/*"
-                  className="hidden" // 非表示
+                  className="hidden"
                   data-testid="avatar-input"
                   onChange={(e) => {
                     handleFileSelect(e);
@@ -107,7 +107,7 @@ export const SettingsPage = ({ user }: SettingsPageProps) => {
                 />
               </div>
               {successMessage && (
-                <p className="text-green-500 text-sm mt-2">{successMessage}</p>
+                <p className="text-accent text-sm mt-2">{successMessage}</p>
               )}
             </div>
           </div>

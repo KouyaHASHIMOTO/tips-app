@@ -30,9 +30,11 @@ export const LoginPage = ({ onSubmit }: LoginPageProps) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded-lg shadow-md w-96">
-        <h1 className="text-2xl font-bold text-center mb-6">ログイン</h1>
+    <div className="min-h-screen flex items-center justify-center bg-base">
+      <div className="bg-card p-8 rounded-xl border border-border w-96">
+        <h1 className="text-2xl font-bold text-center mb-6 text-text-main">
+          ログイン
+        </h1>
         <form
           className="flex flex-col gap-4"
           onSubmit={(e) => {
@@ -42,7 +44,7 @@ export const LoginPage = ({ onSubmit }: LoginPageProps) => {
         >
           <input
             placeholder="メールアドレス"
-            className="border border-gray-300 rounded p-2 outline-none"
+            className="border border-border rounded-lg p-2 outline-none w-full focus:border-accent transition-colors"
             id="email"
             name="email"
             type="email"
@@ -52,7 +54,7 @@ export const LoginPage = ({ onSubmit }: LoginPageProps) => {
           <input
             placeholder="パスワード"
             type="password"
-            className="border border-gray-300 rounded p-2 outline-none"
+            className="border border-border rounded-lg p-2 outline-none w-full focus:border-accent transition-colors"
             id="password"
             name="password"
             value={password}
@@ -63,10 +65,9 @@ export const LoginPage = ({ onSubmit }: LoginPageProps) => {
             <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
           )}
         </form>
-
-        <p className="text-center text-sm text-gray-500 mt-4">
+        <p className="text-center text-sm text-text-sub mt-4">
           アカウントをお持ちでない方は
-          <Link to="/signup" className="text-blue-500 hover:underline ml-1">
+          <Link to="/signup" className="text-accent hover:underline ml-1">
             こちら
           </Link>
         </p>

@@ -48,9 +48,11 @@ export const SignUpPage = ({ onSubmit }: SignUpPageProps) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded-lg shadow-md w-96">
-        <h1 className="text-2xl font-bold text-center mb-6">サインアップ</h1>
+    <div className="min-h-screen flex items-center justify-center bg-base">
+      <div className="bg-card p-8 rounded-xl border border-border w-96">
+        <h1 className="text-2xl font-bold text-center mb-6 text-text-main">
+          サインアップ
+        </h1>
         <form
           className="flex flex-col gap-4"
           onSubmit={(e) => {
@@ -60,7 +62,7 @@ export const SignUpPage = ({ onSubmit }: SignUpPageProps) => {
         >
           <input
             placeholder="ユーザー名"
-            className="border border-gray-300 rounded p-2 outline-none"
+            className="border border-border rounded-lg p-2 outline-none w-full focus:border-accent transition-colors"
             id="userName"
             name="userName"
             type="text"
@@ -69,7 +71,7 @@ export const SignUpPage = ({ onSubmit }: SignUpPageProps) => {
           />
           <input
             placeholder="メールアドレス"
-            className="border border-gray-300 rounded p-2 outline-none"
+            className="border border-border rounded-lg p-2 outline-none w-full focus:border-accent transition-colors"
             id="email"
             name="email"
             type="email"
@@ -81,7 +83,7 @@ export const SignUpPage = ({ onSubmit }: SignUpPageProps) => {
             id="password"
             name="password"
             type="password"
-            className="border border-gray-300 rounded p-2 outline-none"
+            className="border border-border rounded-lg p-2 outline-none w-full focus:border-accent transition-colors"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -90,9 +92,9 @@ export const SignUpPage = ({ onSubmit }: SignUpPageProps) => {
             <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
           )}
         </form>
-        <p className="text-center text-sm text-gray-500 mt-4">
+        <p className="text-center text-sm text-text-sub mt-4">
           アカウントをお持ちの方は
-          <Link to="/login" className="text-blue-500 hover:underline ml-1">
+          <Link to="/login" className="text-accent hover:underline ml-1">
             こちら
           </Link>
         </p>

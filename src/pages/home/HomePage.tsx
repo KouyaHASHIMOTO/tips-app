@@ -63,11 +63,16 @@ export const HomePage = ({ user }: HomePageProps) => {
     load();
   }, []);
 
-  const createTip = async (title: string, content: string) => {
+  const createTip = async (
+    title: string,
+    content: string,
+    category: Category,
+  ) => {
     const { error } = await supabase.from("tips").insert({
       title: title,
       user_id: user.id,
       content: content,
+      category: category,
     });
 
     if (error) {

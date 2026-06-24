@@ -1,6 +1,7 @@
 import { Avatar } from "../../atoms/avatar/Avatar";
 import { Button } from "../../atoms/button/Button";
 import { CategoryTag } from "../../atoms/categorytag/CategoryTag";
+import { MoreTipForm } from "../moretipform/MoreTipForm";
 import type { Category } from "../../../constants/categories";
 
 interface MoreTip {
@@ -27,12 +28,14 @@ interface TipDetailModalProps {
   };
   onClose: () => void;
   onLike?: () => void;
+  onMoreTip?: (content: string) => void;
 }
 
 export const TipDetailModal = ({
   tip,
   onClose,
   onLike,
+  onMoreTip,
 }: TipDetailModalProps) => {
   return (
     <div
@@ -41,7 +44,7 @@ export const TipDetailModal = ({
       onClick={onClose}
     >
       <div
-        className="bg-card border border-border rounded-xl p-6 w-full max-w-lg mx-4 relative"
+        className="bg-card border border-border rounded-xl p-6 w-full max-w-lg mx-4 relative max-h-[80vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* 閉じるボタン */}
@@ -69,7 +72,14 @@ export const TipDetailModal = ({
         <p className="font-semibold text-text-main text-lg mb-2">{tip.title}</p>
         <p className="text-text-sub mb-4">{tip.content}</p>
 
-        {/* MoreTips */}
+        {/* いいねボタン */}
+        <div className="border-t border-border pt-4 mb-4">
+          <Button onClick={onLike}>
+            {tip.isLiked ? "❤️" : "🤍"} {tip.likeCount}
+          </Button>
+        </div>
+
+        {/* MoreTips一覧 */}
         {tip.moreTips && tip.moreTips.length > 0 && (
           <div className="border-t border-border pt-4 mb-4">
             <p className="text-sm font-medium text-text-sub mb-3">MoreTip</p>
@@ -89,11 +99,12 @@ export const TipDetailModal = ({
           </div>
         )}
 
-        {/* いいねボタン */}
+        {/* MoreTip投稿フォーム */}
         <div className="border-t border-border pt-4">
-          <Button onClick={onLike}>
-            {tip.isLiked ? "❤️" : "🤍"} {tip.likeCount}
-          </Button>
+          <p className="text-sm font-medium text-text-sub mb-2">
+            MoreTipを追加
+          </p>
+          <MoreTipForm onSubmit={onMoreTip} />
         </div>
       </div>
     </div>

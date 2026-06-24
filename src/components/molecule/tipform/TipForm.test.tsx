@@ -73,6 +73,37 @@ describe("TipForm", () => {
     await user.selectOptions(screen.getByRole("combobox"), "料理");
     await user.click(screen.getByRole("button", { name: "投稿" }));
 
-    expect(handleSubmit).toHaveBeenCalledWith("タイトル", "内容", "料理");
+    expect(handleSubmit).toHaveBeenCalledWith("タイトル", "内容", "料理", []);
+  });
+
+  test("タグ入力欄が表示されている", () => {
+    render(<TipForm />);
+    expect(
+      screen.getByPlaceholderText("タグを入力（例：サッカー）"),
+    ).toBeInTheDocument();
+  });
+
+  test("タグを入力して投稿するとonSubmitにタグが渡される", async () => {
+    const user = userEvent.setup();
+    const handleSubmit = vi.fn();
+    render(<TipForm onSubmit={handleSubmit} />);
+
+    await user.type(
+      screen.getByPlaceholderText("タイトルを入力..."),
+      "タイトル",
+    );
+    await user.type(
+      screen.getByPlaceholderText("豆知識を共有しよう..."),
+      "内容",
+    );
+    await user.type(
+      screen.getByPlaceholderText("タグを入力（例：サッカー）"),
+      "サッカー",
+    );
+    await user.click(screen.getByRole("button", { name: "投稿" }));
+
+    expect(handleSubmit).toHaveBeenCalledWith("タイトル", "内容", "その他", [
+      "サッカー",
+    ]);
   });
 });

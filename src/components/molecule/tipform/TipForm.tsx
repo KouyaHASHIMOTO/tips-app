@@ -3,19 +3,29 @@ import { Button } from "../../atoms/button/Button";
 import { CATEGORIES, type Category } from "../../../constants/categories";
 
 interface TipFormProps {
-  onSubmit?: (title: string, content: string, category: Category) => void;
+  onSubmit?: (
+    title: string,
+    content: string,
+    category: Category,
+    tags: string[],
+  ) => void;
 }
 
 export const TipForm = ({ onSubmit }: TipFormProps) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [category, setCategory] = useState<Category>("その他");
+  const [tagInput, setTagInput] = useState("");
 
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        onSubmit?.(title, content, category);
+        const tags = tagInput
+          .split(",")
+          .map((t) => t.trim())
+          .filter((t) => t !== "");
+        onSubmit?.(title, content, category, tags);
         setTitle("");
         setContent("");
       }}
@@ -38,6 +48,14 @@ export const TipForm = ({ onSubmit }: TipFormProps) => {
           </option>
         ))}
       </select>
+
+      <input
+        type="text"
+        value={tagInput}
+        onChange={(e) => setTagInput(e.target.value)}
+        placeholder="タグを入力（例：サッカー）"
+        className="w-full p-2 border border-border rounded-lg text-text-main bg-transparent outline-none mt-2"
+      />
 
       <textarea
         value={content}

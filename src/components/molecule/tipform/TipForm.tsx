@@ -1,19 +1,21 @@
 import { useState } from "react";
 import { Button } from "../../atoms/button/Button";
+import { CATEGORIES, type Category } from "../../../constants/categories";
 
 interface TipFormProps {
-  onSubmit?: (title: string, content: string) => void;
+  onSubmit?: (title: string, content: string, category: Category) => void;
 }
 
 export const TipForm = ({ onSubmit }: TipFormProps) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [category, setCategory] = useState<Category>("その他");
 
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        onSubmit?.(title, content);
+        onSubmit?.(title, content, category);
         setTitle("");
         setContent("");
       }}
@@ -25,6 +27,18 @@ export const TipForm = ({ onSubmit }: TipFormProps) => {
         className="w-full p-2 outline-none font-semibold text-text-main placeholder:text-text-muted bg-transparent border-b border-border mb-2"
         placeholder="タイトルを入力..."
       />
+      <select
+        value={category}
+        onChange={(e) => setCategory(e.target.value as Category)}
+        className="w-full p-2 border border-border rounded-lg text-text-main bg-transparent outline-none"
+      >
+        {CATEGORIES.map((cat) => (
+          <option key={cat} value={cat}>
+            {cat}
+          </option>
+        ))}
+      </select>
+
       <textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}

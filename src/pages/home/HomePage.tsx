@@ -4,7 +4,7 @@ import { MainLayout } from "../../components/templates/MainLayout";
 import { supabase } from "../../lib/supabase";
 import { TipForm } from "../../components/molecule/tipform/TipForm";
 import type { User } from "@supabase/supabase-js";
-import type { Category } from "../../constants/categories";
+import { CATEGORIES, type Category } from "../../constants/categories";
 
 interface HomePageProps {
   user: User;
@@ -40,6 +40,9 @@ export const HomePage = ({ user }: HomePageProps) => {
       } | null;
     }[]
   >([]);
+  const [selectedCategory, setSelectedCategory] = useState<Category | "すべて">(
+    "すべて",
+  );
 
   const fetchTips = async () => {
     const { data, error } = await supabase
@@ -111,11 +114,32 @@ export const HomePage = ({ user }: HomePageProps) => {
     await fetchTips();
   };
 
+  // 変更後
+  const filteredTips =
+    selectedCategory === "すべて"
+      ? tips
+      : tips.filter((tip) => tip.category === selectedCategory);
+
   return (
     <MainLayout>
       <TipForm onSubmit={createTip} />
+      <select
+        value={selectedCategory}
+        onChange={(e) =>
+          setSelectedCategory(e.target.value as Category | "すべて")
+        }
+        className="mb-4 p-2 border border-border rounded-lg text-text-main bg-card outline-none"
+        data-testid="category-filter"
+      >
+        <option value="すべて">すべて</option>
+        {CATEGORIES.map((cat) => (
+          <option key={cat} value={cat}>
+            {cat}
+          </option>
+        ))}
+      </select>
       <TipList
-        tips={tips}
+        tips={filteredTips}
         onLike={addLike}
         onMoreTip={addMoreTip}
         userId={user.id}

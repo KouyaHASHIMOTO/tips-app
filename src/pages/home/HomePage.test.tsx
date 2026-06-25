@@ -117,4 +117,28 @@ describe("HomePage", () => {
     expect(screen.queryByText("Tips1")).not.toBeInTheDocument();
     expect(screen.queryByText("Tips2")).not.toBeInTheDocument();
   });
+
+  test("タグ検索欄が表示されている", async () => {
+    render(
+      <MemoryRouter>
+        <HomePage user={mockUser} />
+      </MemoryRouter>,
+    );
+    expect(screen.getByPlaceholderText("タグで検索...")).toBeInTheDocument();
+  });
+
+  test("タグで検索するとヒットしたTipだけ表示される", async () => {
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter>
+        <HomePage user={mockUser} />
+      </MemoryRouter>,
+    );
+
+    await screen.findByText("ユーザー名1");
+    await user.type(screen.getByPlaceholderText("タグで検索..."), "サッカー");
+
+    expect(screen.queryByText("Tips1")).not.toBeInTheDocument();
+    expect(screen.queryByText("Tips2")).not.toBeInTheDocument();
+  });
 });

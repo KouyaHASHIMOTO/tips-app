@@ -50,6 +50,8 @@ export const HomePage = ({ user }: HomePageProps) => {
     "すべて",
   );
 
+  const [tagSearch, setTagSearch] = useState("");
+
   const fetchTips = async () => {
     const { data, error } = await supabase
       .from("tips")

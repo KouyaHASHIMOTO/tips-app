@@ -67,17 +67,37 @@ export const HomePage = ({ user }: HomePageProps) => {
     title: string,
     content: string,
     category: Category,
+    tags: string[],
   ) => {
-    const { error } = await supabase.from("tips").insert({
-      title: title,
-      user_id: user.id,
-      content: content,
-      category: category,
-    });
+    // まずTipを保存
+    const { data: tip, error } = await supabase
+      .from("tips")
+      .insert({ title, content, category, user_id: user.id })
+      .select()
+      .single();
 
-    if (error) {
+    if (error || !tip) {
       console.error(error);
       return;
+    }
+
+    // タグが1つ以上あれば保存する
+    if (tags.length > 0) {
+      for (const tagName of tags) {
+        // ① tagsテーブルにタグを登録（同じ名前がすでにあればそのまま取得）
+        const { data: tag, error: tagError } = await supabase
+          .from("tags")
+          .upsert({ name: tagName }, { onConflict: "name" })
+          .select()
+          .single();
+
+        if (tagError || !tag) continue;
+
+        // ② tip_tagsテーブルに対応を保存
+        await supabase
+          .from("tip_tags")
+          .insert({ tip_id: tip.id, tag_id: tag.id });
+      }
     }
 
     await fetchTips();

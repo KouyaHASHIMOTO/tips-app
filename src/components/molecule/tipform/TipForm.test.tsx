@@ -28,14 +28,14 @@ describe("TipForm", () => {
   test("投稿ボタンが表示されている", () => {
     render(<TipForm />);
 
-    expect(screen.getByRole("button")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "投稿" })).toBeInTheDocument();
   });
 
   test("投稿ボタンをクリックできる", async () => {
     const handleSubmit = vi.fn();
     const user = userEvent.setup();
     render(<TipForm onSubmit={handleSubmit} />);
-    await user.click(screen.getByRole("button"));
+    await user.click(screen.getByRole("button", { name: "投稿" }));
 
     expect(handleSubmit).toHaveBeenCalled();
   });
@@ -83,7 +83,20 @@ describe("TipForm", () => {
     ).toBeInTheDocument();
   });
 
-  test("タグを入力して投稿するとonSubmitにタグが渡される", async () => {
+  test("タグを入力して追加ボタンを押すとタグが追加される", async () => {
+    const user = userEvent.setup();
+    render(<TipForm />);
+
+    await user.type(
+      screen.getByPlaceholderText("タグを入力（例：サッカー）"),
+      "サッカー",
+    );
+    await user.click(screen.getByRole("button", { name: "タグを追加" }));
+
+    expect(screen.getByText("サッカー")).toBeInTheDocument();
+  });
+
+  test("タグを追加して投稿するとonSubmitにタグが渡される", async () => {
     const user = userEvent.setup();
     const handleSubmit = vi.fn();
     render(<TipForm onSubmit={handleSubmit} />);
@@ -100,6 +113,7 @@ describe("TipForm", () => {
       screen.getByPlaceholderText("タグを入力（例：サッカー）"),
       "サッカー",
     );
+    await user.click(screen.getByRole("button", { name: "タグを追加" }));
     await user.click(screen.getByRole("button", { name: "投稿" }));
 
     expect(handleSubmit).toHaveBeenCalledWith("タイトル", "内容", "その他", [

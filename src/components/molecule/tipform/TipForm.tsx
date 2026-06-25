@@ -16,15 +16,20 @@ export const TipForm = ({ onSubmit }: TipFormProps) => {
   const [content, setContent] = useState("");
   const [category, setCategory] = useState<Category>("その他");
   const [tagInput, setTagInput] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+
+  const handleAddTag = () => {
+    const trimmed = tagInput.trim();
+    if (trimmed === "") return;
+    setTags([...tags, trimmed]);
+    setTagInput("");
+  };
 
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        const tags = tagInput
-          .split(",")
-          .map((t) => t.trim())
-          .filter((t) => t !== "");
+
         onSubmit?.(title, content, category, tags);
         setTitle("");
         setContent("");
@@ -49,14 +54,32 @@ export const TipForm = ({ onSubmit }: TipFormProps) => {
         ))}
       </select>
 
-      <input
-        type="text"
-        value={tagInput}
-        onChange={(e) => setTagInput(e.target.value)}
-        placeholder="タグを入力（例：サッカー）"
-        className="w-full p-2 border border-border rounded-lg text-text-main bg-transparent outline-none mt-2"
-      />
-
+      <div className="flex flex-wrap gap-2 mt-2">
+        {tags.map((tag) => (
+          <span
+            key={tag}
+            className="px-2 py-1 bg-accent-light text-accent text-sm rounded-full"
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+      <div className="flex gap-2 mt-2">
+        <input
+          type="text"
+          value={tagInput}
+          onChange={(e) => setTagInput(e.target.value)}
+          placeholder="タグを入力（例：サッカー）"
+          className="flex-1 p-2 border border-border rounded-lg text-text-main bg-transparent outline-none"
+        />
+        <button
+          type="button"
+          onClick={handleAddTag}
+          className="px-3 py-2 border border-border rounded-lg text-text-sub text-sm hover:border-accent hover:text-accent"
+        >
+          タグを追加
+        </button>
+      </div>
       <textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}

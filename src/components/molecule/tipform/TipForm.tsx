@@ -32,6 +32,7 @@ export const TipForm = ({ onSubmit }: TipFormProps) => {
 
         onSubmit?.(title, content, category, tags);
         setTitle("");
+        setTags([]);
         setContent("");
       }}
       className="bg-card border border-border rounded-xl p-4 mb-4"

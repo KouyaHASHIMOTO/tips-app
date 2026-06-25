@@ -21,6 +21,11 @@ interface TipListProps {
       content: string;
       created_at: string;
     }[];
+    tip_tags: {
+      tags: {
+        name: string;
+      } | null;
+    }[];
     profiles: {
       id: number;
       tip_id: number;
@@ -57,6 +62,9 @@ export const TipList = ({ tips, onLike, onMoreTip, userId }: TipListProps) => {
             isLiked={isLiked}
             userName={tip.profiles?.user_name}
             avatarUrl={tip.profiles?.avatar_url}
+            tags={tip.tip_tags
+              .map((tt) => tt.tags?.name)
+              .filter((name): name is string => name !== undefined)}
           />
         );
       })}

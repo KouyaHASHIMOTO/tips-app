@@ -25,6 +25,7 @@ interface TipCardProps {
   userName?: string;
   avatarUrl?: string;
   category?: Category;
+  tags?: string[];
 }
 
 export const TipCard = ({
@@ -40,6 +41,7 @@ export const TipCard = ({
   userName,
   avatarUrl,
   category,
+  tags,
 }: TipCardProps) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -60,6 +62,18 @@ export const TipCard = ({
           {category && (
             <div className="mt-1">
               <CategoryTag category={category} />
+            </div>
+          )}
+          {tags && tags.length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-1">
+              {tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="px-2 py-0.5 bg-accent-light text-accent text-xs rounded-full"
+                >
+                  #{tag}
+                </span>
+              ))}
             </div>
           )}
           <p className="font-semibold mt-1 text-text-main">{title}</p>

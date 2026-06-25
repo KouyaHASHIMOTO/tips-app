@@ -31,6 +31,12 @@ export const HomePage = ({ user }: HomePageProps) => {
         content: string;
         created_at: string;
       }[];
+
+      tip_tags: {
+        tags: {
+          name: string;
+        } | null;
+      }[];
       profiles: {
         id: number;
         tip_id: number;
@@ -47,9 +53,11 @@ export const HomePage = ({ user }: HomePageProps) => {
   const fetchTips = async () => {
     const { data, error } = await supabase
       .from("tips")
-      .select(`*, likes(*),more_tips(*),profiles(*)`)
+      .select(`*, likes(*),more_tips(*),profiles(*),tip_tags(tags(*))`)
       .order("created_at", { ascending: false });
     setTips(data ?? []);
+
+    console.log(data);
 
     if (error) {
       console.error(error);

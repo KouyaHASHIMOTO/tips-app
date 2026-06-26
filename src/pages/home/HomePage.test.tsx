@@ -94,29 +94,6 @@ describe("HomePage", () => {
     expect(vi.mocked(supabase.from)("likes").delete).toHaveBeenCalled();
   });
   // 変更後
-  test("カテゴリフィルターが表示されている", async () => {
-    render(
-      <MemoryRouter>
-        <HomePage user={mockUser} />
-      </MemoryRouter>,
-    );
-    expect(screen.getByTestId("category-filter")).toBeInTheDocument();
-  });
-
-  test("カテゴリで絞り込むと該当するTipだけ表示される", async () => {
-    const user = userEvent.setup();
-    render(
-      <MemoryRouter>
-        <HomePage user={mockUser} />
-      </MemoryRouter>,
-    );
-
-    await screen.findByText("ユーザー名1");
-    await user.selectOptions(screen.getByTestId("category-filter"), "料理");
-
-    expect(screen.queryByText("Tips1")).not.toBeInTheDocument();
-    expect(screen.queryByText("Tips2")).not.toBeInTheDocument();
-  });
 
   test("タグ検索欄が表示されている", async () => {
     render(

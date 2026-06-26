@@ -118,4 +118,17 @@ describe("HomePage", () => {
     expect(screen.queryByText("Tips1")).not.toBeInTheDocument();
     expect(screen.queryByText("Tips2")).not.toBeInTheDocument();
   });
+  test("投稿ボタンをクリックするとモーダルが表示される", async () => {
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter>
+        <HomePage user={mockUser} />
+      </MemoryRouter>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "+ Tipを投稿する" }));
+    expect(
+      screen.getByPlaceholderText("タイトルを入力..."),
+    ).toBeInTheDocument();
+  });
 });

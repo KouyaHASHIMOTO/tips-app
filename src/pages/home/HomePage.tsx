@@ -6,6 +6,7 @@ import { TipForm } from "../../components/molecule/tipform/TipForm";
 import type { User } from "@supabase/supabase-js";
 import { type Category } from "../../constants/categories";
 import { useSearchParams } from "react-router-dom";
+import { RightPanel } from "../../components/organisms/rightpanel/RightPanel";
 
 interface HomePageProps {
   user: User;
@@ -52,6 +53,7 @@ export const HomePage = ({ user }: HomePageProps) => {
   >([]);
 
   const [tagSearch, setTagSearch] = useState("");
+  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
 
   const fetchTips = async () => {
     const { data, error } = await supabase
@@ -59,8 +61,6 @@ export const HomePage = ({ user }: HomePageProps) => {
       .select(`*, likes(*),more_tips(*),profiles(*),tip_tags(tags(*))`)
       .order("created_at", { ascending: false });
     setTips(data ?? []);
-
-    console.log(data);
 
     if (error) {
       console.error(error);
@@ -110,7 +110,7 @@ export const HomePage = ({ user }: HomePageProps) => {
           .insert({ tip_id: tip.id, tag_id: tag.id });
       }
     }
-
+    setIsPostModalOpen(false);
     await fetchTips();
   };
 
@@ -150,8 +150,6 @@ export const HomePage = ({ user }: HomePageProps) => {
     await fetchTips();
   };
 
-  console.log(tips);
-
   const filteredTips =
     tagSearch !== ""
       ? tips.filter((tip) =>
@@ -161,15 +159,38 @@ export const HomePage = ({ user }: HomePageProps) => {
         ? tips.filter((tip) => tip.category === selectedCategory)
         : tips;
   return (
-    <MainLayout>
-      <TipForm onSubmit={createTip} />
-      <input
-        type="text"
-        value={tagSearch}
-        onChange={(e) => setTagSearch(e.target.value)}
-        placeholder="タグで検索..."
-        className="mb-4 p-2 border border-border rounded-lg text-text-main bg-card outline-none w-full"
-      />
+    <MainLayout
+      rightPanel={
+        <RightPanel
+          trendTags={[]}
+          onTagSearch={(tag) => setTagSearch(tag)}
+          onPostClick={() => setIsPostModalOpen(true)}
+        />
+      }
+    >
+      {/* 投稿モーダル */}
+      {isPostModalOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center"
+          onClick={() => setIsPostModalOpen(false)}
+        >
+          <div
+            className="bg-card rounded-xl p-6 w-full max-w-lg mx-4 shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="font-semibold text-text-main">Tipを投稿する</h2>
+              <button
+                onClick={() => setIsPostModalOpen(false)}
+                className="text-text-muted hover:text-text-main"
+              >
+                ✕
+              </button>
+            </div>
+            <TipForm onSubmit={createTip} />
+          </div>
+        </div>
+      )}
 
       <TipList
         tips={filteredTips}

@@ -70,10 +70,15 @@ describe("TipForm", () => {
       screen.getByPlaceholderText("豆知識を共有しよう..."),
       "内容",
     );
-    await user.selectOptions(screen.getByRole("combobox"), "料理");
+    await user.selectOptions(screen.getByRole("combobox"), "料理・グルメ");
     await user.click(screen.getByRole("button", { name: "投稿" }));
 
-    expect(handleSubmit).toHaveBeenCalledWith("タイトル", "内容", "料理", []);
+    expect(handleSubmit).toHaveBeenCalledWith(
+      "タイトル",
+      "内容",
+      "料理・グルメ",
+      [],
+    );
   });
 
   test("タグ入力欄が表示されている", () => {

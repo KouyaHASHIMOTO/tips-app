@@ -9,7 +9,7 @@ const mockTip = {
   created_at: "2026-05-28T07:32:56.062504+00:00",
   userName: "テストユーザー",
   avatarUrl: "",
-  category: "料理" as const,
+  category: "料理・グルメ" as const,
   likeCount: 5,
   isLiked: false,
   moreTips: [

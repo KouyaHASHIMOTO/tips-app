@@ -13,4 +13,14 @@ describe("Sidebar", () => {
     expect(screen.getByText("マイページ")).toBeInTheDocument();
     expect(screen.getByText("設定")).toBeInTheDocument();
   });
+  test("カテゴリ一覧が表示されている", () => {
+    render(
+      <MemoryRouter>
+        <Sidebar />
+      </MemoryRouter>,
+    );
+    expect(screen.getByText("エンタメ")).toBeInTheDocument();
+    expect(screen.getByText("テクノロジー")).toBeInTheDocument();
+    expect(screen.getByText("その他")).toBeInTheDocument();
+  });
 });

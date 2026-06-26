@@ -1,21 +1,24 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, Link, useSearchParams } from "react-router-dom";
 import { CATEGORIES } from "../../../constants/categories";
 
 const baseClass = "px-4 py-2 rounded-lg w-full block transition-colors";
 
 export const Sidebar = () => {
+  const [searchParams] = useSearchParams();
+  const currentCategory = searchParams.get("category");
+
   return (
     <nav className="fixed left-0 top-14 h-full w-64 bg-surface border-r border-border p-4 flex flex-col gap-2 overflow-y-auto">
-      <NavLink
+      <Link
         to="/"
-        className={({ isActive }) =>
-          isActive
+        className={
+          currentCategory === null && window.location.pathname === "/"
             ? `${baseClass} font-medium text-accent bg-accent-light`
             : `${baseClass} text-text-sub hover:text-text-main hover:bg-border`
         }
       >
         ホーム
-      </NavLink>
+      </Link>
       <NavLink
         to="/profile"
         className={({ isActive }) =>
@@ -42,17 +45,17 @@ export const Sidebar = () => {
       </div>
 
       {CATEGORIES.map((cat) => (
-        <NavLink
+        <Link
           key={cat}
           to={`/?category=${encodeURIComponent(cat)}`}
-          className={({ isActive }) =>
-            isActive
+          className={
+            currentCategory === cat
               ? `${baseClass} font-medium text-accent bg-accent-light`
               : `${baseClass} text-text-sub hover:text-text-main hover:bg-border`
           }
         >
           {cat}
-        </NavLink>
+        </Link>
       ))}
     </nav>
   );

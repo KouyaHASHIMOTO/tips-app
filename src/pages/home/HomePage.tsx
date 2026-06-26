@@ -5,12 +5,16 @@ import { supabase } from "../../lib/supabase";
 import { TipForm } from "../../components/molecule/tipform/TipForm";
 import type { User } from "@supabase/supabase-js";
 import { type Category } from "../../constants/categories";
+import { useSearchParams } from "react-router-dom";
 
 interface HomePageProps {
   user: User;
 }
 
 export const HomePage = ({ user }: HomePageProps) => {
+  const [searchParams] = useSearchParams();
+  const selectedCategory = searchParams.get("category") as Category | null;
+
   const [tips, setTips] = useState<
     {
       id: number;
@@ -146,12 +150,16 @@ export const HomePage = ({ user }: HomePageProps) => {
     await fetchTips();
   };
 
+  console.log(tips);
+
   const filteredTips =
     tagSearch !== ""
       ? tips.filter((tip) =>
           tip.tip_tags.some((tt) => tt.tags?.name.includes(tagSearch)),
         )
-      : tips;
+      : selectedCategory !== null
+        ? tips.filter((tip) => tip.category === selectedCategory)
+        : tips;
   return (
     <MainLayout>
       <TipForm onSubmit={createTip} />

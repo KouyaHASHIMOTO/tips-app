@@ -56,7 +56,7 @@ export const HomePage = ({ user }: HomePageProps) => {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
 
   const [trendTags, setTrendTags] = useState<{ name: string; count: number }[]>(
-    [],
+    []
   );
 
   const fetchTrendTags = async () => {
@@ -67,15 +67,14 @@ export const HomePage = ({ user }: HomePageProps) => {
     )
   `);
 
-    const countMap = data.reduce(
-      (acc, current) => {
-        const name = current.tags?.name;
-        if (!name) return acc;
-        acc[name] = (acc[name] ?? 0) + 1;
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
+    if (!data) return;
+
+    const countMap = data.reduce((acc, current) => {
+      const name = current.tags?.name;
+      if (!name) return acc;
+      acc[name] = (acc[name] ?? 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
 
     // countMap を「件数が多い順に並んだタグの配列」に変換する
     const trendTags = Object.entries(countMap)
@@ -112,7 +111,7 @@ export const HomePage = ({ user }: HomePageProps) => {
     title: string,
     content: string,
     category: Category,
-    tags: string[],
+    tags: string[]
   ) => {
     // まずTipを保存
     const { data: tip, error } = await supabase
@@ -187,11 +186,11 @@ export const HomePage = ({ user }: HomePageProps) => {
   const filteredTips =
     tagSearch !== ""
       ? tips.filter((tip) =>
-          tip.tip_tags.some((tt) => tt.tags?.name.includes(tagSearch)),
+          tip.tip_tags.some((tt) => tt.tags?.name.includes(tagSearch))
         )
       : selectedCategory !== null
-        ? tips.filter((tip) => tip.category === selectedCategory)
-        : tips;
+      ? tips.filter((tip) => tip.category === selectedCategory)
+      : tips;
   return (
     <MainLayout
       rightPanel={

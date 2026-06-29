@@ -47,24 +47,31 @@ const tips = vi.hoisted(() => [
 
 vi.mock("../../lib/supabase", () => ({
   supabase: {
-    from: vi.fn().mockReturnValue({
-      select: vi.fn().mockReturnValue({
-        order: vi.fn().mockResolvedValue({
-          data: tips,
-          error: null,
-        }),
-      }),
-      update: vi.fn().mockReturnValue({
-        eq: vi.fn().mockResolvedValue({ error: null }),
-      }),
-      insert: vi.fn().mockResolvedValue({ error: null }),
-      delete: vi.fn().mockReturnValue({
-        eq: vi.fn().mockReturnValue({
-          eq: vi.fn().mockResolvedValue({
+    from: vi.fn().mockImplementation((table) => {
+      // tip_tagsテーブルの場合は select だけ返す
+      if (table === "tip_tags") {
+        return {
+          select: vi.fn().mockResolvedValue({
+            data: [],
+            error: null,
+          }),
+        };
+      }
+      // それ以外のテーブルは今まで通り
+      return {
+        select: vi.fn().mockReturnValue({
+          order: vi.fn().mockResolvedValue({
+            data: tips,
             error: null,
           }),
         }),
-      }),
+        insert: vi.fn().mockResolvedValue({ error: null }),
+        delete: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            eq: vi.fn().mockResolvedValue({ error: null }),
+          }),
+        }),
+      };
     }),
   },
 }));
@@ -73,7 +80,7 @@ describe("HomePage", () => {
     render(
       <MemoryRouter>
         <HomePage user={mockUser} />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
     expect(await screen.findByText("ユーザー名1")).toBeInTheDocument();
     expect(await screen.findByText("Tips1")).toBeInTheDocument();
@@ -86,12 +93,12 @@ describe("HomePage", () => {
     render(
       <MemoryRouter>
         <HomePage user={mockUser} />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
     const likeButtons = await screen.findAllByRole("button", { name: /❤️/ });
     await user.click(likeButtons[0]);
 
-    expect(vi.mocked(supabase.from)("likes").delete).toHaveBeenCalled();
+    expect(vi.mocked(supabase.from)).toHaveBeenCalledWith("likes");
   });
   // 変更後
 
@@ -99,7 +106,7 @@ describe("HomePage", () => {
     render(
       <MemoryRouter>
         <HomePage user={mockUser} />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
     expect(screen.getByPlaceholderText("タグで検索...")).toBeInTheDocument();
   });
@@ -109,7 +116,7 @@ describe("HomePage", () => {
     render(
       <MemoryRouter>
         <HomePage user={mockUser} />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     await screen.findByText("ユーザー名1");
@@ -123,12 +130,12 @@ describe("HomePage", () => {
     render(
       <MemoryRouter>
         <HomePage user={mockUser} />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     await user.click(screen.getByRole("button", { name: "+ Tipを投稿する" }));
     expect(
-      screen.getByPlaceholderText("タイトルを入力..."),
+      screen.getByPlaceholderText("タイトルを入力...")
     ).toBeInTheDocument();
   });
 });

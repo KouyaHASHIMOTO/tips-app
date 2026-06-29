@@ -55,6 +55,38 @@ export const HomePage = ({ user }: HomePageProps) => {
   const [tagSearch, setTagSearch] = useState("");
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
 
+  const [trendTags, setTrendTags] = useState<{ name: string; count: number }[]>(
+    [],
+  );
+
+  const fetchTrendTags = async () => {
+    const { data, error } = await supabase.from("tip_tags").select(`
+    *,
+    tags (
+      *
+    )
+  `);
+
+    const countMap = data.reduce(
+      (acc, current) => {
+        const name = current.tags?.name;
+        if (!name) return acc;
+        acc[name] = (acc[name] ?? 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+
+    // countMap を「件数が多い順に並んだタグの配列」に変換する
+    const trendTags = Object.entries(countMap)
+      // オブジェクトを [キー, 値] の配列に変換
+      .map(([name, count]) => ({ name, count: count as number }))
+      // 件数が多い順（降順）に並び替え
+      .sort((a, b) => b.count - a.count);
+
+    setTrendTags(trendTags);
+  };
+
   const fetchTips = async () => {
     const { data, error } = await supabase
       .from("tips")
@@ -71,7 +103,9 @@ export const HomePage = ({ user }: HomePageProps) => {
     const load = async () => {
       await fetchTips();
     };
+
     load();
+    fetchTrendTags();
   }, []);
 
   const createTip = async (
@@ -162,7 +196,7 @@ export const HomePage = ({ user }: HomePageProps) => {
     <MainLayout
       rightPanel={
         <RightPanel
-          trendTags={[]}
+          trendTags={trendTags}
           onTagSearch={(tag) => setTagSearch(tag)}
           onPostClick={() => setIsPostModalOpen(true)}
         />

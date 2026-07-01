@@ -18,6 +18,8 @@ const tips = [
       avatar_url: "",
       created_at: "",
     },
+    bookmarks: [],
+    category: "スポーツ" as const,
   },
   {
     id: 2,
@@ -35,6 +37,8 @@ const tips = [
       avatar_url: "",
       created_at: "",
     },
+    bookmarks: [],
+    category: "スポーツ" as const,
   },
 ];
 

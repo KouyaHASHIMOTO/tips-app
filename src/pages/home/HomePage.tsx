@@ -49,6 +49,12 @@ export const HomePage = ({ user }: HomePageProps) => {
         avatar_url: string;
         created_at: string;
       } | null;
+      bookmarks: {
+        id: number;
+        tip_id: number;
+        user_id: string;
+        created_at: string;
+      }[];
     }[]
   >([]);
 
@@ -92,7 +98,9 @@ export const HomePage = ({ user }: HomePageProps) => {
   const fetchTips = async () => {
     const { data, error } = await supabase
       .from("tips")
-      .select(`*, likes(*),more_tips(*),profiles(*),tip_tags(tags(*))`)
+      .select(
+        `*, likes(*),more_tips(*),profiles(*),tip_tags(tags(*)),bookmarks(*)`,
+      )
       .order("created_at", { ascending: false });
     setTips(data ?? []);
 
@@ -176,6 +184,21 @@ export const HomePage = ({ user }: HomePageProps) => {
     await fetchTips();
   };
 
+  const addBookmark = async (tipId: number, isBookmark: boolean) => {
+    if (isBookmark) {
+      const response = await supabase
+        .from("bookmarks")
+        .delete()
+        .eq("tip_id", tipId)
+        .eq("user_id", user.id);
+    } else {
+      const { error } = await supabase
+        .from("bookmarks")
+        .insert({ tip_id: tipId, user_id: user.id });
+    }
+    await fetchTips();
+  };
+
   const addMoreTip = async (tipId: number, content: string) => {
     const { error } = await supabase
       .from("more_tips")
@@ -239,6 +262,7 @@ export const HomePage = ({ user }: HomePageProps) => {
       <TipList
         tips={filteredTips}
         onLike={addLike}
+        onBookmark={addBookmark}
         onMoreTip={addMoreTip}
         userId={user.id}
       />

@@ -11,6 +11,7 @@ interface TipCardProps {
   content: string;
   created_at: string;
   onLike?: () => void;
+  onBookmark?: () => void;
   likeCount?: number;
   onMoreTip?: (content: string) => void;
   moreTips?: {
@@ -22,6 +23,7 @@ interface TipCardProps {
     userName?: string;
   }[];
   isLiked?: boolean;
+  isBookmark?: boolean;
   userName?: string;
   avatarUrl?: string;
   category?: Category;
@@ -34,10 +36,12 @@ export const TipCard = ({
   content,
   created_at,
   onLike,
+  onBookmark,
   likeCount,
   onMoreTip,
   moreTips,
   isLiked,
+  isBookmark,
   userName,
   avatarUrl,
   category,
@@ -79,16 +83,38 @@ export const TipCard = ({
           <p className="font-semibold mt-1 text-text-main">{title}</p>
           <p className="mt-1 text-text-sub line-clamp-2">{content}</p>
 
-          {/* いいねボタンだけ残す */}
-          <div className="mt-3 flex items-center gap-4">
-            <Button
+          <div className="flex items-center gap-2">
+            <button
               onClick={(e) => {
                 e.stopPropagation();
                 onLike?.();
               }}
+              className={` flex items-center gap-1 px-3 py-1 rounded-full border transition-colors cursor-pointer ${
+                isLiked
+                  ? "bg-red-50 border-red-200 text-red-500"
+                  : "bg-white border-gray-200 text-gray-500 hover:bg-gray-50"
+              }`}
             >
-              {isLiked ? "❤️" : "🤍"} {likeCount}
-            </Button>
+              <span>{isLiked ? "❤️" : "🤍"}</span>
+              <span className="text-sm">{likeCount}</span>
+            </button>
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onBookmark?.();
+              }}
+              className={`flex items-center gap-1 px-3 py-1 rounded-full border transition-colors cursor-pointer ${
+                isBookmark
+                  ? "bg-indigo-50 border-indigo-200 text-indigo-500"
+                  : "bg-white border-gray-200 text-gray-500 hover:bg-gray-50"
+              }`}
+            >
+              <span>{isBookmark ? "📌" : "🔖"}</span>
+              <span className="text-sm">
+                {isBookmark ? "保存済み" : "保存"}
+              </span>
+            </button>
           </div>
         </div>
       </div>

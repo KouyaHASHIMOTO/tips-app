@@ -25,6 +25,7 @@ const tips = vi.hoisted(() => [
       avatar_url: "",
       created_at: "",
     },
+    bookmarks: [],
   },
   {
     id: 2,
@@ -42,6 +43,7 @@ const tips = vi.hoisted(() => [
       avatar_url: "",
       created_at: "",
     },
+    bookmarks: [],
   },
 ]);
 
@@ -80,7 +82,7 @@ describe("HomePage", () => {
     render(
       <MemoryRouter>
         <HomePage user={mockUser} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(await screen.findByText("ユーザー名1")).toBeInTheDocument();
     expect(await screen.findByText("Tips1")).toBeInTheDocument();
@@ -93,7 +95,7 @@ describe("HomePage", () => {
     render(
       <MemoryRouter>
         <HomePage user={mockUser} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     const likeButtons = await screen.findAllByRole("button", { name: /❤️/ });
     await user.click(likeButtons[0]);
@@ -106,7 +108,7 @@ describe("HomePage", () => {
     render(
       <MemoryRouter>
         <HomePage user={mockUser} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(screen.getByPlaceholderText("タグで検索...")).toBeInTheDocument();
   });
@@ -116,7 +118,7 @@ describe("HomePage", () => {
     render(
       <MemoryRouter>
         <HomePage user={mockUser} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     await screen.findByText("ユーザー名1");
@@ -130,12 +132,12 @@ describe("HomePage", () => {
     render(
       <MemoryRouter>
         <HomePage user={mockUser} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     await user.click(screen.getByRole("button", { name: "+ Tipを投稿する" }));
     expect(
-      screen.getByPlaceholderText("タイトルを入力...")
+      screen.getByPlaceholderText("タイトルを入力..."),
     ).toBeInTheDocument();
   });
 });

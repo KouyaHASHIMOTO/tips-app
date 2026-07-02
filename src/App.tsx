@@ -7,6 +7,7 @@ import { supabase } from "./lib/supabase";
 import type { User } from "@supabase/supabase-js";
 import { ProfilePage } from "./pages/profile/ProfilePage";
 import { SettingsPage } from "./pages/settings/SettingsPage";
+import { SavedPage } from "./pages/saved/SavedPage";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -47,6 +48,10 @@ function App() {
           element={
             user ? <SettingsPage user={user} /> : <Navigate to="/login" />
           }
+        />
+        <Route
+          path="/saved"
+          element={user ? <SavedPage user={user} /> : <Navigate to="/login" />}
         />
       </Routes>
     </BrowserRouter>

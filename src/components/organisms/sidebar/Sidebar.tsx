@@ -30,6 +30,16 @@ export const Sidebar = () => {
         マイページ
       </NavLink>
       <NavLink
+        to="/saved"
+        className={({ isActive }) =>
+          isActive
+            ? `${baseClass} font-medium text-accent bg-accent-light`
+            : `${baseClass} text-text-sub hover:text-text-main hover:bg-border`
+        }
+      >
+        保存済み
+      </NavLink>
+      <NavLink
         to="/settings"
         className={({ isActive }) =>
           isActive

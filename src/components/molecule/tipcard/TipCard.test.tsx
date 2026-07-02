@@ -127,4 +127,50 @@ describe("TipCard", () => {
     );
     expect(screen.getByText("スポーツ")).toBeInTheDocument();
   });
+  test("isBookmark=true のとき 📌 が表示される", () => {
+    render(
+      <TipCard
+        title="Tipタイトル"
+        user_id="1"
+        userName="ユーザー名"
+        content="投稿内容"
+        created_at="2026-05-28T07:32:56.062504+00:00"
+        likeCount={5}
+        isBookmark={true}
+      />,
+    );
+    expect(screen.getByText(/📌/)).toBeInTheDocument();
+  });
+  test("isBookmark=false のとき 🔖 が表示される", () => {
+    render(
+      <TipCard
+        title="Tipタイトル"
+        user_id="1"
+        userName="ユーザー名"
+        content="投稿内容"
+        created_at="2026-05-28T07:32:56.062504+00:00"
+        likeCount={5}
+        isBookmark={false}
+      />,
+    );
+    expect(screen.getByText(/🔖/)).toBeInTheDocument();
+  });
+  test("保存ボタンをクリックするとonBookmark関数が呼ばれる", async () => {
+    const user = userEvent.setup();
+    const onBookmark = vi.fn();
+    render(
+      <TipCard
+        title="Tipタイトル"
+        user_id="1"
+        userName="ユーザー名"
+        content="投稿内容"
+        created_at="2026-05-28T07:32:56.062504+00:00"
+        onBookmark={onBookmark}
+        isBookmark={false}
+      />,
+    );
+    await user.click(screen.getByRole("button", { name: /🔖/ }));
+
+    expect(onBookmark).toHaveBeenCalled();
+  });
 });

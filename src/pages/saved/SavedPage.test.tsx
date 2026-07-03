@@ -1,14 +1,17 @@
 import { render, screen } from "@testing-library/react";
 import { SavedPage } from "./SavedPage";
+import type { User } from "@supabase/supabase-js";
 
-const tips = [
+const mockUser = { id: "1" } as unknown as User;
+
+const tips = vi.hoisted(() => [
   {
     id: 34,
     content: "サッカー日本敗戦",
     user_id: "b4d471fd-eaf7-4158-9489-89bffed933c3",
     created_at: "2026-06-30T13:34:24.618179+00:00",
     title: "サッカー",
-    category: "スポーツ",
+    category: "スポーツ" as const,
     likes: [
       {
         id: 38,
@@ -49,7 +52,7 @@ const tips = [
     user_id: "b4d471fd-eaf7-4158-9489-89bffed933c3",
     created_at: "2026-06-30T13:57:50.626357+00:00",
     title: "サッカー",
-    category: "スポーツ",
+    category: "スポーツ" as const,
     likes: [
       {
         id: 40,
@@ -77,17 +80,30 @@ const tips = [
     ],
     bookmarks: [],
   },
-];
+]);
 
 vi.mock("../../lib/supabase", () => ({
   supabase: {
-    from: vi.fn().mockReturnValue({}),
+    from: vi.fn().mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockResolvedValue({
+          data: tips,
+          error: null,
+        }),
+      }),
+      insert: vi.fn().mockResolvedValue({ error: null }),
+      delete: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          eq: vi.fn().mockResolvedValue({ error: null }),
+        }),
+      }),
+    }),
   },
 }));
 
 describe("SavePage", () => {
-  test("保存している投稿のみが表示されている", () => {
-    render(<SavedPage tips={tips} />);
-    expect(screen.getByText("サッカー日本敗戦")).toBeInTheDocument();
+  test("保存している投稿のみが表示されている", async () => {
+    render(<SavedPage user={mockUser} />);
+    expect(await screen.findByText("サッカー日本敗戦")).toBeInTheDocument();
   });
 });

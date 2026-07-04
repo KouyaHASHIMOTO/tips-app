@@ -4,6 +4,7 @@ import type { User } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
 import { TipList } from "../../components/organisms/tiplist/TipList";
 import { MainLayout } from "../../components/templates/MainLayout";
+import { MemoryRouter } from "react-router-dom";
 
 interface SavedPageProps {
   user: User;
@@ -56,7 +57,7 @@ export const SavedPage = ({ user }: SavedPageProps) => {
     const { data, error } = await supabase
       .from("tips")
       .select(
-        "*, likes(*),more_tips(*),profiles(*),tip_tags(tags(*)), bookmarks!inner(*)",
+        "*, likes(*),more_tips(*),profiles(*),tip_tags(tags(*)), bookmarks!inner(*)"
       )
       .eq("bookmarks.user_id", user.id);
 
@@ -123,14 +124,16 @@ export const SavedPage = ({ user }: SavedPageProps) => {
     load();
   }, []);
   return (
-    <MainLayout>
-      <TipList
-        tips={tips}
-        onLike={addLike}
-        onBookmark={addBookmark}
-        onMoreTip={addMoreTip}
-        userId={user.id}
-      />
-    </MainLayout>
+    <MemoryRouter>
+      <MainLayout>
+        <TipList
+          tips={tips}
+          onLike={addLike}
+          onBookmark={addBookmark}
+          onMoreTip={addMoreTip}
+          userId={user.id}
+        />
+      </MainLayout>
+    </MemoryRouter>
   );
 };

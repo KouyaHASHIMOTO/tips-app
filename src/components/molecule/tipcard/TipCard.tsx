@@ -4,6 +4,7 @@ import { Button } from "../../atoms/button/Button";
 import type { Category } from "../../../constants/categories";
 import { CategoryTag } from "../../atoms/categorytag/CategoryTag";
 import { TipDetailModal } from "../tipdetailmodal/TipDetailModal";
+import { Link } from "react-router-dom";
 
 interface TipCardProps {
   title: string;
@@ -55,7 +56,9 @@ export const TipCard = ({
         className="bg-card border border-border rounded-xl p-4 mb-3 flex gap-3 cursor-pointer"
         onClick={() => setShowModal(true)}
       >
-        <Avatar src={avatarUrl ?? ""} alt={userName ?? user_id} />
+        <Link to={`/users/${user_id}`} onClick={(e) => e.stopPropagation()}>
+          <Avatar src={avatarUrl ?? ""} alt={userName ?? user_id} />
+        </Link>
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <p className="font-medium text-text-main">{userName}</p>

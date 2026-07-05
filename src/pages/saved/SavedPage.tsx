@@ -124,16 +124,14 @@ export const SavedPage = ({ user }: SavedPageProps) => {
     load();
   }, []);
   return (
-    <MemoryRouter>
-      <MainLayout>
-        <TipList
-          tips={tips}
-          onLike={addLike}
-          onBookmark={addBookmark}
-          onMoreTip={addMoreTip}
-          userId={user.id}
-        />
-      </MainLayout>
-    </MemoryRouter>
+    <MainLayout>
+      <TipList
+        tips={tips}
+        onLike={addLike}
+        onBookmark={addBookmark}
+        onMoreTip={addMoreTip}
+        userId={user.id}
+      />
+    </MainLayout>
   );
 };

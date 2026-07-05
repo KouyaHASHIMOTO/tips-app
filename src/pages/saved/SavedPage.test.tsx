@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { SavedPage } from "./SavedPage";
 import type { User } from "@supabase/supabase-js";
+import { MemoryRouter } from "react-router-dom";
 
 const mockUser = { id: "1" } as unknown as User;
 
@@ -103,7 +104,11 @@ vi.mock("../../lib/supabase", () => ({
 
 describe("SavePage", () => {
   test("保存している投稿のみが表示されている", async () => {
-    render(<SavedPage user={mockUser} />);
+    render(
+      <MemoryRouter>
+        <SavedPage user={mockUser} />
+      </MemoryRouter>
+    );
     expect(await screen.findByText("サッカー日本敗戦")).toBeInTheDocument();
   });
 });

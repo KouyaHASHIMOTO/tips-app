@@ -33,6 +33,8 @@ export const UserPage = ({ user }: UserPageProps) => {
         .eq("user_id", params.userId)
         .order("created_at", { ascending: false });
 
+      console.log(data);
+
       setMyTips(data ?? []);
 
       if (error) {

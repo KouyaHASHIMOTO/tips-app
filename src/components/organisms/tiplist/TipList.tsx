@@ -62,7 +62,7 @@ export const TipList = ({
       {tips.map((tip) => {
         const isLiked = tip.likes.some((like) => like.user_id === userId);
         const isBookmark = tip.bookmarks.some(
-          (bookmark) => bookmark.user_id === userId,
+          (bookmark) => bookmark.user_id === userId
         );
         return (
           <TipCard

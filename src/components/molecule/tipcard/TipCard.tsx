@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Avatar } from "../../atoms/avatar/Avatar";
-import { Button } from "../../atoms/button/Button";
 import type { Category } from "../../../constants/categories";
 import { CategoryTag } from "../../atoms/categorytag/CategoryTag";
 import { TipDetailModal } from "../tipdetailmodal/TipDetailModal";

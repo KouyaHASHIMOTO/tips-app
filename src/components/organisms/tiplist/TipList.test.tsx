@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { TipList } from "./TipList";
+import { MemoryRouter } from "react-router-dom";
 
 const tips = [
   {
@@ -44,7 +45,11 @@ const tips = [
 
 describe("TipList", () => {
   test("カードが複数表示されている", () => {
-    render(<TipList tips={tips} userId="1" />);
+    render(
+      <MemoryRouter>
+        <TipList tips={tips} userId="1" />
+      </MemoryRouter>
+    );
     expect(screen.getByText("ユーザー名1")).toBeInTheDocument();
     expect(screen.getByText("ユーザー名2")).toBeInTheDocument();
   });

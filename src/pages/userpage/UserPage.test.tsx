@@ -3,26 +3,26 @@ import { MemoryRouter, Routes, Route } from "react-router-dom";
 import type { User } from "@supabase/supabase-js";
 import { UserPage } from "./UserPage";
 
-const mockUser = { id: "1" } as unknown as User;
+const mockUser = { id: "abc123" } as unknown as User;
 
 const mockTips = vi.hoisted(() => {
   const TEST_USER_ID = "test-user-id-00000000-0000-0000-0000-000000000001";
   const TEST_CREATED_AT = "2026-01-01T00:00:00.000000+00:00";
   return [
     {
-      id: 35,
-      content: "サッカー応援",
-      user_id: "b4d471fd-eaf7-4158-9489-89bffed933c3",
-      created_at: "2026-06-30T13:57:50.626357+00:00",
-      title: "サッカー",
+      id: 1,
+      content: "user_idの一致する投稿です",
+      user_id: "abc123",
+      created_at: TEST_CREATED_AT,
+      title: "テスト１",
       category: "スポーツ",
     },
     {
-      id: 35,
-      content: "サッカー応援",
-      user_id: "b4d471fd-eaf7-4158-9489-89bffed933c3",
-      created_at: "2026-06-30T13:57:50.626357+00:00",
-      title: "サッカー",
+      id: 2,
+      content: "user_idの一致しない投稿です",
+      user_id: TEST_USER_ID,
+      created_at: TEST_CREATED_AT,
+      title: "テスト２",
       category: "スポーツ",
     },
   ];
@@ -34,11 +34,13 @@ vi.mock("../../lib/supabase", () => ({
       if (table === "tips") {
         return {
           select: vi.fn().mockReturnValue({
-            eq: vi.fn().mockReturnValue({
-              order: vi.fn().mockResolvedValue({
-                data: mockTips,
-                error: null,
-              }),
+            eq: vi.fn().mockImplementation((column, userId) => {
+              return {
+                order: vi.fn().mockResolvedValue({
+                  data: mockTips.filter((tip) => tip.user_id === userId),
+                  error: null,
+                }),
+              };
             }),
           }),
         };
@@ -60,7 +62,7 @@ vi.mock("../../lib/supabase", () => ({
 }));
 
 describe("UserPage", () => {
-  test("投稿が表示されている", async () => {
+  test("user_idが一致する投稿が表示されている", async () => {
     render(
       // 最初にアクセスするURLを指定する
       <MemoryRouter initialEntries={["/users/abc123"]}>
@@ -68,9 +70,15 @@ describe("UserPage", () => {
           {/* :userId が実際のURLの値に置き換わる */}
           <Route path="/users/:userId" element={<UserPage user={mockUser} />} />
         </Routes>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
-    expect(await screen.findByText("サッカー日本敗戦")).toBeInTheDocument();
+    expect(
+      await screen.findByText("user_idの一致する投稿です"),
+    ).toBeInTheDocument();
+
+    expect(
+      screen.queryByText("user_idの一致しない投稿です"),
+    ).not.toBeInTheDocument();
   });
 });

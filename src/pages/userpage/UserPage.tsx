@@ -66,7 +66,7 @@ export const UserPage = ({ user }: UserPageProps) => {
     const { data, error } = await supabase
       .from("tips")
       .select(
-        `*, likes(*),more_tips(*),profiles(*),tip_tags(tags(*)),bookmarks(*)`,
+        `*, likes(*),more_tips(*),profiles(*),tip_tags(tags(*)),bookmarks(*)`
       )
       .eq("user_id", params.userId)
       .order("created_at", { ascending: false });
@@ -95,8 +95,19 @@ export const UserPage = ({ user }: UserPageProps) => {
           setUserName(data.user_name);
         }
       };
+      const fetchFollowStatus = async () => {
+        const { data } = await supabase
+          .from("follows")
+          .select("id")
+          .eq("follower_id", user.id)
+          .eq("following_id", params.userId)
+          .maybeSingle();
+
+        setIsFollowing(!!data);
+      };
       await fetchMyTips();
       await fetchProfile();
+      await fetchFollowStatus();
     };
     load();
   }, [fetchMyTips, params.userId]);

@@ -14,16 +14,73 @@ const mockTips = vi.hoisted(() => {
       content: "user_idの一致する投稿です",
       user_id: "abc123",
       created_at: TEST_CREATED_AT,
-      title: "テスト１",
-      category: "スポーツ",
+      title: "テストタイトル１",
+      category: "スポーツ" as const,
+      likes: [
+        {
+          id: 1,
+          tip_id: 1,
+          user_id: TEST_USER_ID,
+        },
+      ],
+      more_tips: [],
+      profiles: {
+        id: 1,
+        user_id: TEST_USER_ID,
+        user_name: "テストユーザー",
+        avatar_url: "https://example.com/test-avatar.png",
+        created_at: TEST_CREATED_AT,
+      },
+      tip_tags: [
+        {
+          tags: {
+            id: 1,
+            name: "テストタグ",
+            created_at: TEST_CREATED_AT,
+          },
+        },
+      ],
+      bookmarks: [
+        {
+          id: 1,
+          tip_id: 1,
+          user_id: TEST_USER_ID,
+          created_at: TEST_CREATED_AT,
+        },
+      ],
     },
     {
       id: 2,
-      content: "user_idの一致しない投稿です",
+      content: "user_idが一致しない投稿です",
       user_id: TEST_USER_ID,
       created_at: TEST_CREATED_AT,
-      title: "テスト２",
-      category: "スポーツ",
+      title: "テストタイトル２",
+      category: "スポーツ" as const,
+      likes: [
+        {
+          id: 2,
+          tip_id: 2,
+          user_id: TEST_USER_ID,
+        },
+      ],
+      more_tips: [],
+      profiles: {
+        id: 1,
+        user_id: TEST_USER_ID,
+        user_name: "テストユーザー",
+        avatar_url: "https://example.com/test-avatar.png",
+        created_at: TEST_CREATED_AT,
+      },
+      tip_tags: [
+        {
+          tags: {
+            id: 1,
+            name: "テストタグ",
+            created_at: TEST_CREATED_AT,
+          },
+        },
+      ],
+      bookmarks: [],
     },
   ];
 });

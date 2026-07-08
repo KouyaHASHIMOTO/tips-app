@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 import type { User } from "@supabase/supabase-js";
 import { MainLayout } from "../../components/templates/MainLayout";
 import { Avatar } from "../../components/atoms/avatar/Avatar";
+import type { Category } from "../../constants/categories";
+import { TipList } from "../../components/organisms/tiplist/TipList";
 
 interface UserPageProps {
   user: User;
@@ -19,48 +21,134 @@ export const UserPage = ({ user }: UserPageProps) => {
       user_id: string;
       content: string;
       created_at: string;
+      category: Category;
+      likes: {
+        id: number;
+        tip_id: number;
+        user_id: string;
+      }[];
+      more_tips: {
+        id: number;
+        tip_id: number;
+        user_id: string;
+        content: string;
+        created_at: string;
+      }[];
+
+      tip_tags: {
+        tags: {
+          name: string;
+        } | null;
+      }[];
+      profiles: {
+        id: number;
+        tip_id: number;
+        user_name: string;
+        avatar_url: string;
+        created_at: string;
+      } | null;
+      bookmarks: {
+        id: number;
+        tip_id: number;
+        user_id: string;
+        created_at: string;
+      }[];
     }[]
   >([]);
 
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
 
+  // params.userIdが変わったときだけ関数を作り直す
+  const fetchMyTips = useCallback(async () => {
+    const { data, error } = await supabase
+      .from("tips")
+      .select(
+        `*, likes(*),more_tips(*),profiles(*),tip_tags(tags(*)),bookmarks(*)`,
+      )
+      .eq("user_id", params.userId)
+      .order("created_at", { ascending: false });
+
+    setMyTips(data ?? []);
+
+    if (error) {
+      console.error(error);
+    }
+  }, [params.userId]); // params.userIdが変わったら関数を作り直す
+
   useEffect(() => {
-    const fetchMyTips = async () => {
-      const { data, error } = await supabase
-        .from("tips")
-        .select()
-        .eq("user_id", params.userId)
-        .order("created_at", { ascending: false });
+    const load = async () => {
+      const fetchProfile = async () => {
+        const { data } = await supabase
+          .from("profiles")
+          .select("avatar_url,user_name")
+          .eq("user_id", params.userId)
+          .single();
 
-      console.log(data);
+        if (data?.avatar_url) {
+          setAvatarUrl(data.avatar_url);
+        }
 
-      setMyTips(data ?? []);
+        if (data?.user_name) {
+          setUserName(data.user_name);
+        }
+      };
+      await fetchMyTips();
+      await fetchProfile();
+    };
+    load();
+  }, [fetchMyTips, params.userId]);
 
+  const addLike = async (tipId: number, isLiked: boolean) => {
+    if (isLiked) {
+      const { error } = await supabase
+        .from("likes")
+        .delete()
+        .eq("tip_id", tipId)
+        .eq("user_id", user.id);
       if (error) {
         console.error(error);
+        return;
       }
-    };
-
-    const fetchProfile = async () => {
-      const { data } = await supabase
-        .from("profiles")
-        .select("avatar_url,user_name")
-        .eq("user_id", params.userId)
-        .single();
-
-      if (data?.avatar_url) {
-        setAvatarUrl(data.avatar_url);
+    } else {
+      const { error } = await supabase.from("likes").insert({
+        tip_id: tipId,
+        user_id: user.id,
+      });
+      if (error) {
+        if (error.code === "23505") return;
+        console.error(error);
+        return;
       }
+    }
 
-      if (data?.user_name) {
-        setUserName(data.user_name);
-      }
-    };
+    await fetchMyTips();
+  };
 
-    fetchMyTips();
-    fetchProfile();
-  }, [params.userId]);
+  const addBookmark = async (tipId: number, isBookmark: boolean) => {
+    if (isBookmark) {
+      const response = await supabase
+        .from("bookmarks")
+        .delete()
+        .eq("tip_id", tipId)
+        .eq("user_id", user.id);
+    } else {
+      const { error } = await supabase
+        .from("bookmarks")
+        .insert({ tip_id: tipId, user_id: user.id });
+    }
+    await fetchMyTips();
+  };
+
+  const addMoreTip = async (tipId: number, content: string) => {
+    const { error } = await supabase
+      .from("more_tips")
+      .insert({ tip_id: tipId, user_id: user.id, content: content });
+    if (error) {
+      console.error(error);
+    }
+    await fetchMyTips();
+  };
 
   return (
     <MainLayout>
@@ -82,18 +170,13 @@ export const UserPage = ({ user }: UserPageProps) => {
             {myTips.length === 0 ? (
               <p className="text-text-sub text-center py-4">投稿がありません</p>
             ) : (
-              myTips.map((tip) => (
-                <div
-                  key={tip.id}
-                  className="border-b border-border py-4 last:border-none"
-                >
-                  <p className="font-semibold text-text-main">{tip.title}</p>
-                  <p className="text-text-sub text-sm mt-1">{tip.content}</p>
-                  <p className="text-text-muted text-xs mt-2">
-                    {new Date(tip.created_at).toLocaleDateString("ja-JP")}
-                  </p>
-                </div>
-              ))
+              <TipList
+                tips={myTips}
+                userId={user.id}
+                onLike={addLike}
+                onBookmark={addBookmark}
+                onMoreTip={addMoreTip}
+              />
             )}
           </div>
         </div>

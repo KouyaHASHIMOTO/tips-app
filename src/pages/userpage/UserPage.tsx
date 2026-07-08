@@ -6,6 +6,7 @@ import { MainLayout } from "../../components/templates/MainLayout";
 import { Avatar } from "../../components/atoms/avatar/Avatar";
 import type { Category } from "../../constants/categories";
 import { TipList } from "../../components/organisms/tiplist/TipList";
+import { FollowButton } from "../../components/atoms/followbutton/FollowButton";
 
 interface UserPageProps {
   user: User;
@@ -13,6 +14,7 @@ interface UserPageProps {
 
 export const UserPage = ({ user }: UserPageProps) => {
   const params = useParams();
+  const [isFollowing, setIsFollowing] = useState(false);
 
   const [myTips, setMyTips] = useState<
     {
@@ -125,6 +127,24 @@ export const UserPage = ({ user }: UserPageProps) => {
     await fetchMyTips();
   };
 
+  const addFollows = async (isFollowing: boolean) => {
+    if (isFollowing) {
+      // アンフォロー
+      await supabase
+        .from("follows")
+        .delete()
+        .eq("following_id", params.userId)
+        .eq("follower_id", user.id);
+    } else {
+      // フォロー
+      await supabase.from("follows").insert({
+        follower_id: user.id,
+        following_id: params.userId,
+      });
+    }
+    setIsFollowing(!isFollowing);
+  };
+
   const addBookmark = async (tipId: number, isBookmark: boolean) => {
     if (isBookmark) {
       const response = await supabase
@@ -163,6 +183,10 @@ export const UserPage = ({ user }: UserPageProps) => {
                   {userName ?? "ユーザー名未設定"}
                 </p>
               </div>
+              <FollowButton
+                isFollowing={isFollowing}
+                onClick={() => addFollows(isFollowing)}
+              />
             </div>
           </div>
           <div className="bg-card rounded-xl border border-border p-6">

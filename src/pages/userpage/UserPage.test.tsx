@@ -114,6 +114,20 @@ vi.mock("../../lib/supabase", () => ({
           }),
         };
       }
+      if (table === "follows") {
+        return {
+          select: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              eq: vi.fn().mockReturnValue({
+                maybeSingle: vi.fn().mockResolvedValue({
+                  data: { id: 1 },
+                  error: null,
+                }),
+              }),
+            }),
+          }),
+        };
+      }
     }),
   },
 }));

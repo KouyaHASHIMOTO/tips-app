@@ -4,6 +4,7 @@ import type { Category } from "../../../constants/categories";
 import { CategoryTag } from "../../atoms/categorytag/CategoryTag";
 import { TipDetailModal } from "../tipdetailmodal/TipDetailModal";
 import { Link } from "react-router-dom";
+import { Heart, Bookmark } from "lucide-react";
 
 interface TipCardProps {
   title: string;
@@ -13,6 +14,7 @@ interface TipCardProps {
   onLike?: () => void;
   onBookmark?: () => void;
   likeCount?: number;
+  bookmarkCount?: number;
   onMoreTip?: (content: string) => void;
   moreTips?: {
     id: number;
@@ -39,6 +41,7 @@ export const TipCard = ({
   onLike,
   onBookmark,
   likeCount,
+  bookmarkCount,
   onMoreTip,
   moreTips,
   isLiked,
@@ -88,38 +91,39 @@ export const TipCard = ({
           <p className="mt-1 text-text-sub line-clamp-2">{content}</p>
 
           <div className="flex items-center gap-2">
-            {userId !== user_id && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onLike?.();
-                }}
-                className={` flex items-center gap-1 px-3 py-1 rounded-full border transition-colors cursor-pointer ${
-                  isLiked
-                    ? "bg-red-50 border-red-200 text-red-500"
-                    : "bg-white border-gray-200 text-gray-500 hover:bg-gray-50"
-                }`}
-              >
-                <span>{isLiked ? "❤️" : "🤍"}</span>
-                <span className="text-sm">{likeCount}</span>
-              </button>
-            )}
+            <button
+              disabled={userId === user_id}
+              onClick={(e) => {
+                e.stopPropagation();
+                onLike?.();
+              }}
+              className={`flex items-center gap-1 text-sm transition-colors ${
+                userId === user_id
+                  ? "text-text-muted cursor-not-allowed"
+                  : "text-text-sub hover:text-red-500 cursor-pointer"
+              }`}
+            >
+              <Heart
+                size={18}
+                fill={isLiked ? "currentColor" : "none"}
+                className={isLiked ? "text-red-500" : ""}
+              />
+              <span>{likeCount}</span>
+            </button>
 
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 onBookmark?.();
               }}
-              className={`flex items-center gap-1 px-3 py-1 rounded-full border transition-colors cursor-pointer ${
+              className={`flex items-center gap-1 text-sm transition-colors cursor-pointer ${
                 isBookmark
-                  ? "bg-indigo-50 border-indigo-200 text-indigo-500"
-                  : "bg-white border-gray-200 text-gray-500 hover:bg-gray-50"
+                  ? "text-indigo-500"
+                  : "text-text-sub hover:text-indigo-500"
               }`}
             >
-              <span>{isBookmark ? "📌" : "🔖"}</span>
-              <span className="text-sm">
-                {isBookmark ? "保存済み" : "保存"}
-              </span>
+              <Bookmark size={18} fill={isBookmark ? "currentColor" : "none"} />
+              <span>{bookmarkCount}</span>
             </button>
           </div>
         </div>

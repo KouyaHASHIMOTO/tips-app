@@ -199,7 +199,7 @@ describe("TipCard", () => {
     expect(onBookmark).toHaveBeenCalled();
   });
 
-  test("自分の投稿の場合、いいねボタンが表示されない", () => {
+  test("自分の投稿の場合、いいねボタンがクリックできない", async () => {
     render(
       <MemoryRouter>
         <TipCard
@@ -214,7 +214,7 @@ describe("TipCard", () => {
         />
       </MemoryRouter>,
     );
-    expect(screen.queryByText(/❤️/)).not.toBeInTheDocument();
-    expect(screen.queryByText(/🤍/)).not.toBeInTheDocument();
+    const likeButton = screen.getByRole("button", { name: /🤍/ });
+    expect(likeButton).toBeDisabled();
   });
 });

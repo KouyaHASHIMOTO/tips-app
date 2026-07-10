@@ -75,6 +75,7 @@ export const TipList = ({
             onLike={() => onLike?.(tip.id, isLiked)}
             onBookmark={() => onBookmark?.(tip.id, isBookmark)}
             likeCount={tip.likes.length ?? 0}
+            bookmarkCount={tip.bookmarks.length ?? 0}
             onMoreTip={(content) => onMoreTip?.(tip.id, content)}
             moreTips={tip.more_tips}
             isLiked={isLiked}

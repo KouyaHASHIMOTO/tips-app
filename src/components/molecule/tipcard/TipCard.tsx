@@ -28,6 +28,7 @@ interface TipCardProps {
   avatarUrl?: string;
   category?: Category;
   tags?: string[];
+  userId?: string;
 }
 
 export const TipCard = ({
@@ -46,6 +47,7 @@ export const TipCard = ({
   avatarUrl,
   category,
   tags,
+  userId,
 }: TipCardProps) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -86,20 +88,22 @@ export const TipCard = ({
           <p className="mt-1 text-text-sub line-clamp-2">{content}</p>
 
           <div className="flex items-center gap-2">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onLike?.();
-              }}
-              className={` flex items-center gap-1 px-3 py-1 rounded-full border transition-colors cursor-pointer ${
-                isLiked
-                  ? "bg-red-50 border-red-200 text-red-500"
-                  : "bg-white border-gray-200 text-gray-500 hover:bg-gray-50"
-              }`}
-            >
-              <span>{isLiked ? "❤️" : "🤍"}</span>
-              <span className="text-sm">{likeCount}</span>
-            </button>
+            {userId !== user_id && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onLike?.();
+                }}
+                className={` flex items-center gap-1 px-3 py-1 rounded-full border transition-colors cursor-pointer ${
+                  isLiked
+                    ? "bg-red-50 border-red-200 text-red-500"
+                    : "bg-white border-gray-200 text-gray-500 hover:bg-gray-50"
+                }`}
+              >
+                <span>{isLiked ? "❤️" : "🤍"}</span>
+                <span className="text-sm">{likeCount}</span>
+              </button>
+            )}
 
             <button
               onClick={(e) => {

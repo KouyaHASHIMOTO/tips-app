@@ -66,7 +66,7 @@ export const UserPage = ({ user }: UserPageProps) => {
     const { data, error } = await supabase
       .from("tips")
       .select(
-        `*, likes(*),more_tips(*),profiles(*),tip_tags(tags(*)),bookmarks(*)`
+        `*, likes(*),more_tips(*),profiles(*),tip_tags(tags(*)),bookmarks(*)`,
       )
       .eq("user_id", params.userId)
       .order("created_at", { ascending: false });
@@ -194,10 +194,12 @@ export const UserPage = ({ user }: UserPageProps) => {
                   {userName ?? "ユーザー名未設定"}
                 </p>
               </div>
-              <FollowButton
-                isFollowing={isFollowing}
-                onClick={() => addFollows(isFollowing)}
-              />
+              {user.id !== params.userId && (
+                <FollowButton
+                  isFollowing={isFollowing}
+                  onClick={() => addFollows(isFollowing)}
+                />
+              )}
             </div>
           </div>
           <div className="bg-card rounded-xl border border-border p-6">

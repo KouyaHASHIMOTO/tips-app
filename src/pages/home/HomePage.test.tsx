@@ -12,7 +12,7 @@ const tips = vi.hoisted(() => [
   {
     id: 1,
     title: "Tipタイトル",
-    user_id: "1",
+    user_id: "2",
     content: "Tips1",
     created_at: "1111/11/11",
     likes: [{ id: 1, tip_id: 1, user_id: "1" }],
@@ -30,7 +30,7 @@ const tips = vi.hoisted(() => [
   {
     id: 2,
     title: "Tipタイトル",
-    user_id: "1",
+    user_id: "3",
     content: "Tips2",
     created_at: "1111/11/11",
     likes: [{ id: 2, tip_id: 2, user_id: "1" }],

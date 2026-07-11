@@ -93,6 +93,7 @@ export const TipCard = ({
           <div className="flex items-center gap-2">
             <button
               disabled={userId === user_id}
+              data-testid="like-button"
               onClick={(e) => {
                 e.stopPropagation();
                 onLike?.();
@@ -112,6 +113,7 @@ export const TipCard = ({
             </button>
 
             <button
+              data-testid="bookmark-button"
               onClick={(e) => {
                 e.stopPropagation();
                 onBookmark?.();

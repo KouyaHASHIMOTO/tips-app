@@ -82,7 +82,7 @@ describe("HomePage", () => {
     render(
       <MemoryRouter>
         <HomePage user={mockUser} />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
     expect(await screen.findByText("ユーザー名1")).toBeInTheDocument();
     expect(await screen.findByText("Tips1")).toBeInTheDocument();
@@ -95,9 +95,9 @@ describe("HomePage", () => {
     render(
       <MemoryRouter>
         <HomePage user={mockUser} />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
-    const likeButtons = await screen.findAllByRole("button", { name: /❤️/ });
+    const likeButtons = await screen.findAllByTestId("like-button");
     await user.click(likeButtons[0]);
 
     expect(vi.mocked(supabase.from)).toHaveBeenCalledWith("likes");
@@ -108,7 +108,7 @@ describe("HomePage", () => {
     render(
       <MemoryRouter>
         <HomePage user={mockUser} />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
     expect(screen.getByPlaceholderText("タグで検索...")).toBeInTheDocument();
   });
@@ -118,7 +118,7 @@ describe("HomePage", () => {
     render(
       <MemoryRouter>
         <HomePage user={mockUser} />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     await screen.findByText("ユーザー名1");
@@ -132,12 +132,12 @@ describe("HomePage", () => {
     render(
       <MemoryRouter>
         <HomePage user={mockUser} />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     await user.click(screen.getByRole("button", { name: "+ Tipを投稿する" }));
     expect(
-      screen.getByPlaceholderText("タイトルを入力..."),
+      screen.getByPlaceholderText("タイトルを入力...")
     ).toBeInTheDocument();
   });
 });

@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { getByTestId, render, screen } from "@testing-library/react";
 import { TipCard } from "./TipCard";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
@@ -14,7 +14,7 @@ describe("TipCard", () => {
           content="投稿内容"
           created_at="2026-05-28T07:32:56.062504+00:00"
         />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
     expect(screen.getByText("Tipタイトル")).toBeInTheDocument();
   });
@@ -28,7 +28,7 @@ describe("TipCard", () => {
           content="投稿内容"
           created_at="2026-05-28T07:32:56.062504+00:00"
         />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
     expect(screen.getByText("ユーザー名")).toBeInTheDocument();
   });
@@ -42,7 +42,7 @@ describe("TipCard", () => {
           content="投稿内容"
           created_at="2026-05-28T07:32:56.062504+00:00"
         />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
     expect(screen.getByText("投稿内容")).toBeInTheDocument();
   });
@@ -58,12 +58,12 @@ describe("TipCard", () => {
           likeCount={5}
           isLiked={true}
         />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
     const likeButton = screen.getByRole("button", { name: /5/ });
     expect(likeButton).toBeInTheDocument();
   });
-  test("isLiked=true のとき ❤️ が表示される", () => {
+  test("isLiked=true のとき ハートが塗りつぶされる", () => {
     render(
       <MemoryRouter>
         <TipCard
@@ -75,11 +75,15 @@ describe("TipCard", () => {
           likeCount={5}
           isLiked={true}
         />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
-    expect(screen.getByText(/❤️/)).toBeInTheDocument();
+
+    const likeButton = screen.getByTestId("like-button");
+    const heartIcon = likeButton.querySelector("svg");
+
+    expect(heartIcon).toHaveAttribute("fill", "currentColor");
   });
-  test("isLiked=false のとき 🤍 が表示される", () => {
+  test("isLiked=false のとき ハートが塗りつぶされない", () => {
     render(
       <MemoryRouter>
         <TipCard
@@ -91,9 +95,13 @@ describe("TipCard", () => {
           likeCount={5}
           isLiked={false}
         />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
-    expect(screen.getByText(/🤍/)).toBeInTheDocument();
+
+    const likeButton = screen.getByTestId("like-button");
+    const heartIcon = likeButton.querySelector("svg");
+
+    expect(heartIcon).toHaveAttribute("fill", "none");
   });
   test("いいねボタンをクリックするとonLike関数が呼ばれる", async () => {
     const user = userEvent.setup();
@@ -109,9 +117,9 @@ describe("TipCard", () => {
           onLike={onLike}
           isLiked={true}
         />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
-    await user.click(screen.getByRole("button", { name: /❤️/ }));
+    await user.click(screen.getByTestId("like-button"));
 
     expect(onLike).toHaveBeenCalled();
   });
@@ -126,7 +134,7 @@ describe("TipCard", () => {
           content="投稿内容"
           created_at="2026-05-28T07:32:56.062504+00:00"
         />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
     expect(screen.getByText("2026/5/28")).toBeInTheDocument();
   });
@@ -142,11 +150,11 @@ describe("TipCard", () => {
           created_at="2026-05-28T07:32:56.062504+00:00"
           category="スポーツ"
         />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
     expect(screen.getByText("スポーツ")).toBeInTheDocument();
   });
-  test("isBookmark=true のとき 📌 が表示される", () => {
+  test("isBookmark=true のとき ブックマークアイコンが塗りつぶされる", () => {
     render(
       <MemoryRouter>
         <TipCard
@@ -158,11 +166,14 @@ describe("TipCard", () => {
           likeCount={5}
           isBookmark={true}
         />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
-    expect(screen.getByText(/📌/)).toBeInTheDocument();
+    const bookmarkButton = screen.getByTestId("bookmark-button");
+    const bookmarkIcon = bookmarkButton.querySelector("svg");
+
+    expect(bookmarkIcon).toHaveAttribute("fill", "currentColor");
   });
-  test("isBookmark=false のとき 🔖 が表示される", () => {
+  test("isBookmark=false のとき ブックマークアイコンが塗りつぶされない", () => {
     render(
       <MemoryRouter>
         <TipCard
@@ -174,9 +185,12 @@ describe("TipCard", () => {
           likeCount={5}
           isBookmark={false}
         />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
-    expect(screen.getByText(/🔖/)).toBeInTheDocument();
+    const bookmarkButton = screen.getByTestId("bookmark-button");
+    const bookmarkIcon = bookmarkButton.querySelector("svg");
+
+    expect(bookmarkIcon).toHaveAttribute("fill", "none");
   });
   test("保存ボタンをクリックするとonBookmark関数が呼ばれる", async () => {
     const user = userEvent.setup();
@@ -192,9 +206,9 @@ describe("TipCard", () => {
           onBookmark={onBookmark}
           isBookmark={false}
         />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
-    await user.click(screen.getByRole("button", { name: /🔖/ }));
+    await user.click(screen.getByTestId("bookmark-button"));
 
     expect(onBookmark).toHaveBeenCalled();
   });
@@ -212,9 +226,9 @@ describe("TipCard", () => {
           isBookmark={false}
           userId={"1"}
         />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
-    const likeButton = screen.getByRole("button", { name: /🤍/ });
+    const likeButton = screen.getByTestId("like-button");
     expect(likeButton).toBeDisabled();
   });
 });

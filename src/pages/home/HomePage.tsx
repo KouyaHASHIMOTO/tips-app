@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { TipList } from "../../components/organisms/tiplist/TipList";
 import { MainLayout } from "../../components/templates/MainLayout";
 import { supabase } from "../../lib/supabase";
@@ -58,6 +58,8 @@ export const HomePage = ({ user }: HomePageProps) => {
     }[]
   >([]);
 
+  const [activeTab, setActiveTab] = useState<"new" | "following">("new");
+
   const [tagSearch, setTagSearch] = useState("");
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
 
@@ -92,7 +94,7 @@ export const HomePage = ({ user }: HomePageProps) => {
     setTrendTags(trendTags);
   };
 
-  const fetchTips = async () => {
+  const fetchTips = useCallback(async () => {
     const { data, error } = await supabase
       .from("tips")
       .select(
@@ -104,16 +106,48 @@ export const HomePage = ({ user }: HomePageProps) => {
     if (error) {
       console.error(error);
     }
+  }, []);
+
+  //フォロー中の投稿一覧
+  const fetchFollowingTips = useCallback(async () => {
+    const { data: followingUsers } = await supabase
+      .from("follows")
+      .select("following_id")
+      .eq("follower_id", user.id);
+
+    const followingIds = followingUsers?.map((follow) => follow.following_id);
+
+    const { data } = await supabase
+      .from("tips")
+      .select(
+        `*, likes(*), more_tips(*), profiles(*), tip_tags(tags(*)), bookmarks(*)`
+      )
+      .in("user_id", followingIds ?? [])
+      .order("created_at", { ascending: false });
+
+    setTips(data ?? []);
+  }, [user.id]);
+
+  const refetchTips = async () => {
+    if (activeTab === "following") {
+      await fetchFollowingTips();
+    } else {
+      await fetchTips();
+    }
   };
 
   useEffect(() => {
     const load = async () => {
-      await fetchTips();
+      if (activeTab === "following") {
+        await fetchFollowingTips();
+      } else {
+        await fetchTips();
+      }
+      await fetchTrendTags();
     };
 
     load();
-    fetchTrendTags();
-  }, []);
+  }, [activeTab, fetchFollowingTips, fetchTips]);
 
   const createTip = async (
     title: string,
@@ -152,7 +186,7 @@ export const HomePage = ({ user }: HomePageProps) => {
       }
     }
     setIsPostModalOpen(false);
-    await fetchTips();
+    await refetchTips();
     await fetchTrendTags();
   };
 
@@ -179,7 +213,7 @@ export const HomePage = ({ user }: HomePageProps) => {
       }
     }
 
-    await fetchTips();
+    await refetchTips();
   };
 
   const addBookmark = async (tipId: number, isBookmark: boolean) => {
@@ -194,7 +228,7 @@ export const HomePage = ({ user }: HomePageProps) => {
         .from("bookmarks")
         .insert({ tip_id: tipId, user_id: user.id });
     }
-    await fetchTips();
+    await refetchTips();
   };
 
   const addMoreTip = async (tipId: number, content: string) => {
@@ -204,7 +238,7 @@ export const HomePage = ({ user }: HomePageProps) => {
     if (error) {
       console.error(error);
     }
-    await fetchTips();
+    await refetchTips();
   };
 
   const filteredTips =
@@ -257,6 +291,28 @@ export const HomePage = ({ user }: HomePageProps) => {
         </div>
       )}
 
+      <div className="flex gap-2 mb-4">
+        <button
+          onClick={() => setActiveTab("new")}
+          className={`cursor-pointer px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+            activeTab === "new"
+              ? "bg-accent text-white"
+              : "text-text-sub hover:bg-border"
+          }`}
+        >
+          新着
+        </button>
+        <button
+          onClick={() => setActiveTab("following")}
+          className={`cursor-pointer px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+            activeTab === "following"
+              ? "bg-accent text-white"
+              : "text-text-sub hover:bg-border"
+          }`}
+        >
+          フォロー中
+        </button>
+      </div>
       <TipList
         tips={filteredTips}
         onLike={addLike}

@@ -11,7 +11,7 @@ const mockUser = { id: "1" } as unknown as User;
 const tips = vi.hoisted(() => [
   {
     id: 1,
-    title: "Tipタイトル",
+    title: "Tipタイトル1",
     user_id: "2",
     content: "Tips1",
     created_at: "1111/11/11",
@@ -29,7 +29,7 @@ const tips = vi.hoisted(() => [
   },
   {
     id: 2,
-    title: "Tipタイトル",
+    title: "Tipタイトル2",
     user_id: "3",
     content: "Tips2",
     created_at: "1111/11/11",
@@ -59,6 +59,15 @@ vi.mock("../../lib/supabase", () => ({
           }),
         };
       }
+      if (table === "follows") {
+        return {
+          select: vi.fn().mockReturnValue({
+            eq: vi.fn().mockResolvedValue({
+              data: [{ following_id: "2" }, { following_id: "3" }],
+            }),
+          }),
+        };
+      }
       // それ以外のテーブルは今まで通り
       return {
         select: vi.fn().mockReturnValue({
@@ -66,7 +75,13 @@ vi.mock("../../lib/supabase", () => ({
             data: tips,
             error: null,
           }),
+          in: vi.fn().mockReturnValue({
+            order: vi.fn().mockResolvedValue({
+              data: tips.filter((tip) => ["2", "3"].includes(tip.user_id)),
+            }),
+          }),
         }),
+
         insert: vi.fn().mockResolvedValue({ error: null }),
         delete: vi.fn().mockReturnValue({
           eq: vi.fn().mockReturnValue({
@@ -139,5 +154,16 @@ describe("HomePage", () => {
     expect(
       screen.getByPlaceholderText("タイトルを入力...")
     ).toBeInTheDocument();
+  });
+  test("フォロー中タブをクリックすると、フォローしているユーザーの投稿が表示される", async () => {
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter>
+        <HomePage user={mockUser} />
+      </MemoryRouter>
+    );
+
+    await user.click(screen.getByRole("button", { name: "フォロー中" }));
+    expect(screen.getByText("Tipタイトル1")).toBeInTheDocument();
   });
 });

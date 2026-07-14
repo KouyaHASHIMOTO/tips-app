@@ -2,12 +2,16 @@ import type { User } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
 import { useEffect, useState } from "react";
 import { MainLayout } from "../../components/templates/MainLayout";
+import { Button } from "../../components/atoms/button/Button";
+import { useNavigate } from "react-router-dom";
 
 interface SettingsPageProps {
   user: User;
 }
 
 export const SettingsPage = ({ user }: SettingsPageProps) => {
+  const navigate = useNavigate();
+
   // 選択した画像のプレビューURL
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   // 完了メッセージのstate
@@ -68,6 +72,15 @@ export const SettingsPage = ({ user }: SettingsPageProps) => {
     reader.readAsDataURL(file);
   };
 
+  const signOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error(error);
+      return;
+    }
+    navigate("/login");
+  };
+
   return (
     <MainLayout>
       <div className="min-h-screen bg-base p-8">
@@ -109,6 +122,14 @@ export const SettingsPage = ({ user }: SettingsPageProps) => {
               {successMessage && (
                 <p className="text-accent text-sm mt-2">{successMessage}</p>
               )}
+            </div>
+            <div className="pt-6">
+              <h2 className="text-lg font-semibold mb-4 text-text-main">
+                アカウント
+              </h2>
+              <Button onClick={signOut} variant="primary">
+                ログアウト
+              </Button>
             </div>
           </div>
         </div>

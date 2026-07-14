@@ -1,4 +1,3 @@
-import { Header } from "../organisms/header/Header";
 import { Sidebar } from "../organisms/sidebar/Sidebar";
 
 interface MainLayoutProps {
@@ -9,7 +8,6 @@ interface MainLayoutProps {
 export const MainLayout = ({ children, rightPanel }: MainLayoutProps) => {
   return (
     <div className="min-h-screen bg-base">
-      <Header />
       <div className="flex pt-14">
         <Sidebar />
         <main className="ml-64 flex-1 p-4 mr-72">{children}</main>

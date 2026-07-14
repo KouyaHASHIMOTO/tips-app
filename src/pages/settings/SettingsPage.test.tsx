@@ -4,8 +4,15 @@ import type { User } from "@supabase/supabase-js";
 import { MemoryRouter } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
 
+const mockUser = { id: "test-id" } as unknown as User;
+
 vi.mock("../../lib/supabase", () => ({
   supabase: {
+    auth: {
+      signOut: vi.fn().mockResolvedValue({
+        error: null,
+      }),
+    },
     from: vi.fn().mockReturnValue({
       select: vi.fn().mockReturnValue({
         eq: vi.fn().mockReturnValue({
@@ -29,7 +36,6 @@ vi.mock("../../lib/supabase", () => ({
 
 describe("SettingsPage", () => {
   test("プロフィールアイコン変更テキストが表示されている", () => {
-    const mockUser = { id: "test-id" } as unknown as User;
     render(
       <MemoryRouter>
         <SettingsPage user={mockUser} />
@@ -38,7 +44,6 @@ describe("SettingsPage", () => {
     expect(screen.getByText("プロフィールアイコンの変更")).toBeInTheDocument();
   });
   test("画像選択ボタンが表示されている", () => {
-    const mockUser = { id: "test-id" } as unknown as User;
     render(
       <MemoryRouter>
         <SettingsPage user={mockUser} />
@@ -48,7 +53,6 @@ describe("SettingsPage", () => {
   });
   test("画像アップロード後に成功メッセージが表示される", async () => {
     const user = userEvent.setup();
-    const mockUser = { id: "test-id" } as unknown as User;
     render(
       <MemoryRouter>
         <SettingsPage user={mockUser} />
@@ -61,6 +65,17 @@ describe("SettingsPage", () => {
 
     expect(
       screen.getByText("プロフィール画像を変更しました！"),
+    ).toBeInTheDocument();
+  });
+  test("SettingsPageにログアウトボタンが有る", () => {
+    render(
+      <MemoryRouter>
+        <SettingsPage user={mockUser} />
+      </MemoryRouter>,
+    );
+
+    expect(
+      screen.getByRole("button", { name: "ログアウト" }),
     ).toBeInTheDocument();
   });
 });

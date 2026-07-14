@@ -23,4 +23,12 @@ describe("Sidebar", () => {
     expect(screen.getByText("テクノロジー")).toBeInTheDocument();
     expect(screen.getByText("その他")).toBeInTheDocument();
   });
+  test("SidebarにTippsと表示されている", () => {
+    render(
+      <MemoryRouter>
+        <Sidebar />
+      </MemoryRouter>,
+    );
+    expect(screen.getByAltText("Tipps")).toBeInTheDocument();
+  });
 });

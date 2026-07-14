@@ -1,5 +1,6 @@
 import { NavLink, Link, useSearchParams } from "react-router-dom";
 import { CATEGORIES } from "../../../constants/categories";
+import logo from "../../../assets/logo.png";
 
 const baseClass = "px-4 py-2 rounded-lg w-full block transition-colors";
 
@@ -9,6 +10,12 @@ export const Sidebar = () => {
 
   return (
     <nav className="fixed left-0 top-14 h-full w-64 bg-surface border-r border-border p-4 flex flex-col gap-2 overflow-y-auto">
+      {/* ロゴ画像。高さを揃えて、リンク一覧との間に余白を入れる */}
+      <img
+        src={logo}
+        alt="Tipps"
+        className="h-10 w-auto self-start px-2 mb-2"
+      />
       <Link
         to="/"
         className={

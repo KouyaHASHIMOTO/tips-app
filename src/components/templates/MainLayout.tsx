@@ -8,7 +8,7 @@ interface MainLayoutProps {
 export const MainLayout = ({ children, rightPanel }: MainLayoutProps) => {
   return (
     <div className="min-h-screen bg-base">
-      <div className="flex pt-14">
+      <div className="flex">
         <Sidebar />
         <main className="ml-64 flex-1 p-4 mr-72">{children}</main>
         {rightPanel && (

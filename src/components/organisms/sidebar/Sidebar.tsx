@@ -1,8 +1,10 @@
 import { NavLink, Link, useSearchParams } from "react-router-dom";
 import { CATEGORIES } from "../../../constants/categories";
 import logo from "../../../assets/logo.png";
+import { Home, User, Bookmark, Settings } from "lucide-react";
 
-const baseClass = "px-4 py-2 rounded-lg w-full block transition-colors";
+const baseClass =
+  "px-4 py-2 rounded-lg w-full flex items-center gap-2 transition-colors";
 
 export const Sidebar = () => {
   const [searchParams] = useSearchParams();
@@ -14,7 +16,7 @@ export const Sidebar = () => {
       <img
         src={logo}
         alt="Tipps"
-        className="h-10 w-auto self-start px-2 mb-2"
+        className="h-13 w-auto self-start px-2 mb-2"
       />
       <Link
         to="/"
@@ -24,6 +26,7 @@ export const Sidebar = () => {
             : `${baseClass} text-text-sub hover:text-text-main hover:bg-border`
         }
       >
+        <Home size={18} />
         ホーム
       </Link>
       <NavLink
@@ -34,6 +37,7 @@ export const Sidebar = () => {
             : `${baseClass} text-text-sub hover:text-text-main hover:bg-border`
         }
       >
+        <User size={18} />
         マイページ
       </NavLink>
       <NavLink
@@ -44,6 +48,7 @@ export const Sidebar = () => {
             : `${baseClass} text-text-sub hover:text-text-main hover:bg-border`
         }
       >
+        <Bookmark size={18} />
         保存済み
       </NavLink>
       <NavLink
@@ -54,6 +59,7 @@ export const Sidebar = () => {
             : `${baseClass} text-text-sub hover:text-text-main hover:bg-border`
         }
       >
+        <Settings size={18} />
         設定
       </NavLink>
 

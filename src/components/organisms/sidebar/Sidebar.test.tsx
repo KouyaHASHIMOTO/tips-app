@@ -7,7 +7,7 @@ describe("Sidebar", () => {
     render(
       <MemoryRouter>
         <Sidebar />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
     expect(screen.getByText("ホーム")).toBeInTheDocument();
     expect(screen.getByText("マイページ")).toBeInTheDocument();
@@ -17,7 +17,7 @@ describe("Sidebar", () => {
     render(
       <MemoryRouter>
         <Sidebar />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
     expect(screen.getByText("エンタメ")).toBeInTheDocument();
     expect(screen.getByText("テクノロジー")).toBeInTheDocument();
@@ -27,8 +27,18 @@ describe("Sidebar", () => {
     render(
       <MemoryRouter>
         <Sidebar />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
     expect(screen.getByAltText("Tipps")).toBeInTheDocument();
+  });
+  test("ホームリンクにアイコンが表示されている", () => {
+    render(
+      <MemoryRouter>
+        <Sidebar />
+      </MemoryRouter>
+    );
+    const homeLink = screen.getByRole("link", { name: "ホーム" });
+    const homeIcon = homeLink.querySelector("svg");
+    expect(homeIcon).toBeInTheDocument();
   });
 });

@@ -2,9 +2,11 @@ import { NavLink, Link, useSearchParams } from "react-router-dom";
 import { CATEGORIES } from "../../../constants/categories";
 import logo from "../../../assets/logo.png";
 import { Home, User, Bookmark, Settings } from "lucide-react";
+import { CATEGORY_COLORS } from "../../../constants/categoryColors";
 
 const baseClass =
   "px-4 py-2 rounded-lg w-full flex items-center gap-2 transition-colors";
+const categoryClass = "text-sm"; // カテゴリだけに足す追加クラス
 
 export const Sidebar = () => {
   const [searchParams] = useSearchParams();
@@ -73,10 +75,14 @@ export const Sidebar = () => {
           to={`/?category=${encodeURIComponent(cat)}`}
           className={
             currentCategory === cat
-              ? `${baseClass} font-medium text-accent bg-accent-light`
-              : `${baseClass} text-text-sub hover:text-text-main hover:bg-border`
+              ? `${baseClass} ${categoryClass} font-medium text-accent bg-accent-light`
+              : `${baseClass} ${categoryClass} text-text-sub hover:text-text-main hover:bg-border`
           }
         >
+          <span
+            data-testid={`category-dot-${cat}`}
+            className={`w-2 h-2 rounded-full ${CATEGORY_COLORS[cat]}`}
+          />
           {cat}
         </Link>
       ))}

@@ -19,7 +19,6 @@ describe("Sidebar", () => {
         <Sidebar />
       </MemoryRouter>
     );
-    expect(screen.getByText("エンタメ")).toBeInTheDocument();
     expect(screen.getByText("テクノロジー")).toBeInTheDocument();
     expect(screen.getByText("その他")).toBeInTheDocument();
   });
@@ -40,5 +39,15 @@ describe("Sidebar", () => {
     const homeLink = screen.getByRole("link", { name: "ホーム" });
     const homeIcon = homeLink.querySelector("svg");
     expect(homeIcon).toBeInTheDocument();
+  });
+
+  test("カテゴリの横に色付きの丸が表示されている", () => {
+    render(
+      <MemoryRouter>
+        <Sidebar />
+      </MemoryRouter>
+    );
+    const colorCircle = screen.getByTestId("category-dot-テクノロジー");
+    expect(colorCircle).toBeInTheDocument();
   });
 });

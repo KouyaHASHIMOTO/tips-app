@@ -3,6 +3,7 @@ import { SettingsPage } from "./SettingsPage";
 import type { User } from "@supabase/supabase-js";
 import { MemoryRouter } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
+import { supabase } from "../../lib/supabase";
 
 const mockUser = { id: "test-id" } as unknown as User;
 
@@ -77,5 +78,16 @@ describe("SettingsPage", () => {
     expect(
       screen.getByRole("button", { name: "ログアウト" }),
     ).toBeInTheDocument();
+  });
+  test("ログアウトボタンをクリックしたらsupabase.auth.signOutが呼ばれる", async () => {
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter>
+        <SettingsPage user={mockUser} />
+      </MemoryRouter>,
+    );
+    await user.click(screen.getByRole("button", { name: "ログアウト" }));
+
+    expect(vi.mocked(supabase.auth.signOut)).toHaveBeenCalled();
   });
 });

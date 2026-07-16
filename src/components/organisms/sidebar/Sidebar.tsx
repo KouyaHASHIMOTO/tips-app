@@ -6,7 +6,6 @@ import { Home, User, Bookmark, Settings } from "lucide-react";
 
 const baseClass =
   "px-4 py-2 rounded-lg w-full flex items-center gap-2 transition-colors";
-const categoryClass = "text-sm";
 
 export const Sidebar = () => {
   const [searchParams] = useSearchParams();
@@ -44,7 +43,7 @@ export const Sidebar = () => {
         保存済み
       </NavLink>
 
-      <div className="mt-2">
+      <div className="mt-3">
         <span className="px-4 text-xs text-text-muted">カテゴリ</span>
         {CATEGORIES.map((cat) => (
           <Link
@@ -52,8 +51,8 @@ export const Sidebar = () => {
             to={`/?category=${encodeURIComponent(cat)}`}
             className={
               currentCategory === cat
-                ? `${baseClass} ${categoryClass} font-medium text-accent bg-accent-light`
-                : `${baseClass} ${categoryClass} text-text-sub hover:text-text-main hover:bg-border`
+                ? `${baseClass}  font-medium text-accent bg-accent-light`
+                : `${baseClass}  text-text-sub hover:text-text-main hover:bg-border`
             }
           >
             <span

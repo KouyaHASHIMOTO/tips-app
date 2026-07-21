@@ -33,7 +33,10 @@ const tips = vi.hoisted(() => [
     user_id: "3",
     content: "Tips2",
     created_at: "1111/11/11",
-    likes: [{ id: 2, tip_id: 2, user_id: "1" }],
+    likes: [
+      { id: 2, tip_id: 2, user_id: "1" },
+      { id: 3, tip_id: 3, user_id: "2" },
+    ],
     more_tips: [],
     tip_tags: [],
     profiles: {
@@ -97,7 +100,7 @@ describe("HomePage", () => {
     render(
       <MemoryRouter>
         <HomePage user={mockUser} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(await screen.findByText("ユーザー名1")).toBeInTheDocument();
     expect(await screen.findByText("Tips1")).toBeInTheDocument();
@@ -110,7 +113,7 @@ describe("HomePage", () => {
     render(
       <MemoryRouter>
         <HomePage user={mockUser} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     const likeButtons = await screen.findAllByTestId("like-button");
     await user.click(likeButtons[0]);
@@ -123,7 +126,7 @@ describe("HomePage", () => {
     render(
       <MemoryRouter>
         <HomePage user={mockUser} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(screen.getByPlaceholderText("タグで検索...")).toBeInTheDocument();
   });
@@ -133,7 +136,7 @@ describe("HomePage", () => {
     render(
       <MemoryRouter>
         <HomePage user={mockUser} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     await screen.findByText("ユーザー名1");
@@ -147,12 +150,12 @@ describe("HomePage", () => {
     render(
       <MemoryRouter>
         <HomePage user={mockUser} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     await user.click(screen.getByRole("button", { name: "+ Tipを投稿する" }));
     expect(
-      screen.getByPlaceholderText("タイトルを入力...")
+      screen.getByPlaceholderText("タイトルを入力..."),
     ).toBeInTheDocument();
   });
   test("フォロー中タブをクリックすると、フォローしているユーザーの投稿が表示される", async () => {
@@ -160,10 +163,25 @@ describe("HomePage", () => {
     render(
       <MemoryRouter>
         <HomePage user={mockUser} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     await user.click(screen.getByRole("button", { name: "フォロー中" }));
     expect(screen.getByText("Tipタイトル1")).toBeInTheDocument();
+  });
+  test("人気タブをクリックすると、いいね数が多い順にTipが並ぶ", async () => {
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter>
+        <HomePage user={mockUser} />
+      </MemoryRouter>,
+    );
+
+    await screen.findByText("ユーザー名1");
+    await user.click(screen.getByRole("button", { name: "人気" }));
+
+    const titles = screen.getAllByTestId("tip-title");
+    expect(titles[0]).toHaveTextContent("Tipタイトル2");
+    expect(titles[1]).toHaveTextContent("Tipタイトル1");
   });
 });

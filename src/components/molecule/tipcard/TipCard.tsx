@@ -87,7 +87,12 @@ export const TipCard = ({
               ))}
             </div>
           )}
-          <p className="font-semibold mt-1 text-text-main">{title}</p>
+          <p
+            data-testid="tip-title"
+            className="font-semibold mt-1 text-text-main"
+          >
+            {title}
+          </p>
           <p className="mt-1 text-text-sub line-clamp-2">{content}</p>
 
           <div className="flex items-center gap-2">

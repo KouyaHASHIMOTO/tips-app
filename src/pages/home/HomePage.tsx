@@ -66,7 +66,7 @@ export const HomePage = ({ user }: HomePageProps) => {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
 
   const [trendTags, setTrendTags] = useState<{ name: string; count: number }[]>(
-    [],
+    []
   );
 
   const fetchTrendTags = async () => {
@@ -79,15 +79,12 @@ export const HomePage = ({ user }: HomePageProps) => {
 
     if (!data) return;
 
-    const countMap = data.reduce(
-      (acc, current) => {
-        const name = current.tags?.name;
-        if (!name) return acc;
-        acc[name] = (acc[name] ?? 0) + 1;
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
+    const countMap = data.reduce((acc, current) => {
+      const name = current.tags?.name;
+      if (!name) return acc;
+      acc[name] = (acc[name] ?? 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
 
     // countMap を「件数が多い順に並んだタグの配列」に変換する
     const trendTags = Object.entries(countMap)
@@ -103,7 +100,7 @@ export const HomePage = ({ user }: HomePageProps) => {
     const { data, error } = await supabase
       .from("tips")
       .select(
-        `*, likes(*),more_tips(*),profiles(*),tip_tags(tags(*)),bookmarks(*)`,
+        `*, likes(*),more_tips(*),profiles(*),tip_tags(tags(*)),bookmarks(*)`
       )
       .order("created_at", { ascending: false });
     setTips(data ?? []);
@@ -125,7 +122,7 @@ export const HomePage = ({ user }: HomePageProps) => {
     const { data } = await supabase
       .from("tips")
       .select(
-        `*, likes(*), more_tips(*), profiles(*), tip_tags(tags(*)), bookmarks(*)`,
+        `*, likes(*), more_tips(*), profiles(*), tip_tags(tags(*)), bookmarks(*)`
       )
       .in("user_id", followingIds ?? [])
       .order("created_at", { ascending: false });
@@ -158,7 +155,7 @@ export const HomePage = ({ user }: HomePageProps) => {
     title: string,
     content: string,
     category: Category,
-    tags: string[],
+    tags: string[]
   ) => {
     // まずTipを保存
     const { data: tip, error } = await supabase
@@ -246,11 +243,19 @@ export const HomePage = ({ user }: HomePageProps) => {
     await refetchTips();
   };
 
+  // activeTabに応じて並び替えたTip一覧
+  const sortedTips =
+    activeTab === "popular"
+      ? [...tips].sort((a, b) => b.likes.length - a.likes.length)
+      : activeTab === "saved"
+      ? [...tips].sort((a, b) => b.bookmarks.length - a.bookmarks.length)
+      : tips;
+
   const filteredTips =
     tagSearch !== ""
-      ? tips
+      ? sortedTips
           .filter((tip) =>
-            tip.tip_tags.some((tt) => tt.tags?.name.includes(tagSearch)),
+            tip.tip_tags.some((tt) => tt.tags?.name.includes(tagSearch))
           )
           .filter((tip) => {
             if (!selectedCategory) {
@@ -260,8 +265,8 @@ export const HomePage = ({ user }: HomePageProps) => {
             }
           })
       : selectedCategory !== null
-        ? tips.filter((tip) => tip.category === selectedCategory)
-        : tips;
+      ? sortedTips.filter((tip) => tip.category === selectedCategory)
+      : sortedTips;
   return (
     <MainLayout
       rightPanel={
@@ -316,6 +321,26 @@ export const HomePage = ({ user }: HomePageProps) => {
           }`}
         >
           フォロー中
+        </button>
+        <button
+          onClick={() => setActiveTab("popular")}
+          className={`cursor-pointer px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+            activeTab === "popular"
+              ? "bg-accent text-white"
+              : "text-text-sub hover:bg-border"
+          }`}
+        >
+          人気
+        </button>
+        <button
+          onClick={() => setActiveTab("saved")}
+          className={`cursor-pointer px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+            activeTab === "saved"
+              ? "bg-accent text-white"
+              : "text-text-sub hover:bg-border"
+          }`}
+        >
+          保存数
         </button>
       </div>
       <TipList

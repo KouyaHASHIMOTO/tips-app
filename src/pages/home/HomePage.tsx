@@ -77,6 +77,11 @@ export const HomePage = ({ user }: HomePageProps) => {
     )
   `);
 
+    if (error) {
+      console.error(error);
+      return;
+    }
+
     if (!data) return;
 
     const countMap = data.reduce((acc, current) => {
@@ -220,16 +225,27 @@ export const HomePage = ({ user }: HomePageProps) => {
 
   const addBookmark = async (tipId: number, isBookmark: boolean) => {
     if (isBookmark) {
-      const response = await supabase
+      const { error } = await supabase
         .from("bookmarks")
         .delete()
         .eq("tip_id", tipId)
         .eq("user_id", user.id);
+
+      if (error) {
+        console.error(error);
+        return;
+      }
     } else {
       const { error } = await supabase
         .from("bookmarks")
         .insert({ tip_id: tipId, user_id: user.id });
+
+      if (error) {
+        console.error(error);
+        return;
+      }
     }
+
     await refetchTips();
   };
 

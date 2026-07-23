@@ -1,4 +1,4 @@
-import { getByTestId, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { TipCard } from "./TipCard";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
@@ -148,11 +148,11 @@ describe("TipCard", () => {
           userName="ユーザー名"
           content="投稿内容"
           created_at="2026-05-28T07:32:56.062504+00:00"
-          category="スポーツ"
+          category="テクノロジー"
         />
       </MemoryRouter>
     );
-    expect(screen.getByText("スポーツ")).toBeInTheDocument();
+    expect(screen.getByText("テクノロジー")).toBeInTheDocument();
   });
   test("isBookmark=true のとき ブックマークアイコンが塗りつぶされる", () => {
     render(

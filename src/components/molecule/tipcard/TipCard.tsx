@@ -5,6 +5,7 @@ import { CategoryTag } from "../../atoms/categorytag/CategoryTag";
 import { TipDetailModal } from "../tipdetailmodal/TipDetailModal";
 import { Link } from "react-router-dom";
 import { Heart, Bookmark } from "lucide-react";
+import { formatRelativeTime } from "../../../lib/formatRelativeTime";
 
 interface TipCardProps {
   title: string;
@@ -57,44 +58,41 @@ export const TipCard = ({
   return (
     <>
       <div
-        className="bg-card border border-border rounded-xl p-4 mb-3 flex gap-3 cursor-pointer"
+        className="bg-card border border-border rounded-xl p-4 mb-3 cursor-pointer"
         onClick={() => setShowModal(true)}
       >
-        <Link to={`/users/${user_id}`} onClick={(e) => e.stopPropagation()}>
-          <Avatar src={avatarUrl ?? ""} alt={userName ?? user_id} />
-        </Link>
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
-            <p className="font-medium text-text-main">{userName}</p>
-            <p className="text-text-muted text-sm">
-              {new Date(created_at).toLocaleDateString("ja-JP")}
-            </p>
-          </div>
-          {category && (
-            <div className="mt-1">
-              <CategoryTag category={category} />
-            </div>
-          )}
-          {tags && tags.length > 0 && (
-            <div className="flex flex-wrap gap-1 mt-1">
-              {tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="px-2 py-0.5 bg-accent-light text-accent text-xs rounded-full"
-                >
-                  #{tag}
-                </span>
-              ))}
-            </div>
-          )}
-          <p
-            data-testid="tip-title"
-            className="font-semibold mt-1 text-text-main"
-          >
-            {title}
+        {/* 上段: カテゴリ + 経過時間 */}
+        <div className="flex items-center justify-between mb-2">
+          {category && <CategoryTag category={category} />}
+          <p className="text-text-muted text-xs">
+            {formatRelativeTime(created_at)}
           </p>
-          <p className="mt-1 text-text-sub line-clamp-2">{content}</p>
+        </div>
 
+        {/* タイトル: 目立つスタイルに変更 */}
+        <p
+          data-testid="tip-title"
+          className="text-lg font-medium text-text-main mb-1"
+        >
+          {title}
+        </p>
+        <p className="text-text-sub line-clamp-2 mb-2">{content}</p>
+
+        {tags && tags.length > 0 && (
+          <div className="flex flex-wrap gap-1 mb-3">
+            {tags.map((tag) => (
+              <span
+                key={tag}
+                className="px-2 py-0.5 bg-accent-light text-accent text-xs rounded-full"
+              >
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* 下段: いいね・保存 + アバター・ユーザー名 */}
+        <div className="flex items-center justify-between border-t border-border pt-2">
           <div className="flex items-center gap-2">
             <button
               disabled={userId === user_id}
@@ -133,6 +131,15 @@ export const TipCard = ({
               <span>{bookmarkCount}</span>
             </button>
           </div>
+
+          <Link
+            to={`/users/${user_id}`}
+            onClick={(e) => e.stopPropagation()}
+            className="flex items-center gap-2"
+          >
+            <Avatar src={avatarUrl ?? ""} alt={userName ?? user_id} />
+            <p className="font-medium text-text-main text-sm">{userName}</p>
+          </Link>
         </div>
       </div>
 

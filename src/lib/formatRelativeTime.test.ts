@@ -36,4 +36,18 @@ describe("formatRelativeTime", () => {
 
     expect(result).toBe("2026/4/30");
   });
+  test("投稿から60以内なら『たった今』と表示される", () => {
+    vi.setSystemTime(new Date("2026-06-30T12:00:00"));
+
+    const result = formatRelativeTime("2026-06-30T11:59:50");
+
+    expect(result).toBe("たった今");
+  });
+  test("未来の時刻でもマイナスにならない", () => {
+    vi.setSystemTime(new Date("2026-06-30T12:00:00"));
+
+    const result = formatRelativeTime("2026-06-30T12:00:10");
+
+    expect(result).toBe("たった今");
+  });
 });

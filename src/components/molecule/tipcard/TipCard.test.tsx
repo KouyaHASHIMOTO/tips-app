@@ -4,6 +4,10 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 
 describe("TipCard", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   test("タイトルが表示されている", () => {
     render(
       <MemoryRouter>
@@ -14,7 +18,7 @@ describe("TipCard", () => {
           content="投稿内容"
           created_at="2026-05-28T07:32:56.062504+00:00"
         />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(screen.getByText("Tipタイトル")).toBeInTheDocument();
   });
@@ -28,7 +32,7 @@ describe("TipCard", () => {
           content="投稿内容"
           created_at="2026-05-28T07:32:56.062504+00:00"
         />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(screen.getByText("ユーザー名")).toBeInTheDocument();
   });
@@ -42,7 +46,7 @@ describe("TipCard", () => {
           content="投稿内容"
           created_at="2026-05-28T07:32:56.062504+00:00"
         />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(screen.getByText("投稿内容")).toBeInTheDocument();
   });
@@ -58,7 +62,7 @@ describe("TipCard", () => {
           likeCount={5}
           isLiked={true}
         />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     const likeButton = screen.getByRole("button", { name: /5/ });
     expect(likeButton).toBeInTheDocument();
@@ -75,7 +79,7 @@ describe("TipCard", () => {
           likeCount={5}
           isLiked={true}
         />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const likeButton = screen.getByTestId("like-button");
@@ -95,7 +99,7 @@ describe("TipCard", () => {
           likeCount={5}
           isLiked={false}
         />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const likeButton = screen.getByTestId("like-button");
@@ -117,7 +121,7 @@ describe("TipCard", () => {
           onLike={onLike}
           isLiked={true}
         />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     await user.click(screen.getByTestId("like-button"));
 
@@ -125,6 +129,8 @@ describe("TipCard", () => {
   });
 
   test("投稿日時が表示されている", () => {
+    vi.setSystemTime(new Date("2026-06-30T12:00:00"));
+
     render(
       <MemoryRouter>
         <TipCard
@@ -132,9 +138,9 @@ describe("TipCard", () => {
           user_id="1"
           userName="ユーザー名"
           content="投稿内容"
-          created_at="2026-05-28T07:32:56.062504+00:00"
+          created_at="2026-05-28T12:00:00"
         />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(screen.getByText("2026/5/28")).toBeInTheDocument();
   });
@@ -150,7 +156,7 @@ describe("TipCard", () => {
           created_at="2026-05-28T07:32:56.062504+00:00"
           category="テクノロジー"
         />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(screen.getByText("テクノロジー")).toBeInTheDocument();
   });
@@ -166,7 +172,7 @@ describe("TipCard", () => {
           likeCount={5}
           isBookmark={true}
         />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     const bookmarkButton = screen.getByTestId("bookmark-button");
     const bookmarkIcon = bookmarkButton.querySelector("svg");
@@ -185,7 +191,7 @@ describe("TipCard", () => {
           likeCount={5}
           isBookmark={false}
         />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     const bookmarkButton = screen.getByTestId("bookmark-button");
     const bookmarkIcon = bookmarkButton.querySelector("svg");
@@ -206,7 +212,7 @@ describe("TipCard", () => {
           onBookmark={onBookmark}
           isBookmark={false}
         />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     await user.click(screen.getByTestId("bookmark-button"));
 
@@ -226,7 +232,7 @@ describe("TipCard", () => {
           isBookmark={false}
           userId={"1"}
         />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     const likeButton = screen.getByTestId("like-button");
     expect(likeButton).toBeDisabled();

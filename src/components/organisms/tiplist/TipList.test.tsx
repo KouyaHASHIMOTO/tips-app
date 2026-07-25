@@ -20,7 +20,7 @@ const tips = [
       created_at: "",
     },
     bookmarks: [],
-    category: "スポーツ" as const,
+    category: "テクノロジー" as const,
   },
   {
     id: 2,
@@ -39,7 +39,7 @@ const tips = [
       created_at: "",
     },
     bookmarks: [],
-    category: "スポーツ" as const,
+    category: "テクノロジー" as const,
   },
 ];
 

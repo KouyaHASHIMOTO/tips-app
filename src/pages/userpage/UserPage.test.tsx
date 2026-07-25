@@ -15,7 +15,7 @@ const mockTips = vi.hoisted(() => {
       user_id: "abc123",
       created_at: TEST_CREATED_AT,
       title: "テストタイトル１",
-      category: "スポーツ" as const,
+      category: "テクノロジー" as const,
       likes: [
         {
           id: 1,
@@ -55,7 +55,7 @@ const mockTips = vi.hoisted(() => {
       user_id: TEST_USER_ID,
       created_at: TEST_CREATED_AT,
       title: "テストタイトル２",
-      category: "スポーツ" as const,
+      category: "テクノロジー" as const,
       likes: [
         {
           id: 2,
@@ -141,15 +141,15 @@ describe("UserPage", () => {
           {/* :userId が実際のURLの値に置き換わる */}
           <Route path="/users/:userId" element={<UserPage user={mockUser} />} />
         </Routes>
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     expect(
-      await screen.findByText("user_idの一致する投稿です"),
+      await screen.findByText("user_idの一致する投稿です")
     ).toBeInTheDocument();
 
     expect(
-      screen.queryByText("user_idの一致しない投稿です"),
+      screen.queryByText("user_idの一致しない投稿です")
     ).not.toBeInTheDocument();
   });
 });

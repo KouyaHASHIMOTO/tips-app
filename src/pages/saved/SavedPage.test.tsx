@@ -55,7 +55,7 @@ const mockTips = vi.hoisted(() => {
       user_id: TEST_USER_ID,
       created_at: TEST_CREATED_AT,
       title: "テストタイトル２",
-      category: "テクノロジー" as const,
+      category: "雑学" as const,
       likes: [
         {
           id: 2,

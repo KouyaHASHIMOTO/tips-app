@@ -66,7 +66,7 @@ export const UserPage = ({ user }: UserPageProps) => {
     const { data, error } = await supabase
       .from("tips")
       .select(
-        `*, likes(*),more_tips(*),profiles(*),tip_tags(tags(*)),bookmarks(*)`,
+        `*, likes(*),more_tips(*),profiles(*),tip_tags(tags(*)),bookmarks(*)`
       )
       .eq("user_id", params.userId)
       .order("created_at", { ascending: false });
@@ -158,15 +158,23 @@ export const UserPage = ({ user }: UserPageProps) => {
 
   const addBookmark = async (tipId: number, isBookmark: boolean) => {
     if (isBookmark) {
-      const response = await supabase
+      const { error } = await supabase
         .from("bookmarks")
         .delete()
         .eq("tip_id", tipId)
         .eq("user_id", user.id);
+      if (error) {
+        console.error(error);
+        return;
+      }
     } else {
       const { error } = await supabase
         .from("bookmarks")
         .insert({ tip_id: tipId, user_id: user.id });
+      if (error) {
+        console.error(error);
+        return;
+      }
     }
     await fetchMyTips();
   };
@@ -177,6 +185,7 @@ export const UserPage = ({ user }: UserPageProps) => {
       .insert({ tip_id: tipId, user_id: user.id, content: content });
     if (error) {
       console.error(error);
+      return;
     }
     await fetchMyTips();
   };

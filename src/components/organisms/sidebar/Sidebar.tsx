@@ -16,7 +16,7 @@ export const Sidebar = () => {
       <img
         src={logo}
         alt="Tipps"
-        className="h-13 w-auto self-start px-2 mb-2"
+        className="h-15 w-auto self-start px-2 mb-2"
       />
 
       <Link

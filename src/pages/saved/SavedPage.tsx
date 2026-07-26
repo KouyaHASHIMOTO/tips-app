@@ -5,6 +5,7 @@ import { supabase } from "../../lib/supabase";
 import { TipList } from "../../components/organisms/tiplist/TipList";
 import { MainLayout } from "../../components/templates/MainLayout";
 import { MemoryRouter } from "react-router-dom";
+import { SavedRightPanel } from "../../components/organisms/savedrightpanel/SavedRightPanel";
 
 interface SavedPageProps {
   user: User;
@@ -94,15 +95,25 @@ export const SavedPage = ({ user }: SavedPageProps) => {
 
   const addBookmark = async (tipId: number, isBookmark: boolean) => {
     if (isBookmark) {
-      const response = await supabase
+      const { error } = await supabase
         .from("bookmarks")
         .delete()
         .eq("tip_id", tipId)
         .eq("user_id", user.id);
+
+      if (error) {
+        console.error(error);
+        return;
+      }
     } else {
       const { error } = await supabase
         .from("bookmarks")
         .insert({ tip_id: tipId, user_id: user.id });
+
+      if (error) {
+        console.error(error);
+        return;
+      }
     }
     await fetchSavedTips();
   };
@@ -117,6 +128,17 @@ export const SavedPage = ({ user }: SavedPageProps) => {
     await fetchSavedTips();
   };
 
+  const categoryCounts: { category: Category; count: number }[] =
+    Object.entries(
+      tips.reduce((acc, tip) => {
+        acc[tip.category] = (acc[tip.category] ?? 0) + 1;
+        return acc;
+      }, {} as Record<Category, number>)
+    ).map(([category, count]) => ({
+      category: category as Category,
+      count: count as number,
+    }));
+
   useEffect(() => {
     const load = async () => {
       await fetchSavedTips();
@@ -124,7 +146,9 @@ export const SavedPage = ({ user }: SavedPageProps) => {
     load();
   }, []);
   return (
-    <MainLayout>
+    <MainLayout
+      rightPanel={<SavedRightPanel categoryCounts={categoryCounts} />}
+    >
       <TipList
         tips={tips}
         onLike={addLike}

@@ -1,25 +1,81 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-@theme {
-  /* ソフトニュートラルテーマ */
-  --color-base: #fbfbfa; /* ページ背景（オフホワイト） */
-  --color-surface: #f7f7f5; /* サイドバー・サブエリア背景 */
-  --color-card: #ffffff; /* カード背景（白） */
-  --color-border: #ebebe8; /* 罫線・カードフチ */
-  --color-text-main: #1a1a1a; /* メインテキスト */
-  --color-text-sub: #888888; /* サブテキスト・補足 */
-  --color-text-muted: #aaaaaa; /* 薄いテキスト（日時など） */
-  --color-accent: #5b5bd6; /* アクセント（インディゴ） */
-  --color-accent-light: #e9e9ff; /* アクセントの薄い版（アバター背景など） */
-  --color-like: #fce4ec; /* いいねの背景（薄いピンク） */
-  --color-like-text: #c62828; /* いいねのテキスト */
+@custom-variant dark (&:is(.dark *));
+
+/* shadcn/ui の CSS 変数（プロジェクトのカラートークンに合わせて調整） */
+:root {
+  --background: #fbfbfa;
+  --foreground: #1a1a1a;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+  --primary: #5b5bd6;
+  --primary-foreground: #ffffff;
+  --secondary: #f7f7f5;
+  --secondary-foreground: #1a1a1a;
+  --muted: #f7f7f5;
+  --muted-foreground: #888888;
+  --accent: #5b5bd6;
+  --accent-foreground: #ffffff;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: #ebebe8;
+  --input: #ebebe8;
+  --ring: #5b5bd6;
+  --radius: 0.625rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+
+  /* プロジェクト独自のカラートークン */
+  --color-base: #fbfbfa;
+  --color-surface: #f7f7f5;
+  --color-text-main: #1a1a1a;
+  --color-text-sub: #888888;
+  --color-text-muted: #aaaaaa;
+  --color-accent-light: #e9e9ff;
+  --color-like: #fce4ec;
+  --color-like-text: #c62828;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
 
 @layer components {
   /* カード共通スタイル */
   .card {
-    background-color: var(--color-card);
-    border: 1px solid var(--color-border);
+    background-color: var(--card);
+    border: 1px solid var(--border);
     border-radius: 10px;
   }
 }

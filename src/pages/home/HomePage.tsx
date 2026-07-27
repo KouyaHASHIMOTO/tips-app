@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { X, Lightbulb } from "lucide-react";
 import { TipList } from "../../components/organisms/tiplist/TipList";
 import { MainLayout } from "../../components/templates/MainLayout";
 import { supabase } from "../../lib/supabase";
@@ -296,23 +297,34 @@ export const HomePage = ({ user }: HomePageProps) => {
       {/* 投稿モーダル */}
       {isPostModalOpen && (
         <div
-          className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center"
           onClick={() => setIsPostModalOpen(false)}
         >
           <div
-            className="bg-card rounded-xl p-6 w-full max-w-lg mx-4 shadow-xl"
+            className="bg-card w-full max-w-lg mx-4 mb-4 sm:mb-0 rounded-2xl shadow-2xl ring-1 ring-black/5 overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="font-semibold text-text-main">Tipを投稿する</h2>
+            {/* モーダルヘッダー */}
+            <div className="flex items-center gap-3 px-6 pt-5 pb-4 border-b border-border">
+              <div className="flex items-center justify-center size-8 rounded-full bg-accent-light shrink-0">
+                <Lightbulb className="size-4 text-accent" />
+              </div>
+              <div className="flex-1">
+                <h2 className="text-sm font-semibold text-text-main leading-none">Tipを投稿する</h2>
+                <p className="text-xs text-text-muted mt-0.5">豆知識をみんなでシェアしよう</p>
+              </div>
               <button
                 onClick={() => setIsPostModalOpen(false)}
-                className="text-text-muted hover:text-text-main"
+                className="flex items-center justify-center size-7 rounded-full text-text-muted hover:bg-border hover:text-text-main transition-colors"
               >
-                ✕
+                <X className="size-4" />
               </button>
             </div>
-            <TipForm onSubmit={createTip} />
+
+            {/* フォーム本体 */}
+            <div className="px-6 py-5">
+              <TipForm onSubmit={createTip} />
+            </div>
           </div>
         </div>
       )}

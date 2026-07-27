@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
+import { Bookmark } from "lucide-react";
 import type { Category } from "../../constants/categories";
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
 import { TipList } from "../../components/organisms/tiplist/TipList";
 import { MainLayout } from "../../components/templates/MainLayout";
-import { MemoryRouter } from "react-router-dom";
 import { SavedRightPanel } from "../../components/organisms/savedrightpanel/SavedRightPanel";
 
 interface SavedPageProps {
@@ -149,13 +149,32 @@ export const SavedPage = ({ user }: SavedPageProps) => {
     <MainLayout
       rightPanel={<SavedRightPanel categoryCounts={categoryCounts} />}
     >
-      <TipList
-        tips={tips}
-        onLike={addLike}
-        onBookmark={addBookmark}
-        onMoreTip={addMoreTip}
-        userId={user.id}
-      />
+      {/* ページヘッダー */}
+      <div className="flex items-center gap-2 mb-6">
+        <Bookmark size={20} className="text-accent" />
+        <h2 className="text-lg font-bold text-text-main">保存済み</h2>
+        {tips.length > 0 && (
+          <span className="ml-auto text-xs text-text-muted">{tips.length}件</span>
+        )}
+      </div>
+
+      {tips.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
+          <div className="bg-accent-light rounded-full p-5">
+            <Bookmark size={28} className="text-accent" />
+          </div>
+          <p className="text-text-main font-medium">保存したTipがありません</p>
+          <p className="text-sm text-text-muted">気になるTipを保存してあとで読み返しましょう</p>
+        </div>
+      ) : (
+        <TipList
+          tips={tips}
+          onLike={addLike}
+          onBookmark={addBookmark}
+          onMoreTip={addMoreTip}
+          userId={user.id}
+        />
+      )}
     </MainLayout>
   );
 };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Avatar } from "../../atoms/avatar/Avatar";
 import type { Category } from "../../../constants/categories";
 import { CategoryTag } from "../../atoms/categorytag/CategoryTag";
@@ -54,11 +54,22 @@ export const TipCard = ({
   userId,
 }: TipCardProps) => {
   const [showModal, setShowModal] = useState(false);
+  const contentRef = useRef<HTMLParagraphElement>(null);
+  const [isClamped, setIsClamped] = useState(false);
+
+  useEffect(() => {
+    const el = contentRef.current;
+    if (!el) return;
+    const raf = requestAnimationFrame(() => {
+      setIsClamped(el.scrollHeight > el.clientHeight);
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [content]);
 
   return (
     <>
       <div
-        className="bg-card border border-border rounded-xl p-4 mb-3 cursor-pointer"
+        className="bg-card border border-border rounded-xl p-4 mb-3 cursor-pointer transition-colors duration-150 hover:border-[#d5d5d2]"
         onClick={() => setShowModal(true)}
       >
         {/* 上段: カテゴリ + 経過時間 */}
@@ -76,7 +87,22 @@ export const TipCard = ({
         >
           {title}
         </p>
-        <p className="text-text-sub line-clamp-2 mb-2">{content}</p>
+        <div className="mb-3">
+          <div className="relative">
+            <p
+              ref={contentRef}
+              className="text-text-sub line-clamp-2 text-sm leading-relaxed"
+            >
+              {content}
+            </p>
+            {isClamped && (
+              <div className="absolute bottom-0 inset-x-0 h-6 bg-gradient-to-t from-card to-transparent pointer-events-none" />
+            )}
+          </div>
+          {isClamped && (
+            <p className="text-xs text-accent font-medium mt-1">続きを読む →</p>
+          )}
+        </div>
 
         {tags && tags.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-3">
@@ -101,17 +127,15 @@ export const TipCard = ({
                 e.stopPropagation();
                 onLike?.();
               }}
-              className={`flex items-center gap-1 text-sm transition-colors ${
+              className={`flex items-center gap-1 text-sm px-2 py-1 rounded-full transition-colors ${
                 userId === user_id
                   ? "text-text-muted cursor-not-allowed"
-                  : "text-text-sub hover:text-red-500 cursor-pointer"
+                  : isLiked
+                    ? "text-red-500 bg-red-50"
+                    : "text-text-sub hover:bg-red-50 hover:text-red-500 cursor-pointer"
               }`}
             >
-              <Heart
-                size={18}
-                fill={isLiked ? "currentColor" : "none"}
-                className={isLiked ? "text-red-500" : ""}
-              />
+              <Heart size={16} fill={isLiked ? "currentColor" : "none"} />
               <span>{likeCount}</span>
             </button>
 
@@ -121,13 +145,13 @@ export const TipCard = ({
                 e.stopPropagation();
                 onBookmark?.();
               }}
-              className={`flex items-center gap-1 text-sm transition-colors cursor-pointer ${
+              className={`flex items-center gap-1 text-sm px-2 py-1 rounded-full transition-colors cursor-pointer ${
                 isBookmark
-                  ? "text-indigo-500"
-                  : "text-text-sub hover:text-indigo-500"
+                  ? "text-accent bg-accent-light"
+                  : "text-text-sub hover:bg-accent-light hover:text-accent"
               }`}
             >
-              <Bookmark size={18} fill={isBookmark ? "currentColor" : "none"} />
+              <Bookmark size={16} fill={isBookmark ? "currentColor" : "none"} />
               <span>{bookmarkCount}</span>
             </button>
           </div>

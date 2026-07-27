@@ -1,7 +1,6 @@
 import { NavLink, Link, useSearchParams } from "react-router-dom";
 import { CATEGORIES } from "../../../constants/categories";
 import { CATEGORY_COLORS } from "../../../constants/categoryColors";
-import logo from "../../../assets/logo.png";
 import { Home, User, Bookmark, Settings } from "lucide-react";
 
 const baseClass =
@@ -13,11 +12,10 @@ export const Sidebar = () => {
 
   return (
     <nav className="fixed left-0 top-14 h-[calc(100vh-3.5rem)] w-64 bg-surface border-r border-border p-4 flex flex-col gap-2 overflow-y-auto">
-      <img
-        src={logo}
-        alt="Tipps"
-        className="h-15 w-auto self-start px-2 mb-2"
-      />
+      <span className="px-2 mb-2 text-2xl font-bold tracking-tight select-none">
+        <span className="text-text-main">Tip</span>
+        <span className="text-accent">ps</span>
+      </span>
 
       <Link
         to="/"

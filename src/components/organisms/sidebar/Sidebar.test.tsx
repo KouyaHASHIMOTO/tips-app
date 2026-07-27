@@ -28,7 +28,8 @@ describe("Sidebar", () => {
         <Sidebar />
       </MemoryRouter>
     );
-    expect(screen.getByAltText("Tipps")).toBeInTheDocument();
+    expect(screen.getByText("Tip")).toBeInTheDocument();
+    expect(screen.getByText("ps")).toBeInTheDocument();
   });
   test("ホームリンクにアイコンが表示されている", () => {
     render(

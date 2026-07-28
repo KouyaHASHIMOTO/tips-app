@@ -40,7 +40,7 @@ export const SavedPage = ({ user }: SavedPageProps) => {
       }[];
       profiles: {
         id: number;
-        tip_id: number;
+        user_id: string;
         user_name: string;
         avatar_url: string;
         created_at: string;
@@ -58,11 +58,9 @@ export const SavedPage = ({ user }: SavedPageProps) => {
     const { data, error } = await supabase
       .from("tips")
       .select(
-        "*, likes(*),more_tips(*),profiles(*),tip_tags(tags(*)), bookmarks!inner(*)"
+        "*, likes(*),more_tips(*),profiles(*),tip_tags(tags(*)), bookmarks!inner(*)",
       )
       .eq("bookmarks.user_id", user.id);
-
-    console.log(data);
 
     setTips(data ?? []);
   };
@@ -130,10 +128,13 @@ export const SavedPage = ({ user }: SavedPageProps) => {
 
   const categoryCounts: { category: Category; count: number }[] =
     Object.entries(
-      tips.reduce((acc, tip) => {
-        acc[tip.category] = (acc[tip.category] ?? 0) + 1;
-        return acc;
-      }, {} as Record<Category, number>)
+      tips.reduce(
+        (acc, tip) => {
+          acc[tip.category] = (acc[tip.category] ?? 0) + 1;
+          return acc;
+        },
+        {} as Record<Category, number>,
+      ),
     ).map(([category, count]) => ({
       category: category as Category,
       count: count as number,
@@ -154,7 +155,9 @@ export const SavedPage = ({ user }: SavedPageProps) => {
         <Bookmark size={20} className="text-accent" />
         <h2 className="text-lg font-bold text-text-main">保存済み</h2>
         {tips.length > 0 && (
-          <span className="ml-auto text-xs text-text-muted">{tips.length}件</span>
+          <span className="ml-auto text-xs text-text-muted">
+            {tips.length}件
+          </span>
         )}
       </div>
 
@@ -164,7 +167,9 @@ export const SavedPage = ({ user }: SavedPageProps) => {
             <Bookmark size={28} className="text-accent" />
           </div>
           <p className="text-text-main font-medium">保存したTipがありません</p>
-          <p className="text-sm text-text-muted">気になるTipを保存してあとで読み返しましょう</p>
+          <p className="text-sm text-text-muted">
+            気になるTipを保存してあとで読み返しましょう
+          </p>
         </div>
       ) : (
         <TipList

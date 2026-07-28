@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { SavedPage } from "./SavedPage";
 import type { User } from "@supabase/supabase-js";
 import { MemoryRouter } from "react-router-dom";
+import { supabase } from "../../lib/supabase";
 
 const mockUser = { id: "1" } as unknown as User;
 
@@ -90,7 +91,7 @@ vi.mock("../../lib/supabase", () => ({
     from: vi.fn().mockReturnValue({
       select: vi.fn().mockReturnValue({
         eq: vi.fn().mockResolvedValue({
-          data: mockTips,
+          data: mockTips.filter((tip) => tip.bookmarks.length > 0),
           error: null,
         }),
       }),
@@ -109,10 +110,51 @@ describe("SavePage", () => {
     render(
       <MemoryRouter>
         <SavedPage user={mockUser} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(
-      await screen.findByText("テスト投稿１（ブックマーク済み）")
+      await screen.findByText("テスト投稿１（ブックマーク済み）"),
+    ).toBeInTheDocument();
+  });
+
+  test("保存していない投稿は表示さない", async () => {
+    render(
+      <MemoryRouter>
+        <SavedPage user={mockUser} />
+      </MemoryRouter>,
+    );
+    await screen.findByText("テスト投稿１（ブックマーク済み）");
+
+    expect(
+      screen.queryByText("テスト投稿２（ブックマークなし）"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("件数が表示されている", async () => {
+    render(
+      <MemoryRouter>
+        <SavedPage user={mockUser} />
+      </MemoryRouter>,
+    );
+
+    expect(await screen.findByText("1件")).toBeInTheDocument();
+  });
+
+  test("保存したTipが0件のとき空の状態メッセージが表示される", async () => {
+    vi.mocked(supabase.from).mockReturnValueOnce({
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockResolvedValue({ data: [], error: null }),
+      }),
+    } as unknown as ReturnType<typeof supabase.from>);
+
+    render(
+      <MemoryRouter>
+        <SavedPage user={mockUser} />
+      </MemoryRouter>,
+    );
+
+    expect(
+      await screen.findByText("保存したTipがありません"),
     ).toBeInTheDocument();
   });
 });

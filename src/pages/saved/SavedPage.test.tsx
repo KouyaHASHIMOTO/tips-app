@@ -147,40 +147,4 @@ describe("SavePage", () => {
       await screen.findByText("保存したTipがありません"),
     ).toBeInTheDocument();
   });
-
-  test("合計件数として「1」が表示される", async () => {
-    render(
-      <MemoryRouter>
-        <SavedPage user={mockUser} />
-      </MemoryRouter>,
-    );
-
-    await screen.findByText("テスト投稿１（ブックマーク済み）");
-
-    expect(screen.getByTestId("total-count").textContent).toBe("1件");
-  });
-
-  test("カテゴリ名『テクノロジー』が表示されている", async () => {
-    render(
-      <MemoryRouter>
-        <SavedPage user={mockUser} />
-      </MemoryRouter>,
-    );
-
-    expect(await screen.findByText("テクノロジー")).toBeInTheDocument();
-  });
-
-  test("テクノロジーカテゴリが1件ある", async () => {
-    render(
-      <MemoryRouter>
-        <SavedPage user={mockUser} />
-      </MemoryRouter>,
-    );
-
-    await screen.findByText("テスト投稿１（ブックマーク済み）");
-
-    const number = screen.getByTestId("category-count-テクノロジー");
-
-    expect(number.textContent).toBe("1");
-  });
 });

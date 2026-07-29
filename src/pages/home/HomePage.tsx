@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import { X, Lightbulb } from "lucide-react";
 import { TipList } from "../../components/organisms/tiplist/TipList";
 import { MainLayout } from "../../components/templates/MainLayout";
 import { supabase } from "../../lib/supabase";
@@ -301,30 +300,10 @@ export const HomePage = ({ user }: HomePageProps) => {
           onClick={() => setIsPostModalOpen(false)}
         >
           <div
-            className="bg-card w-full max-w-lg mx-4 mb-4 sm:mb-0 rounded-2xl shadow-2xl ring-1 ring-black/5 overflow-hidden"
+            className="w-full max-w-2xl mx-4 mb-4 sm:mb-0 rounded-2xl shadow-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* モーダルヘッダー */}
-            <div className="flex items-center gap-3 px-6 pt-5 pb-4 border-b border-border">
-              <div className="flex items-center justify-center size-8 rounded-full bg-accent-light shrink-0">
-                <Lightbulb className="size-4 text-accent" />
-              </div>
-              <div className="flex-1">
-                <h2 className="text-sm font-semibold text-text-main leading-none">Tipを投稿する</h2>
-                <p className="text-xs text-text-muted mt-0.5">豆知識をみんなでシェアしよう</p>
-              </div>
-              <button
-                onClick={() => setIsPostModalOpen(false)}
-                className="flex items-center justify-center size-7 rounded-full text-text-muted hover:bg-border hover:text-text-main transition-colors"
-              >
-                <X className="size-4" />
-              </button>
-            </div>
-
-            {/* フォーム本体 */}
-            <div className="px-6 py-5">
-              <TipForm onSubmit={createTip} />
-            </div>
+            <TipForm onSubmit={createTip} onClose={() => setIsPostModalOpen(false)} />
           </div>
         </div>
       )}

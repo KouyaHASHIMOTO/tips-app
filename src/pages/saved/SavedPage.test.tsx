@@ -130,16 +130,6 @@ describe("SavePage", () => {
     ).not.toBeInTheDocument();
   });
 
-  test("件数が表示されている", async () => {
-    render(
-      <MemoryRouter>
-        <SavedPage user={mockUser} />
-      </MemoryRouter>,
-    );
-
-    expect(await screen.findByText("1件")).toBeInTheDocument();
-  });
-
   test("保存したTipが0件のとき空の状態メッセージが表示される", async () => {
     vi.mocked(supabase.from).mockReturnValueOnce({
       select: vi.fn().mockReturnValue({
@@ -156,5 +146,41 @@ describe("SavePage", () => {
     expect(
       await screen.findByText("保存したTipがありません"),
     ).toBeInTheDocument();
+  });
+
+  test("合計件数として「1」が表示される", async () => {
+    render(
+      <MemoryRouter>
+        <SavedPage user={mockUser} />
+      </MemoryRouter>,
+    );
+
+    await screen.findByText("テスト投稿１（ブックマーク済み）");
+
+    expect(screen.getByTestId("total-count").textContent).toBe("1件");
+  });
+
+  test("カテゴリ名『テクノロジー』が表示されている", async () => {
+    render(
+      <MemoryRouter>
+        <SavedPage user={mockUser} />
+      </MemoryRouter>,
+    );
+
+    expect(await screen.findByText("テクノロジー")).toBeInTheDocument();
+  });
+
+  test("テクノロジーカテゴリが1件ある", async () => {
+    render(
+      <MemoryRouter>
+        <SavedPage user={mockUser} />
+      </MemoryRouter>,
+    );
+
+    await screen.findByText("テスト投稿１（ブックマーク済み）");
+
+    const number = screen.getByTestId("category-count-テクノロジー");
+
+    expect(number.textContent).toBe("1");
   });
 });

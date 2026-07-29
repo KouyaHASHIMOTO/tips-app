@@ -154,11 +154,6 @@ export const SavedPage = ({ user }: SavedPageProps) => {
       <div className="flex items-center gap-2 mb-6">
         <Bookmark size={20} className="text-accent" />
         <h2 className="text-lg font-bold text-text-main">保存済み</h2>
-        {tips.length > 0 && (
-          <span className="ml-auto text-xs text-text-muted">
-            {tips.length}件
-          </span>
-        )}
       </div>
 
       {tips.length === 0 ? (

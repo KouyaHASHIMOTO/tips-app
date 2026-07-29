@@ -24,14 +24,22 @@ export const SavedRightPanel = ({ categoryCounts }: SavedRightPanelProps) => {
         </div>
         <div>
           <p className="text-xs text-text-sub">保存済みTip</p>
-          <p className="text-2xl font-bold text-accent leading-tight">{total}<span className="text-sm font-normal text-text-sub ml-1">件</span></p>
+          <p
+            data-testid="total-count"
+            className="text-2xl font-bold text-accent leading-tight"
+          >
+            {total}
+            <span className="text-sm font-normal text-text-sub ml-1">件</span>
+          </p>
         </div>
       </div>
 
       {/* カテゴリ内訳 */}
       {sorted.length > 0 && (
         <div>
-          <p className="text-xs font-medium text-text-muted uppercase tracking-wider mb-3">カテゴリ別の内訳</p>
+          <p className="text-xs font-medium text-text-muted uppercase tracking-wider mb-3">
+            カテゴリ別の内訳
+          </p>
           <div className="flex flex-col gap-3">
             {sorted.map(({ category, count }) => {
               const style = CATEGORY_STYLES[category];
@@ -45,7 +53,12 @@ export const SavedRightPanel = ({ categoryCounts }: SavedRightPanelProps) => {
                       <Icon size={13} className={style.text} />
                       {category}
                     </span>
-                    <span className="text-xs font-semibold text-text-main">{count}</span>
+                    <span
+                      data-testid={`category-count-${category}`}
+                      className="text-xs font-semibold text-text-main"
+                    >
+                      {count}
+                    </span>
                   </div>
                   <div className="h-1.5 bg-border rounded-full overflow-hidden">
                     <div

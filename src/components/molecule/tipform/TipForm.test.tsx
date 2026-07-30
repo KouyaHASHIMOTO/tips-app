@@ -28,14 +28,16 @@ describe("TipForm", () => {
   test("投稿ボタンが表示されている", () => {
     render(<TipForm />);
 
-    expect(screen.getByRole("button", { name: "投稿" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "投稿する" }),
+    ).toBeInTheDocument();
   });
 
   test("投稿ボタンをクリックできる", async () => {
     const handleSubmit = vi.fn();
     const user = userEvent.setup();
     render(<TipForm onSubmit={handleSubmit} />);
-    await user.click(screen.getByRole("button", { name: "投稿" }));
+    await user.click(screen.getByRole("button", { name: "投稿する" }));
 
     expect(handleSubmit).toHaveBeenCalled();
   });
@@ -50,7 +52,7 @@ describe("TipForm", () => {
     // その後貼り付ける
     await user.paste(longText);
 
-    expect(screen.getByRole("button", { name: "投稿" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "投稿する" })).toBeDisabled();
   });
   test("カテゴリ選択欄が表示されている", () => {
     render(<TipForm />);
@@ -71,7 +73,7 @@ describe("TipForm", () => {
       "内容",
     );
     await user.selectOptions(screen.getByRole("combobox"), "料理・グルメ");
-    await user.click(screen.getByRole("button", { name: "投稿" }));
+    await user.click(screen.getByRole("button", { name: "投稿する" }));
 
     expect(handleSubmit).toHaveBeenCalledWith(
       "タイトル",
@@ -83,19 +85,14 @@ describe("TipForm", () => {
 
   test("タグ入力欄が表示されている", () => {
     render(<TipForm />);
-    expect(
-      screen.getByPlaceholderText("タグを入力（例：サッカー）"),
-    ).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("タグを追加")).toBeInTheDocument();
   });
 
   test("タグを入力して追加ボタンを押すとタグが追加される", async () => {
     const user = userEvent.setup();
     render(<TipForm />);
 
-    await user.type(
-      screen.getByPlaceholderText("タグを入力（例：サッカー）"),
-      "サッカー",
-    );
+    await user.type(screen.getByPlaceholderText("タグを追加"), "サッカー");
     await user.click(screen.getByRole("button", { name: "タグを追加" }));
 
     expect(screen.getByText("サッカー")).toBeInTheDocument();
@@ -114,15 +111,40 @@ describe("TipForm", () => {
       screen.getByPlaceholderText("豆知識を共有しよう..."),
       "内容",
     );
-    await user.type(
-      screen.getByPlaceholderText("タグを入力（例：サッカー）"),
-      "サッカー",
-    );
+    await user.type(screen.getByPlaceholderText("タグを追加"), "サッカー");
     await user.click(screen.getByRole("button", { name: "タグを追加" }));
-    await user.click(screen.getByRole("button", { name: "投稿" }));
+
+    await user.click(screen.getByRole("button", { name: "投稿する" }));
 
     expect(handleSubmit).toHaveBeenCalledWith("タイトル", "内容", "その他", [
       "サッカー",
     ]);
+  });
+
+  test("画像URLが生成されて投稿するとonSubmitに画像URLが渡される", async () => {
+    const user = userEvent.setup();
+    const handleSubmit = vi.fn();
+    render(<TipForm onSubmit={handleSubmit} />);
+
+    await user.type(
+      screen.getByPlaceholderText("タイトルを入力..."),
+      "タイトル",
+    );
+    await user.type(
+      screen.getByPlaceholderText("豆知識を共有しよう..."),
+      "内容",
+    );
+    await user.type(screen.getByPlaceholderText("タグを追加"), "サッカー");
+    await user.click(screen.getByRole("button", { name: "✦画像を生成" }));
+
+    await user.click(screen.getByRole("button", { name: "投稿する" }));
+
+    expect(handleSubmit).toHaveBeenCalledWith(
+      "タイトル",
+      "内容",
+      "その他",
+      ["サッカー"],
+      "画像URL",
+    );
   });
 });

@@ -1,27 +1,41 @@
+// src/components/molecule/tipform/TipForm.tsx
 import { useState } from "react";
-import { X, Tag, ImageIcon } from "lucide-react";
+import {
+  Bold,
+  Italic,
+  List,
+  Image,
+  Link,
+  Code,
+  MoreHorizontal,
+  X,
+  Tag,
+} from "lucide-react";
+import { Button } from "../../atoms/button/Button";
 import { Textarea } from "../../ui/textarea";
+import { Badge } from "../../ui/badge";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
+  SelectValue,
 } from "../../ui/select";
 import { CATEGORIES, type Category } from "../../../constants/categories";
-import { CATEGORY_STYLES } from "../../../constants/categoryStyles";
-import { CategoryTag } from "../../atoms/categorytag/CategoryTag";
 
 interface TipFormProps {
   onSubmit?: (
     title: string,
     content: string,
     category: Category,
-    tags: string[],
+    tags: string[]
   ) => void;
-  onClose?: () => void;
 }
 
-export const TipForm = ({ onSubmit, onClose }: TipFormProps) => {
+const MAX_CHARS = 5000;
+const MAX_TITLE_CHARS = 80;
+
+export const TipForm = ({ onSubmit }: TipFormProps) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [category, setCategory] = useState<Category>("その他");
@@ -39,8 +53,8 @@ export const TipForm = ({ onSubmit, onClose }: TipFormProps) => {
     setTags(tags.filter((t) => t !== tag));
   };
 
-  const categoryStyle = CATEGORY_STYLES[category];
-  const CategoryIcon = categoryStyle.icon;
+  const remaining = MAX_CHARS - content.length;
+  const isOverLimit = remaining < 0;
 
   return (
     <form
@@ -52,97 +66,126 @@ export const TipForm = ({ onSubmit, onClose }: TipFormProps) => {
         setContent("");
         setCategory("その他");
       }}
-      className="flex bg-card rounded-2xl overflow-hidden"
+      className="flex flex-col gap-5"
     >
-      {/* 左パネル: 入力 */}
-      <div className="flex-1 flex flex-col gap-4 p-6 border-r border-border">
-        <div className="flex items-center justify-between">
-          <p className="text-xs text-text-muted font-medium">入力</p>
-          {onClose && (
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex items-center justify-center size-6 rounded-full text-text-muted hover:bg-border hover:text-text-main transition-colors"
-            >
-              <X className="size-3.5" />
-            </button>
-          )}
+      {/* タイトル */}
+      <div>
+        <div className="flex justify-between items-center mb-1.5">
+          <label className="text-sm font-medium text-text-main">
+            タイトル <span className="text-red-500">*</span>
+          </label>
+          <span className="text-xs text-text-muted">
+            {title.length}/{MAX_TITLE_CHARS}
+          </span>
         </div>
-
-        {/* タイトル */}
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          maxLength={MAX_TITLE_CHARS}
           placeholder="タイトルを入力..."
-          className="w-full px-4 py-3 text-sm font-semibold text-text-main placeholder:text-text-muted bg-background border border-border rounded-xl outline-none focus:border-accent transition-colors"
+          className="w-full border border-border rounded-lg px-3 py-2 text-sm text-text-main placeholder:text-text-muted outline-none focus:border-accent transition-colors"
         />
+      </div>
 
-        {/* カテゴリ + タグ */}
-        <div className="flex gap-2 items-center">
-          <Select
-            value={category}
-            onValueChange={(v) => setCategory(v as Category)}
-          >
-            <SelectTrigger className="h-9 w-auto border border-border rounded-xl px-3 shrink-0 gap-1.5 focus:ring-0">
-              <span
-                className={`inline-flex items-center gap-1 text-xs font-medium ${categoryStyle.text}`}
-              >
-                <CategoryIcon size={12} />
-                {category}
-              </span>
-            </SelectTrigger>
-            <SelectContent>
-              {CATEGORIES.map((cat) => {
-                const style = CATEGORY_STYLES[cat];
-                const Icon = style.icon;
-                return (
-                  <SelectItem key={cat} value={cat}>
-                    <span
-                      className={`inline-flex items-center gap-1.5 text-xs font-medium ${style.text}`}
-                    >
-                      <Icon size={12} />
-                      {cat}
-                    </span>
-                  </SelectItem>
-                );
-              })}
-            </SelectContent>
-          </Select>
+      {/* カテゴリ */}
+      <div>
+        <label className="text-sm font-medium text-text-main mb-1.5 block">
+          カテゴリ <span className="text-red-500">*</span>
+        </label>
+        <Select
+          value={category}
+          onValueChange={(v) => setCategory(v as Category)}
+        >
+          <SelectTrigger className="w-full h-10 text-sm text-text-main border-border rounded-lg px-3">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {CATEGORIES.map((cat) => (
+              <SelectItem key={cat} value={cat}>
+                {cat}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
 
-          <div className="flex flex-1 items-center gap-1.5 border border-border rounded-xl px-3 h-9 focus-within:border-accent transition-colors">
-            <Tag className="size-3 text-text-muted shrink-0" />
-            <input
-              type="text"
-              value={tagInput}
-              onChange={(e) => setTagInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  handleAddTag();
-                }
-              }}
-              placeholder="タグを追加"
-              className="flex-1 text-xs text-text-main placeholder:text-text-muted bg-transparent outline-none min-w-0"
-            />
-            {tagInput.trim() !== "" && (
-              <button
-                type="button"
-                onClick={handleAddTag}
-                className="text-xs text-accent font-medium shrink-0 hover:opacity-70 transition-opacity"
-              >
-                追加
-              </button>
+      {/* 本文（見た目だけのリッチテキストツールバー付き） */}
+      <div>
+        <div className="flex justify-between items-center mb-1.5">
+          <label className="text-sm font-medium text-text-main">
+            本文 <span className="text-red-500">*</span>
+          </label>
+        </div>
+        <div className="border border-border rounded-lg overflow-hidden focus-within:border-accent transition-colors">
+          {/* 装飾ツールバー: クリックしても何も起きない見た目のみのボタン */}
+          <div className="flex items-center gap-1 px-2 py-1.5 border-b border-border bg-surface">
+            {[Bold, Italic, List, Image, Link, Code, MoreHorizontal].map(
+              (Icon, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  className="p-1.5 rounded hover:bg-border text-text-sub"
+                  tabIndex={-1}
+                >
+                  <Icon size={14} />
+                </button>
+              )
             )}
           </div>
+          <Textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="豆知識を共有しよう..."
+            className="resize-none min-h-40 text-sm bg-transparent border-0 rounded-none leading-relaxed focus-visible:ring-0"
+          />
+          <div className="flex justify-end px-3 py-1.5">
+            <span
+              className={`text-xs tabular-nums ${
+                isOverLimit ? "text-red-500" : "text-text-muted"
+              }`}
+            >
+              {content.length}/{MAX_CHARS}
+            </span>
+          </div>
         </div>
+      </div>
 
-        {/* タグ一覧 */}
+      {/* タグ */}
+      <div>
+        <label className="text-sm font-medium text-text-main mb-1.5 block">
+          タグ（任意・最大5つ）
+        </label>
+        <div className="flex items-center gap-1.5 border border-border rounded-lg px-3 h-10 focus-within:border-accent transition-colors">
+          <Tag className="size-3 text-text-muted shrink-0" />
+          <input
+            type="text"
+            value={tagInput}
+            onChange={(e) => setTagInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleAddTag();
+              }
+            }}
+            placeholder="タグを追加（最大5つ）"
+            className="flex-1 text-sm text-text-main placeholder:text-text-muted bg-transparent outline-none min-w-0"
+          />
+          {tagInput.trim() !== "" && (
+            <button
+              type="button"
+              onClick={handleAddTag}
+              className="text-xs text-accent font-medium shrink-0 hover:opacity-70 transition-opacity"
+            >
+              追加
+            </button>
+          )}
+        </div>
         {tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 -mt-1">
+          <div className="flex flex-wrap gap-1.5 mt-2">
             {tags.map((tag) => (
-              <span
+              <Badge
                 key={tag}
-                className="inline-flex items-center gap-1 pl-2.5 pr-1.5 py-0.5 text-xs rounded-full bg-accent-light text-accent"
+                className="inline-flex items-center gap-1 pl-2.5 pr-1.5 py-0.5 h-auto text-xs rounded-full bg-accent-light text-accent border-0 hover:bg-accent-light"
               >
                 #{tag}
                 <button
@@ -152,77 +195,27 @@ export const TipForm = ({ onSubmit, onClose }: TipFormProps) => {
                 >
                   <X className="size-3" />
                 </button>
-              </span>
+              </Badge>
             ))}
           </div>
         )}
-
-        {/* 本文 */}
-        <Textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="豆知識を共有しよう..."
-          className="resize-none min-h-44 text-sm bg-background border-border rounded-xl leading-relaxed focus-visible:ring-0 focus-visible:border-accent"
-        />
       </div>
 
-      {/* 右パネル: 生成画像 + 投稿プレビュー */}
-      <div className="w-64 flex flex-col gap-4 p-6">
-        <p className="text-xs text-text-muted font-medium">生成画像</p>
-
-        {/* 画像エリア */}
-        <div className="border-2 border-dashed border-border rounded-xl h-32 flex items-center justify-center">
-          <ImageIcon className="size-6 text-text-muted" />
-        </div>
-
-        {/* 画像を生成ボタン */}
+      {/* ボタン: 下書き保存（見た目のみ・押しても何も起きない）+ 投稿する */}
+      <div className="flex justify-end gap-2 pt-1 border-t border-border">
         <button
           type="button"
-          className="flex items-center justify-center gap-2 w-full py-2 border border-border rounded-xl text-sm text-text-main font-medium hover:border-accent hover:text-accent transition-colors"
+          className="px-4 py-2 rounded-lg text-sm font-medium text-text-sub border border-border hover:bg-border transition-colors"
         >
-          <span className="text-base leading-none">✦</span>
-          画像を生成
+          下書き保存
         </button>
-
-        <p className="text-xs text-text-muted leading-relaxed -mt-1">
-          タイトルと投稿内容をもとに画像を生成します
-        </p>
-
-        <div className="border-t border-border" />
-
-        <p className="text-xs text-text-muted font-medium">投稿プレビュー</p>
-
-        {/* プレビューカード（TipCard準拠） */}
-        <div className="bg-background border border-border rounded-xl p-4 flex flex-col gap-2">
-          <CategoryTag category={category} />
-          <p className="text-base font-medium text-text-main leading-tight line-clamp-1">
-            {title || "タイトル"}
-          </p>
-          <p className="text-text-sub text-xs leading-relaxed line-clamp-2">
-            {content || "投稿内容がここに表示されます"}
-          </p>
-          {tags.length > 0 && (
-            <div className="flex flex-wrap gap-1 mt-1">
-              {tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="px-2 py-0.5 bg-accent-light text-accent text-xs rounded-full"
-                >
-                  #{tag}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* 投稿する */}
-        <button
+        <Button
           type="submit"
-          disabled={content.trim() === "" || title.trim() === ""}
-          className="w-full py-3 bg-accent text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed mt-auto"
+          disabled={isOverLimit || content.trim() === ""}
+          variant="primary"
         >
           投稿する
-        </button>
+        </Button>
       </div>
     </form>
   );

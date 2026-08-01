@@ -9,6 +9,7 @@ import { ProfilePage } from "./pages/profile/ProfilePage";
 import { SettingsPage } from "./pages/settings/SettingsPage";
 import { SavedPage } from "./pages/saved/SavedPage";
 import { UserPage } from "./pages/userpage/UserPage";
+import { TipFormPage } from "./pages/tipform/TipFormPage";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -57,6 +58,12 @@ function App() {
         <Route
           path="/users/:userId"
           element={user ? <UserPage user={user} /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/post"
+          element={
+            user ? <TipFormPage user={user} /> : <Navigate to="/login" />
+          }
         />
       </Routes>
     </BrowserRouter>

@@ -11,7 +11,7 @@ export const Sidebar = () => {
   const currentCategory = searchParams.get("category");
 
   return (
-    <nav className="sticky top-0 h-screen w-64 bg-card border-r border-border p-4 flex flex-col gap-2 overflow-y-auto shrink-0">
+    <nav className="sticky top-0 h-screen w-64 border-r border-border p-4 flex flex-col gap-2 overflow-y-auto shrink-0" style={{ backgroundColor: "#F8F7F4" }}>
       <span className="px-2 mb-6 mt-2 text-2xl font-bold tracking-tight select-none">
         <span className="text-text-main">Tip</span>
         <span className="text-accent">ps</span>

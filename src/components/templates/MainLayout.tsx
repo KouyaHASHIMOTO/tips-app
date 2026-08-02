@@ -7,14 +7,14 @@ interface MainLayoutProps {
 
 export const MainLayout = ({ children, rightPanel }: MainLayoutProps) => {
   return (
-    <div className="min-h-screen bg-base flex justify-center">
-      <div className="flex w-full max-w-[1120px] min-h-screen">
+    <div className="min-h-screen flex justify-center p-4 bg-white">
+      <div className="flex w-full max-w-[1120px] min-h-screen rounded-2xl overflow-hidden shadow-sm">
         <Sidebar />
-        <main className="flex-1 min-h-screen flex justify-center border-r border-border">
+        <main className="flex-1 flex justify-center border-r border-border bg-white">
           <div className="w-full max-w-xl p-6">{children}</div>
         </main>
         {rightPanel && (
-          <aside className="sticky top-0 h-screen w-72 shrink-0 bg-card border-l border-border p-4 overflow-y-auto">
+          <aside className="sticky top-0 h-screen w-72 shrink-0 bg-white border-l border-border p-4 overflow-y-auto">
             {rightPanel}
           </aside>
         )}

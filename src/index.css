@@ -6,24 +6,24 @@
 
 /* shadcn/ui の CSS 変数（プロジェクトのカラートークンに合わせて調整） */
 :root {
-  --background: #fbfbfa;
-  --foreground: #1a1a1a;
+  --background: #F7F6F3;
+  --foreground: #25282C;
   --card: #ffffff;
-  --card-foreground: #1a1a1a;
+  --card-foreground: #25282C;
   --popover: #ffffff;
-  --popover-foreground: #1a1a1a;
-  --primary: #5b5bd6;
+  --popover-foreground: #25282C;
+  --primary: #20242A;
   --primary-foreground: #ffffff;
-  --secondary: #f7f7f5;
-  --secondary-foreground: #1a1a1a;
-  --muted: #f7f7f5;
-  --muted-foreground: #888888;
-  --accent: #5b5bd6;
+  --secondary: #F5F1E9;
+  --secondary-foreground: #25282C;
+  --muted: #FCFCFB;
+  --muted-foreground: #8A8E93;
+  --accent: #34302B;
   --accent-foreground: #ffffff;
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: #ebebe8;
-  --input: #ebebe8;
-  --ring: #5b5bd6;
+  --destructive: #E36A62;
+  --border: #E6E4DF;
+  --input: #E6E4DF;
+  --ring: #20242A;
   --radius: 0.625rem;
 }
 
@@ -52,12 +52,15 @@
   --radius-xl: calc(var(--radius) * 1.4);
 
   /* プロジェクト独自のカラートークン */
-  --color-base: #fbfbfa;
-  --color-surface: #f7f7f5;
-  --color-text-main: #1a1a1a;
-  --color-text-sub: #888888;
-  --color-text-muted: #aaaaaa;
-  --color-accent-light: #e9e9ff;
+  --color-base: #F7F6F3;
+  --color-surface: #FCFCFB;
+  --color-text-main: #25282C;
+  --color-text-sub: #555A60;
+  --color-text-muted: #8A8E93;
+  --color-text-light: #A8AAAD;
+  --color-accent-light: #EEEAE3;
+  --color-hint-bg: #FFF9E9;
+  --color-hint-accent: #D9A83D;
   --color-like: #fce4ec;
   --color-like-text: #c62828;
 }
@@ -67,7 +70,8 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background-color: #ffffff;
   }
 }
 

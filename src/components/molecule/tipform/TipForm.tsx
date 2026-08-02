@@ -1,19 +1,8 @@
 // src/components/molecule/tipform/TipForm.tsx
 import { useState } from "react";
-import {
-  Bold,
-  Italic,
-  List,
-  Image,
-  Link,
-  Code,
-  MoreHorizontal,
-  X,
-  Tag,
-} from "lucide-react";
+import { Plus, X, Lightbulb } from "lucide-react";
 import { Button } from "../../atoms/button/Button";
 import { Textarea } from "../../ui/textarea";
-import { Badge } from "../../ui/badge";
 import {
   Select,
   SelectContent,
@@ -28,76 +17,92 @@ interface TipFormProps {
     title: string,
     content: string,
     category: Category,
-    tags: string[]
+    tags: string[],
+    points: string[]
   ) => void;
 }
 
 const MAX_CHARS = 5000;
 const MAX_TITLE_CHARS = 80;
+const MAX_POINT_CHARS = 100;
+const MAX_POINTS = 5;
 
 export const TipForm = ({ onSubmit }: TipFormProps) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [category, setCategory] = useState<Category>("その他");
-  const [tagInput, setTagInput] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
-
-  const handleAddTag = () => {
-    const trimmed = tagInput.trim();
-    if (trimmed === "" || tags.includes(trimmed) || tags.length >= 5) return;
-    setTags([...tags, trimmed]);
-    setTagInput("");
-  };
-
-  const handleRemoveTag = (tag: string) => {
-    setTags(tags.filter((t) => t !== tag));
-  };
+  const [category, setCategory] = useState<Category | "">("");
+  const [points, setPoints] = useState<string[]>([""]);
 
   const remaining = MAX_CHARS - content.length;
   const isOverLimit = remaining < 0;
 
+  const addPoint = () => {
+    if (points.length < MAX_POINTS) {
+      setPoints([...points, ""]);
+    }
+  };
+
+  const removePoint = (index: number) => {
+    if (points.length <= 1) return;
+    setPoints(points.filter((_, i) => i !== index));
+  };
+
+  const updatePoint = (index: number, value: string) => {
+    const next = [...points];
+    next[index] = value;
+    setPoints(next);
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const filledPoints = points.filter((p) => p.trim() !== "");
+    onSubmit?.(title, content, category as Category, [], filledPoints);
+    setTitle("");
+    setContent("");
+    setCategory("");
+    setPoints([""]);
+  };
+
+  const canSubmit =
+    !isOverLimit &&
+    title.trim() !== "" &&
+    content.trim() !== "" &&
+    category !== "";
+
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit?.(title, content, category, tags);
-        setTitle("");
-        setTags([]);
-        setContent("");
-        setCategory("その他");
-      }}
-      className="flex flex-col gap-5"
-    >
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       {/* タイトル */}
       <div>
-        <div className="flex justify-between items-center mb-1.5">
-          <label className="text-sm font-medium text-text-main">
-            タイトル <span className="text-red-500">*</span>
-          </label>
-          <span className="text-xs text-text-muted">
-            {title.length}/{MAX_TITLE_CHARS}
-          </span>
+        <label className="text-sm font-medium text-text-main mb-1.5 block">
+          タイトル <span className="text-[#E36A62]">*</span>
+        </label>
+        <div className="border border-border rounded-lg overflow-hidden focus-within:border-accent transition-colors">
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            maxLength={MAX_TITLE_CHARS}
+            placeholder="例）織田信長は「楽市楽座」を全国で最初に実現した人だった"
+            className="w-full px-3 py-2 text-sm text-text-main placeholder:text-text-muted outline-none bg-transparent"
+          />
+          <div className="flex justify-end px-3 py-1.5">
+            <span className="text-xs text-text-muted tabular-nums">
+              {title.length}/{MAX_TITLE_CHARS}
+            </span>
+          </div>
         </div>
-        <input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          maxLength={MAX_TITLE_CHARS}
-          placeholder="タイトルを入力..."
-          className="w-full border border-border rounded-lg px-3 py-2 text-sm text-text-main placeholder:text-text-muted outline-none focus:border-accent transition-colors"
-        />
       </div>
 
       {/* カテゴリ */}
       <div>
         <label className="text-sm font-medium text-text-main mb-1.5 block">
-          カテゴリ <span className="text-red-500">*</span>
+          カテゴリ <span className="text-[#E36A62]">*</span>
         </label>
         <Select
           value={category}
           onValueChange={(v) => setCategory(v as Category)}
         >
           <SelectTrigger className="w-full h-10 text-sm text-text-main border-border rounded-lg px-3">
-            <SelectValue />
+            <SelectValue placeholder="カテゴリを選択" />
           </SelectTrigger>
           <SelectContent>
             {CATEGORIES.map((cat) => (
@@ -109,39 +114,22 @@ export const TipForm = ({ onSubmit }: TipFormProps) => {
         </Select>
       </div>
 
-      {/* 本文（見た目だけのリッチテキストツールバー付き） */}
+      {/* 本文 */}
       <div>
-        <div className="flex justify-between items-center mb-1.5">
-          <label className="text-sm font-medium text-text-main">
-            本文 <span className="text-red-500">*</span>
-          </label>
-        </div>
+        <label className="text-sm font-medium text-text-main mb-1.5 block">
+          本文 <span className="text-[#E36A62]">*</span>
+        </label>
         <div className="border border-border rounded-lg overflow-hidden focus-within:border-accent transition-colors">
-          {/* 装飾ツールバー: クリックしても何も起きない見た目のみのボタン */}
-          <div className="flex items-center gap-1 px-2 py-1.5 border-b border-border bg-surface">
-            {[Bold, Italic, List, Image, Link, Code, MoreHorizontal].map(
-              (Icon, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  className="p-1.5 rounded hover:bg-border text-text-sub"
-                  tabIndex={-1}
-                >
-                  <Icon size={14} />
-                </button>
-              )
-            )}
-          </div>
           <Textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="豆知識を共有しよう..."
-            className="resize-none min-h-40 text-sm bg-transparent border-0 rounded-none leading-relaxed focus-visible:ring-0"
+            placeholder="知識の背景や詳しい説明を書いてください..."
+            className="resize-none min-h-32 text-sm bg-transparent border-0 rounded-none leading-relaxed focus-visible:ring-0"
           />
           <div className="flex justify-end px-3 py-1.5">
             <span
               className={`text-xs tabular-nums ${
-                isOverLimit ? "text-red-500" : "text-text-muted"
+                isOverLimit ? "text-[#E36A62]" : "text-text-muted"
               }`}
             >
               {content.length}/{MAX_CHARS}
@@ -150,58 +138,78 @@ export const TipForm = ({ onSubmit }: TipFormProps) => {
         </div>
       </div>
 
-      {/* タグ */}
+      {/* ポイント */}
       <div>
         <label className="text-sm font-medium text-text-main mb-1.5 block">
-          タグ（任意・最大5つ）
+          ポイント
+          <span className="text-xs text-text-muted font-normal ml-2">
+            （最大{MAX_POINTS}件）
+          </span>
         </label>
-        <div className="flex items-center gap-1.5 border border-border rounded-lg px-3 h-10 focus-within:border-accent transition-colors">
-          <Tag className="size-3 text-text-muted shrink-0" />
-          <input
-            type="text"
-            value={tagInput}
-            onChange={(e) => setTagInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                handleAddTag();
-              }
-            }}
-            placeholder="タグを追加（最大5つ）"
-            className="flex-1 text-sm text-text-main placeholder:text-text-muted bg-transparent outline-none min-w-0"
-          />
-          {tagInput.trim() !== "" && (
+        <div className="flex flex-col gap-2">
+          {points.map((point, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <span className="text-accent shrink-0">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M3 8L6.5 11.5L13 4.5"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+              <input
+                value={point}
+                onChange={(e) => updatePoint(index, e.target.value)}
+                maxLength={MAX_POINT_CHARS}
+                placeholder={`ポイント ${index + 1}`}
+                className="flex-1 px-3 py-2 text-sm text-text-main placeholder:text-text-muted border border-border rounded-lg outline-none focus:border-accent transition-colors bg-transparent"
+              />
+              {points.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removePoint(index)}
+                  className="p-1 rounded text-text-muted hover:text-[#E36A62] transition-colors"
+                  aria-label="削除"
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
+          ))}
+          {points.length < MAX_POINTS && (
             <button
               type="button"
-              onClick={handleAddTag}
-              className="text-xs text-accent font-medium shrink-0 hover:opacity-70 transition-opacity"
+              onClick={addPoint}
+              className="flex items-center gap-1 text-xs text-text-sub hover:text-accent transition-colors mt-1 self-start"
             >
-              追加
+              <Plus size={14} />
+              ポイントを追加
             </button>
           )}
         </div>
-        {tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mt-2">
-            {tags.map((tag) => (
-              <Badge
-                key={tag}
-                className="inline-flex items-center gap-1 pl-2.5 pr-1.5 py-0.5 h-auto text-xs rounded-full bg-accent-light text-accent border-0 hover:bg-accent-light"
-              >
-                #{tag}
-                <button
-                  type="button"
-                  onClick={() => handleRemoveTag(tag)}
-                  className="rounded-full hover:opacity-60 transition-opacity"
-                >
-                  <X className="size-3" />
-                </button>
-              </Badge>
-            ))}
-          </div>
-        )}
       </div>
 
-      {/* ボタン: 下書き保存（見た目のみ・押しても何も起きない）+ 投稿する */}
+      {/* 投稿のヒント */}
+      <div className="bg-hint-bg border border-[#F5F1E9] rounded-xl p-4 flex gap-2">
+        <Lightbulb className="size-4 text-hint-accent shrink-0 mt-0.5" />
+        <div className="text-xs text-[#555A60] space-y-1">
+          <p className="font-medium text-sm text-text-main mb-1">投稿のヒント</p>
+          <p>・1つの投稿はシンプルに、読みやすくまとめるのがコツです。</p>
+          <p>・出典がある場合は、本文やリンクで紹介してみましょう。</p>
+          <p>・誰かの役に立つ知識は、きっと誰かの「へぇ！」になります。</p>
+        </div>
+      </div>
+
+      {/* ボタン */}
       <div className="flex justify-end gap-2 pt-1 border-t border-border">
         <button
           type="button"
@@ -209,11 +217,7 @@ export const TipForm = ({ onSubmit }: TipFormProps) => {
         >
           下書き保存
         </button>
-        <Button
-          type="submit"
-          disabled={isOverLimit || content.trim() === ""}
-          variant="primary"
-        >
+        <Button type="submit" disabled={!canSubmit} variant="primary">
           投稿する
         </Button>
       </div>

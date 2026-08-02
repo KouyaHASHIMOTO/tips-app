@@ -20,7 +20,7 @@ export const Button = ({
 
   const variantClass =
     variant === "primary"
-      ? "bg-accent text-white hover:opacity-90"
+      ? "bg-[#20242A] text-white hover:bg-[#34302B]"
       : "border border-border text-text-sub hover:text-text-main hover:border-accent";
 
   return (

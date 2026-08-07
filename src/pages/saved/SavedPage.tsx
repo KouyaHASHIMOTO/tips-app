@@ -33,11 +33,6 @@ export const SavedPage = ({ user }: SavedPageProps) => {
         created_at: string;
       }[];
 
-      tip_tags: {
-        tags: {
-          name: string;
-        } | null;
-      }[];
       profiles: {
         id: number;
         user_id: string;
@@ -58,7 +53,7 @@ export const SavedPage = ({ user }: SavedPageProps) => {
     const { data, error } = await supabase
       .from("tips")
       .select(
-        "*, likes(*),more_tips(*),profiles(*),tip_tags(tags(*)), bookmarks!inner(*)",
+        "*, likes(*),more_tips(*),profiles(*), bookmarks!inner(*)",
       )
       .eq("bookmarks.user_id", user.id);
 

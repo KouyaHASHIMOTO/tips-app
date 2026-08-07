@@ -17,7 +17,6 @@ const tips = vi.hoisted(() => [
     created_at: "1111/11/11",
     likes: [{ id: 1, tip_id: 1, user_id: "1" }],
     more_tips: [],
-    tip_tags: [],
     profiles: {
       id: 1,
       tip_id: 1,
@@ -38,7 +37,6 @@ const tips = vi.hoisted(() => [
       { id: 3, tip_id: 3, user_id: "2" },
     ],
     more_tips: [],
-    tip_tags: [],
     profiles: {
       id: 2,
       tip_id: 2,
@@ -53,15 +51,6 @@ const tips = vi.hoisted(() => [
 vi.mock("../../lib/supabase", () => ({
   supabase: {
     from: vi.fn().mockImplementation((table) => {
-      // tip_tagsテーブルの場合は select だけ返す
-      if (table === "tip_tags") {
-        return {
-          select: vi.fn().mockResolvedValue({
-            data: [],
-            error: null,
-          }),
-        };
-      }
       if (table === "follows") {
         return {
           select: vi.fn().mockReturnValue({
@@ -120,44 +109,7 @@ describe("HomePage", () => {
 
     expect(vi.mocked(supabase.from)).toHaveBeenCalledWith("likes");
   });
-  // 変更後
 
-  test("タグ検索欄が表示されている", async () => {
-    render(
-      <MemoryRouter>
-        <HomePage user={mockUser} />
-      </MemoryRouter>
-    );
-    expect(screen.getByPlaceholderText("タグで検索...")).toBeInTheDocument();
-  });
-
-  test("タグで検索するとヒットしたTipだけ表示される", async () => {
-    const user = userEvent.setup();
-    render(
-      <MemoryRouter>
-        <HomePage user={mockUser} />
-      </MemoryRouter>
-    );
-
-    await screen.findByText("ユーザー名1");
-    await user.type(screen.getByPlaceholderText("タグで検索..."), "サッカー");
-
-    expect(screen.queryByText("Tips1")).not.toBeInTheDocument();
-    expect(screen.queryByText("Tips2")).not.toBeInTheDocument();
-  });
-  test("投稿ボタンをクリックするとモーダルが表示される", async () => {
-    const user = userEvent.setup();
-    render(
-      <MemoryRouter>
-        <HomePage user={mockUser} />
-      </MemoryRouter>
-    );
-
-    await user.click(screen.getByRole("button", { name: "+ Tipを投稿する" }));
-    expect(
-      screen.getByPlaceholderText("タイトルを入力...")
-    ).toBeInTheDocument();
-  });
   test("フォロー中タブをクリックすると、フォローしているユーザーの投稿が表示される", async () => {
     const user = userEvent.setup();
     render(
@@ -169,6 +121,7 @@ describe("HomePage", () => {
     await user.click(screen.getByRole("button", { name: "フォロー中" }));
     expect(screen.getByText("Tipタイトル1")).toBeInTheDocument();
   });
+
   test("人気タブをクリックすると、いいね数が多い順にTipが並ぶ", async () => {
     const user = userEvent.setup();
     render(

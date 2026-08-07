@@ -11,7 +11,6 @@ const tips = [
     created_at: "1111/11/11",
     likes: [{ id: 1, tip_id: 1, user_id: "1" }],
     more_tips: [],
-    tip_tags: [],
     profiles: {
       id: 1,
       tip_id: 1,
@@ -30,7 +29,6 @@ const tips = [
     created_at: "1111/11/11",
     likes: [{ id: 2, tip_id: 2, user_id: "1" }],
     more_tips: [],
-    tip_tags: [],
     profiles: {
       id: 2,
       tip_id: 2,

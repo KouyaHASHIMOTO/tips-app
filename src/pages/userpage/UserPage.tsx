@@ -37,11 +37,6 @@ export const UserPage = ({ user }: UserPageProps) => {
         created_at: string;
       }[];
 
-      tip_tags: {
-        tags: {
-          name: string;
-        } | null;
-      }[];
       profiles: {
         id: number;
         tip_id: number;
@@ -66,7 +61,7 @@ export const UserPage = ({ user }: UserPageProps) => {
     const { data, error } = await supabase
       .from("tips")
       .select(
-        `*, likes(*),more_tips(*),profiles(*),tip_tags(tags(*)),bookmarks(*)`
+        `*, likes(*),more_tips(*),profiles(*),bookmarks(*)`
       )
       .eq("user_id", params.userId)
       .order("created_at", { ascending: false });

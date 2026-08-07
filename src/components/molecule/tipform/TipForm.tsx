@@ -11,14 +11,15 @@ import {
   SelectValue,
 } from "../../ui/select";
 import { CATEGORIES, type Category } from "../../../constants/categories";
+import { supabase } from "@/lib/supabase";
 
 interface TipFormProps {
   onSubmit?: (
     title: string,
     content: string,
     category: Category,
-    tags: string[],
-    points: string[]
+    points: string[],
+    imgUrl: string | null,
   ) => void;
 }
 
@@ -32,6 +33,7 @@ export const TipForm = ({ onSubmit }: TipFormProps) => {
   const [content, setContent] = useState("");
   const [category, setCategory] = useState<Category | "">("");
   const [points, setPoints] = useState<string[]>([""]);
+  const [imgUrl, setImgUrl] = useState<string | null>(null);
 
   const remaining = MAX_CHARS - content.length;
   const isOverLimit = remaining < 0;
@@ -56,11 +58,31 @@ export const TipForm = ({ onSubmit }: TipFormProps) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const filledPoints = points.filter((p) => p.trim() !== "");
-    onSubmit?.(title, content, category as Category, [], filledPoints);
+    onSubmit?.(title, content, category as Category, filledPoints, imgUrl);
     setTitle("");
     setContent("");
     setCategory("");
     setPoints([""]);
+  };
+
+  const handleGenerateImage = async () => {
+    // タイトル・本文・ポイントをつなげて、画像生成用のプロンプト文字列を作る
+    const prompt = `${title}\n${content}\n${points.join("\n")}`;
+
+    // generate-tip-image Edge Functionを呼び出す
+    const { data, error } = await supabase.functions.invoke<{
+      imageUrl: string;
+    }>("generate-tip-image", {
+      body: { prompt },
+    });
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    // レスポンスの中の画像URLをstateに保存する
+    setImgUrl(data.imageUrl);
   };
 
   const canSubmit =
@@ -202,7 +224,9 @@ export const TipForm = ({ onSubmit }: TipFormProps) => {
       <div className="bg-hint-bg border border-[#F5F1E9] rounded-xl p-4 flex gap-2">
         <Lightbulb className="size-4 text-hint-accent shrink-0 mt-0.5" />
         <div className="text-xs text-[#555A60] space-y-1">
-          <p className="font-medium text-sm text-text-main mb-1">投稿のヒント</p>
+          <p className="font-medium text-sm text-text-main mb-1">
+            投稿のヒント
+          </p>
           <p>・1つの投稿はシンプルに、読みやすくまとめるのがコツです。</p>
           <p>・出典がある場合は、本文やリンクで紹介してみましょう。</p>
           <p>・誰かの役に立つ知識は、きっと誰かの「へぇ！」になります。</p>

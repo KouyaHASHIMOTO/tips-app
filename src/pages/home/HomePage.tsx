@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { TipList } from "../../components/organisms/tiplist/TipList";
 import { MainLayout } from "../../components/templates/MainLayout";
 import { supabase } from "../../lib/supabase";
-import { TipForm } from "../../components/molecule/tipform/TipForm";
 import type { User } from "@supabase/supabase-js";
 import { type Category } from "../../constants/categories";
 import { useSearchParams } from "react-router-dom";
@@ -15,6 +15,7 @@ interface HomePageProps {
 export const HomePage = ({ user }: HomePageProps) => {
   const [searchParams] = useSearchParams();
   const selectedCategory = searchParams.get("category") as Category | null;
+  const navigate = useNavigate();
 
   const [tips, setTips] = useState<
     {
@@ -36,12 +37,6 @@ export const HomePage = ({ user }: HomePageProps) => {
         content: string;
         created_at: string;
       }[];
-
-      tip_tags: {
-        tags: {
-          name: string;
-        } | null;
-      }[];
       profiles: {
         id: number;
         tip_id: number;
@@ -62,50 +57,11 @@ export const HomePage = ({ user }: HomePageProps) => {
     "following" | "new" | "popular" | "saved"
   >("new");
 
-  const [tagSearch, setTagSearch] = useState("");
-  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
-
-  const [trendTags, setTrendTags] = useState<{ name: string; count: number }[]>(
-    []
-  );
-
-  const fetchTrendTags = async () => {
-    const { data, error } = await supabase.from("tip_tags").select(`
-    *,
-    tags (
-      *
-    )
-  `);
-
-    if (error) {
-      console.error(error);
-      return;
-    }
-
-    if (!data) return;
-
-    const countMap = data.reduce((acc, current) => {
-      const name = current.tags?.name;
-      if (!name) return acc;
-      acc[name] = (acc[name] ?? 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-
-    // countMap を「件数が多い順に並んだタグの配列」に変換する
-    const trendTags = Object.entries(countMap)
-      // オブジェクトを [キー, 値] の配列に変換
-      .map(([name, count]) => ({ name, count: count as number }))
-      // 件数が多い順（降順）に並び替え
-      .sort((a, b) => b.count - a.count);
-
-    setTrendTags(trendTags);
-  };
-
   const fetchTips = useCallback(async () => {
     const { data, error } = await supabase
       .from("tips")
       .select(
-        `*, likes(*),more_tips(*),profiles(*),tip_tags(tags(*)),bookmarks(*)`
+        `*, likes(*),more_tips(*),profiles(*),bookmarks(*)`
       )
       .order("created_at", { ascending: false });
     setTips(data ?? []);
@@ -127,7 +83,7 @@ export const HomePage = ({ user }: HomePageProps) => {
     const { data } = await supabase
       .from("tips")
       .select(
-        `*, likes(*), more_tips(*), profiles(*), tip_tags(tags(*)), bookmarks(*)`
+        `*, likes(*), more_tips(*), profiles(*), bookmarks(*)`
       )
       .in("user_id", followingIds ?? [])
       .order("created_at", { ascending: false });
@@ -150,52 +106,10 @@ export const HomePage = ({ user }: HomePageProps) => {
       } else {
         await fetchTips();
       }
-      await fetchTrendTags();
     };
 
     load();
   }, [activeTab, fetchFollowingTips, fetchTips]);
-
-  const createTip = async (
-    title: string,
-    content: string,
-    category: Category,
-    tags: string[]
-  ) => {
-    // まずTipを保存
-    const { data: tip, error } = await supabase
-      .from("tips")
-      .insert({ title, content, category, user_id: user.id })
-      .select()
-      .single();
-
-    if (error || !tip) {
-      console.error(error);
-      return;
-    }
-
-    // タグが1つ以上あれば保存する
-    if (tags.length > 0) {
-      for (const tagName of tags) {
-        // ① tagsテーブルにタグを登録（同じ名前がすでにあればそのまま取得）
-        const { data: tag, error: tagError } = await supabase
-          .from("tags")
-          .upsert({ name: tagName }, { onConflict: "name" })
-          .select()
-          .single();
-
-        if (tagError || !tag) continue;
-
-        // ② tip_tagsテーブルに対応を保存
-        await supabase
-          .from("tip_tags")
-          .insert({ tip_id: tip.id, tag_id: tag.id });
-      }
-    }
-    setIsPostModalOpen(false);
-    await refetchTips();
-    await fetchTrendTags();
-  };
 
   const addLike = async (tipId: number, isLiked: boolean) => {
     if (isLiked) {
@@ -268,46 +182,18 @@ export const HomePage = ({ user }: HomePageProps) => {
       : tips;
 
   const filteredTips =
-    tagSearch !== ""
-      ? sortedTips
-          .filter((tip) =>
-            tip.tip_tags.some((tt) => tt.tags?.name.includes(tagSearch))
-          )
-          .filter((tip) => {
-            if (!selectedCategory) {
-              return true;
-            } else {
-              return tip.category === selectedCategory;
-            }
-          })
-      : selectedCategory !== null
+    selectedCategory !== null
       ? sortedTips.filter((tip) => tip.category === selectedCategory)
       : sortedTips;
+
   return (
     <MainLayout
       rightPanel={
         <RightPanel
-          trendTags={trendTags}
-          onTagSearch={(tag) => setTagSearch(tag)}
-          onPostClick={() => setIsPostModalOpen(true)}
+          onPostClick={() => navigate("/post")}
         />
       }
     >
-      {/* 投稿モーダル */}
-      {isPostModalOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center"
-          onClick={() => setIsPostModalOpen(false)}
-        >
-          <div
-            className="w-full max-w-2xl mx-4 mb-4 sm:mb-0 rounded-2xl shadow-2xl overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <TipForm onSubmit={createTip} onClose={() => setIsPostModalOpen(false)} />
-          </div>
-        </div>
-      )}
-
       <div className="flex gap-2 mb-4">
         <button
           onClick={() => setActiveTab("new")}

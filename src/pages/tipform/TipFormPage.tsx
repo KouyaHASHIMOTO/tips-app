@@ -50,12 +50,11 @@ export const TipFormPage = ({ user }: TipFormPageProps) => {
     title: string,
     content: string,
     category: Category,
-    tags: string[],
     points: string[]
   ) => {
     const imageUrl = imageFile ? await uploadImage(imageFile) : null;
 
-    const { data: tip, error } = await supabase
+    const { error } = await supabase
       .from("tips")
       .insert({
         title,
@@ -64,29 +63,11 @@ export const TipFormPage = ({ user }: TipFormPageProps) => {
         user_id: user.id,
         image_url: imageUrl,
         points,
-      })
-      .select()
-      .single();
+      });
 
-    if (error || !tip) {
+    if (error) {
       console.error(error);
       return;
-    }
-
-    if (tags.length > 0) {
-      for (const tagName of tags) {
-        const { data: tag, error: tagError } = await supabase
-          .from("tags")
-          .upsert({ name: tagName }, { onConflict: "name" })
-          .select()
-          .single();
-
-        if (tagError || !tag) continue;
-
-        await supabase
-          .from("tip_tags")
-          .insert({ tip_id: tip.id, tag_id: tag.id });
-      }
     }
 
     setIsSubmitted(true);

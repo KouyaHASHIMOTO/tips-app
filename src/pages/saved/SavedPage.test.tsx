@@ -32,15 +32,6 @@ const mockTips = vi.hoisted(() => {
         avatar_url: "https://example.com/test-avatar.png",
         created_at: TEST_CREATED_AT,
       },
-      tip_tags: [
-        {
-          tags: {
-            id: 1,
-            name: "テストタグ",
-            created_at: TEST_CREATED_AT,
-          },
-        },
-      ],
       bookmarks: [
         {
           id: 1,
@@ -72,15 +63,6 @@ const mockTips = vi.hoisted(() => {
         avatar_url: "https://example.com/test-avatar.png",
         created_at: TEST_CREATED_AT,
       },
-      tip_tags: [
-        {
-          tags: {
-            id: 1,
-            name: "テストタグ",
-            created_at: TEST_CREATED_AT,
-          },
-        },
-      ],
       bookmarks: [],
     },
   ];
